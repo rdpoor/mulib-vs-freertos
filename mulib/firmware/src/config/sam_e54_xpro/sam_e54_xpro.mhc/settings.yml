@@ -1,0 +1,14 @@
+configName: sam_e54_xpro
+folderName: drivers_freertos_same54-pro
+format_version: v1.0
+frameworkPath: D:\MassMarket\github_repos
+processor: ATSAME54P20A
+projectName: getting_started_drivers_freertos_same54-pro
+settings:
+  PackageFilter: crypto;core_apps_sam_d21_da1;dev_packs;net;csp_apps_sam_d5x_e5x;core;core_apps_sam_d5x_e5x;csp_apps_sam_d21_da1;bsp;quick_docs;reference_apps;usb;cryptoauthlib;wireless_wifi;csp;wireless_apps_winc3400;wireless_apps_winc1500
+  FORCE_OPTIMIZATION: 'false'
+  GENERATE_BACKUP: 'true'
+  TRUSTZONE: 'false'
+  CMSISPath: ./dev_packs/arm/CMSIS/5.8.0
+  MERGE_STRATEGY: USER_ALL
+  DFPPath: ./dev_packs/Microchip/SAME54_DFP/3.6.95/atdf/ATSAME54P20A.atdf
