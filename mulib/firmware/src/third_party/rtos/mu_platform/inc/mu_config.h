@@ -22,35 +22,34 @@
  * SOFTWARE.
  */
 
+/**
+ * @file mu_config.h
+ *
+ * @brief platform specific configuration params for mulib
+ */
+
+#ifndef _MU_CONFIG_H_
+#define _MU_CONFIG_H_
+
 // ****************************************************************************=
 // Includes
 
-#include "mu_rtc.h"
+// ****************************************************************************=
+// C++ Compatibility
 
-#include "definitions.h"
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // ****************************************************************************=
-// Private types and definitions
+// Public types and definitions
 
 // ****************************************************************************=
-// Private (static) storage
+// Public declarations
 
-// ****************************************************************************=
-// Private (forward) declarations
 
-// ****************************************************************************=
-// Public code
-
-void mu_rtc_init(void) {
-    RTC_Timer32Start();
+#ifdef __cplusplus
 }
+#endif
 
-mu_time_abs_t mu_rtc_now(void) {
-    return RTC_Timer32CounterGet();
-}
-
-// ****************************************************************************=
-// Private (static) code
+#endif /* #ifndef _MU_CONFIG_H_ */

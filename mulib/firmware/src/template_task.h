@@ -22,35 +22,43 @@
  * SOFTWARE.
  */
 
+/**
+ * @file template_task.h
+ *
+ * @brief Support for the template task
+ */
+
+#ifndef _template_TASK_H_
+#define _template_TASK_H_
+
 // ****************************************************************************=
 // Includes
 
-#include "mu_rtc.h"
-
-#include "definitions.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
 // ****************************************************************************=
-// Private types and definitions
+// C++ Compatibility
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // ****************************************************************************=
-// Private (static) storage
+// Public types and definitions
+
+typedef enum {
+    template_TASK_ERR_NONE,
+} template_task_err_t;
 
 // ****************************************************************************=
-// Private (forward) declarations
+// Public declarations
 
-// ****************************************************************************=
-// Public code
+void template_task_init(void);
 
-void mu_rtc_init(void) {
-    RTC_Timer32Start();
+#ifdef __cplusplus
 }
+#endif
 
-mu_time_abs_t mu_rtc_now(void) {
-    return RTC_Timer32CounterGet();
-}
-
-// ****************************************************************************=
-// Private (static) code
+#endif /* #ifndef _template_TASK_H_ */

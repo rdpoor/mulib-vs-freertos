@@ -27,6 +27,7 @@
 
 #include "mu_time.h"
 
+#include "definitions.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -60,6 +61,14 @@ bool mu_time_precedes(mu_time_abs_t t1, mu_time_abs_t t2) { return t1 < t2; }
 bool mu_time_equals(mu_time_abs_t t1, mu_time_abs_t t2) { return t1 == t2; }
 
 bool mu_time_follows(mu_time_abs_t t1, mu_time_abs_t t2) { return t1 > t2; }
+
+uint32_t mu_time_rel_to_ms(mu_time_rel_t dt) {
+    return (dt * 1000) / RTC_Timer32FrequencyGet();
+}
+
+mu_time_rel_t mu_time_ms_to_rel(uint32_t ms) {
+    return ms * RTC_Timer32FrequencyGet() / 1000;
+}
 
 // ****************************************************************************=
 // Private (static) code

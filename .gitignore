@@ -1,0 +1,9 @@
+
+*~
+*\#
+
+# ignore MPLAB artifacts
+**/*.X/debug
+**/*.X/dist
+**/*.X/build
+**/*.X/.generated_files

@@ -42,6 +42,9 @@
             <logicalFolder name="f6" displayName="port" projectFiles="true">
               <itemPath>../src/config/sam_e54_xpro/peripheral/port/plib_port.h</itemPath>
             </logicalFolder>
+            <logicalFolder name="f8" displayName="rtc" projectFiles="true">
+              <itemPath>../src/config/sam_e54_xpro/peripheral/rtc/plib_rtc.h</itemPath>
+            </logicalFolder>
             <logicalFolder name="f7" displayName="sercom" projectFiles="true">
               <logicalFolder name="f1" displayName="i2c_master" projectFiles="true">
                 <itemPath>../src/config/sam_e54_xpro/peripheral/sercom/i2c_master/plib_sercom_i2c_master_common.h</itemPath>
@@ -274,6 +277,7 @@
         <itemPath>../src/config/sam_e54_xpro/sam_e54_xpro.mhc/project.yml</itemPath>
         <itemPath>../src/config/sam_e54_xpro/sam_e54_xpro.mhc/GraphSettings.yml</itemPath>
         <itemPath>../src/config/sam_e54_xpro/sam_e54_xpro.mhc/dfp.yml</itemPath>
+        <itemPath>../src/config/sam_e54_xpro/sam_e54_xpro.mhc/rtc.yml</itemPath>
         <itemPath>../src/config/sam_e54_xpro/sam_e54_xpro.mhc/evsys.yml</itemPath>
         <itemPath>../src/config/sam_e54_xpro/sam_e54_xpro.mhc/nvmctrl.yml</itemPath>
         <itemPath>../src/config/sam_e54_xpro/sam_e54_xpro.mhc/drv_i2c.yml</itemPath>
@@ -329,6 +333,9 @@
             <logicalFolder name="f6" displayName="port" projectFiles="true">
               <itemPath>../src/config/sam_e54_xpro/peripheral/port/plib_port.c</itemPath>
             </logicalFolder>
+            <logicalFolder name="f8" displayName="rtc" projectFiles="true">
+              <itemPath>../src/config/sam_e54_xpro/peripheral/rtc/plib_rtc_timer.c</itemPath>
+            </logicalFolder>
             <logicalFolder name="f7" displayName="sercom" projectFiles="true">
               <logicalFolder name="f1" displayName="i2c_master" projectFiles="true">
                 <itemPath>../src/config/sam_e54_xpro/peripheral/sercom/i2c_master/plib_sercom3_i2c_master.c</itemPath>
@@ -363,6 +370,7 @@
       <logicalFolder name="mu_platform" displayName="mu_platform" projectFiles="true">
         <logicalFolder name="src" displayName="src" projectFiles="true">
           <itemPath>../src/third_party/rtos/mu_platform/src/mu_time.c</itemPath>
+          <itemPath>../src/third_party/rtos/mu_platform/src/mu_rtc.c</itemPath>
         </logicalFolder>
       </logicalFolder>
       <logicalFolder name="mulib" displayName="mulib" projectFiles="true">
@@ -492,7 +500,7 @@
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
-                  value="../src;../src/config/sam_e54_xpro;../src/packs/ATSAME54P20A_DFP;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include;../src/third_party/rtos/mulib/collections/inc;../src/third_party/rtos/mulib/log/inc;../src/third_party/rtos/mulib/sched/inc;../src/third_party/rtos/mulib/string/inc;../src/third_party/rtos/mulib/utils/inc;../src/third_party/rtos/mulib/utils/inc;../src/third_party/rtos/mu_platform/inc"/>
+                  value="../src;../src/config/sam_e54_xpro;../src/packs/ATSAME54P20A_DFP;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include;../src/third_party/rtos/mu_platform/inc;../src/third_party/rtos/mulib/collections/inc;../src/third_party/rtos/mulib/log/inc;../src/third_party/rtos/mulib/sched/inc;../src/third_party/rtos/mulib/string/inc;../src/third_party/rtos/mulib/utils/inc"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="true"/>

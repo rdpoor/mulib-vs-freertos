@@ -112,6 +112,21 @@ bool mu_time_equals(mu_time_abs_t t1, mu_time_abs_t t2);
  */
 bool mu_time_follows(mu_time_abs_t t1, mu_time_abs_t t2);
 
+/**
+ * @brief Convert a mu_time_rel_t to milliseconds;
+ *
+ * @param dt A relative time object
+ * @return dt converted to milliseconds
+ */
+uint32_t mu_time_rel_to_ms(mu_time_rel_t dt);
+
+/**
+ * @brief Convert milliseconds to a mu_time_rel_t
+ *
+ * @param ms A quantity of milliseconds.
+ * @return ms converted to mu_time_rel_t
+ */
+mu_time_rel_t mu_time_ms_to_rel(uint32_t ms);
 
 #ifdef __cplusplus
 }
