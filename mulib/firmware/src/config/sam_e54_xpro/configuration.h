@@ -86,23 +86,6 @@ extern "C" {
 // Section: Driver Configuration
 // *****************************************************************************
 // *****************************************************************************
-/* I2C Driver Instance 0 Configuration Options */
-#define DRV_I2C_INDEX_0                       0
-#define DRV_I2C_CLIENTS_NUMBER_IDX0           2
-#define DRV_I2C_QUEUE_SIZE_IDX0               2
-#define DRV_I2C_CLOCK_SPEED_IDX0              100
-
-/* USART Driver Instance 0 Configuration Options */
-#define DRV_USART_INDEX_0                  0
-#define DRV_USART_CLIENTS_NUMBER_IDX0      3
-#define DRV_USART_QUEUE_SIZE_IDX0          5
-
-/* I2C Driver Common Configuration Options */
-#define DRV_I2C_INSTANCES_NUMBER              1
-
-
-/* USART Driver Global Configuration Options */
-#define DRV_USART_INSTANCES_NUMBER         1
 
 
 // *****************************************************************************

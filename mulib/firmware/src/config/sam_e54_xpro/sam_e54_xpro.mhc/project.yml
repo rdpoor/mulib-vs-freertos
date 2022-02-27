@@ -6,34 +6,6 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: null
-- generatedChecksum: 13F062B063A4F4AE0B19CE872943995B
-  logicalPath: config/sam_e54_xpro/driver/i2c
-  name: drv_i2c.c
-  physicalPath: driver/i2c/src
-  security: NON_SECURE
-  type: SOURCE
-  userChecksum: 13F062B063A4F4AE0B19CE872943995B
-- generatedChecksum: 37780F17759DED907A0F36E28BFB3136
-  logicalPath: config/sam_e54_xpro/driver/i2c
-  name: drv_i2c_local.h
-  physicalPath: driver/i2c/src
-  security: NON_SECURE
-  type: SOURCE
-  userChecksum: 37780F17759DED907A0F36E28BFB3136
-- generatedChecksum: F95D354CF700B247BF6F0F01B6353452
-  logicalPath: config/sam_e54_xpro/driver/usart
-  name: drv_usart.c
-  physicalPath: driver/usart/src
-  security: NON_SECURE
-  type: SOURCE
-  userChecksum: F95D354CF700B247BF6F0F01B6353452
-- generatedChecksum: 872B12305821887C9AFF78A64839A20D
-  logicalPath: config/sam_e54_xpro/driver/usart
-  name: drv_usart_local.h
-  physicalPath: driver/usart/src
-  security: NON_SECURE
-  type: SOURCE
-  userChecksum: 872B12305821887C9AFF78A64839A20D
 - generatedChecksum: 6069C4FD56993BDA3B1FC223DD5BAA4A
   logicalPath: config/sam_e54_xpro
   name: exceptions.c
@@ -41,13 +13,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 6069C4FD56993BDA3B1FC223DD5BAA4A
-- generatedChecksum: 1A1D1979F5F12154771893D030D85465
+- generatedChecksum: 44254713E0E182CC28964931C63BD641
   logicalPath: config/sam_e54_xpro
   name: initialization.c
   physicalPath: ''
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 1A1D1979F5F12154771893D030D85465
+  userChecksum: 44254713E0E182CC28964931C63BD641
 - generatedChecksum: D2120D32245E96CBBC05D37B1CABA44D
   logicalPath: config/sam_e54_xpro
   name: interrupts.c
@@ -146,13 +118,6 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 92901E4C07604DD5EC594B58CEC2720B
-- generatedChecksum: DBBC8FE07E165E5808B7D1D87C64009C
-  logicalPath: config/sam_e54_xpro/system/dma
-  name: sys_dma.c
-  physicalPath: system/dma
-  security: NON_SECURE
-  type: SOURCE
-  userChecksum: DBBC8FE07E165E5808B7D1D87C64009C
 - generatedChecksum: 02C3C1B519E59992810626BB6098CF56
   logicalPath: config/sam_e54_xpro/system/int
   name: sys_int.c
@@ -335,13 +300,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 52F91AC0727F2311EDA0E3BAA7719A9F
-- generatedChecksum: 963BED7CD6AC9473A9206702E3030866
+- generatedChecksum: 7A852268CAA1F0FBB9E75D327532882A
   logicalPath: config/sam_e54_xpro
   name: configuration.h
   physicalPath: ''
   security: NON_SECURE
   type: HEADER
-  userChecksum: 963BED7CD6AC9473A9206702E3030866
+  userChecksum: 7A852268CAA1F0FBB9E75D327532882A
 - generatedChecksum: 7EF1FAD7778FEEAC9467270306D7F7C0
   logicalPath: packs/CMSIS/CMSIS/Core/Include
   name: core_cm4.h
@@ -363,13 +328,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 3F95A1A7B1479E80077C092E2AA1755F
-- generatedChecksum: E6189F6C97BA583654DB1065F7868948
+- generatedChecksum: 421FAA9548B493910BC33A45878E9222
   logicalPath: config/sam_e54_xpro
   name: definitions.h
   physicalPath: ''
   security: NON_SECURE
   type: HEADER
-  userChecksum: E6189F6C97BA583654DB1065F7868948
+  userChecksum: 421FAA9548B493910BC33A45878E9222
 - generatedChecksum: AA255350342164F392C52E11EFC2A7F3
   logicalPath: config/sam_e54_xpro
   name: device.h
@@ -405,48 +370,6 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: EB95F6D2A5B5462B6A644279D43B4792
-- generatedChecksum: 1D2094DFA60F847FFD4E8153B6E78027
-  logicalPath: config/sam_e54_xpro/driver
-  name: driver.h
-  physicalPath: driver
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: 1D2094DFA60F847FFD4E8153B6E78027
-- generatedChecksum: CC7DFCC51CD25171A3E400E18969354F
-  logicalPath: config/sam_e54_xpro/driver
-  name: driver_common.h
-  physicalPath: driver
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: CC7DFCC51CD25171A3E400E18969354F
-- generatedChecksum: 3C6689B8800C6234028EC2FBE82E25CF
-  logicalPath: config/sam_e54_xpro/driver/i2c
-  name: drv_i2c.h
-  physicalPath: driver/i2c
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: 3C6689B8800C6234028EC2FBE82E25CF
-- generatedChecksum: 260EF469FECCFEF9418D6268909EE2F8
-  logicalPath: config/sam_e54_xpro/driver/i2c
-  name: drv_i2c_definitions.h
-  physicalPath: driver/i2c
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: 260EF469FECCFEF9418D6268909EE2F8
-- generatedChecksum: 6AF29C60E3BC9BB1F75754A49FBC6473
-  logicalPath: config/sam_e54_xpro/driver/usart
-  name: drv_usart.h
-  physicalPath: driver/usart
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: 6AF29C60E3BC9BB1F75754A49FBC6473
-- generatedChecksum: 6A33BD761891FC1DA0DA3D6899CD645F
-  logicalPath: config/sam_e54_xpro/driver/usart
-  name: drv_usart_definitions.h
-  physicalPath: driver/usart
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: 6A33BD761891FC1DA0DA3D6899CD645F
 - generatedChecksum: 472A5CB8AD106CDC4FFF3D15D9E273FD
   logicalPath: packs/ATSAME54P20A_DFP/component
   name: dsu.h
@@ -1014,20 +937,6 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 6BB6C54C5CD963A5A940CF7BB28F4E10
-- generatedChecksum: DF645F165662D33674AC573BC61A12C5
-  logicalPath: config/sam_e54_xpro/system/dma
-  name: sys_dma.h
-  physicalPath: system/dma
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: DF645F165662D33674AC573BC61A12C5
-- generatedChecksum: D6141C37E3995B1B6C326EBA5F1FA067
-  logicalPath: config/sam_e54_xpro/system/dma
-  name: sys_dma_mapping.h
-  physicalPath: system/dma
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: D6141C37E3995B1B6C326EBA5F1FA067
 - generatedChecksum: 1329D2DEB6E5AC9515AD4D165C60DC74
   logicalPath: config/sam_e54_xpro/system/int
   name: sys_int.h

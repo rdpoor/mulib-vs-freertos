@@ -6,18 +6,6 @@
                    projectFiles="true">
       <logicalFolder name="f1" displayName="config" projectFiles="true">
         <logicalFolder name="f1" displayName="sam_e54_xpro" projectFiles="true">
-          <logicalFolder name="f1" displayName="driver" projectFiles="true">
-            <logicalFolder name="f1" displayName="i2c" projectFiles="true">
-              <itemPath>../src/config/sam_e54_xpro/driver/i2c/drv_i2c.h</itemPath>
-              <itemPath>../src/config/sam_e54_xpro/driver/i2c/drv_i2c_definitions.h</itemPath>
-            </logicalFolder>
-            <logicalFolder name="f2" displayName="usart" projectFiles="true">
-              <itemPath>../src/config/sam_e54_xpro/driver/usart/drv_usart.h</itemPath>
-              <itemPath>../src/config/sam_e54_xpro/driver/usart/drv_usart_definitions.h</itemPath>
-            </logicalFolder>
-            <itemPath>../src/config/sam_e54_xpro/driver/driver.h</itemPath>
-            <itemPath>../src/config/sam_e54_xpro/driver/driver_common.h</itemPath>
-          </logicalFolder>
           <logicalFolder name="f2" displayName="osal" projectFiles="true">
             <itemPath>../src/config/sam_e54_xpro/osal/osal.h</itemPath>
             <itemPath>../src/config/sam_e54_xpro/osal/osal_definitions.h</itemPath>
@@ -62,10 +50,6 @@
             </logicalFolder>
             <logicalFolder name="f2" displayName="debug" projectFiles="true">
               <itemPath>../src/config/sam_e54_xpro/system/debug/sys_debug.h</itemPath>
-            </logicalFolder>
-            <logicalFolder name="f3" displayName="dma" projectFiles="true">
-              <itemPath>../src/config/sam_e54_xpro/system/dma/sys_dma.h</itemPath>
-              <itemPath>../src/config/sam_e54_xpro/system/dma/sys_dma_mapping.h</itemPath>
             </logicalFolder>
             <logicalFolder name="f4" displayName="int" projectFiles="true">
               <itemPath>../src/config/sam_e54_xpro/system/int/sys_int.h</itemPath>
@@ -280,8 +264,6 @@
         <itemPath>../src/config/sam_e54_xpro/sam_e54_xpro.mhc/rtc.yml</itemPath>
         <itemPath>../src/config/sam_e54_xpro/sam_e54_xpro.mhc/evsys.yml</itemPath>
         <itemPath>../src/config/sam_e54_xpro/sam_e54_xpro.mhc/nvmctrl.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro/sam_e54_xpro.mhc/drv_i2c.yml</itemPath>
-        <itemPath>../src/config/sam_e54_xpro/sam_e54_xpro.mhc/drv_usart.yml</itemPath>
         <itemPath>../src/config/sam_e54_xpro/sam_e54_xpro.mhc/sercom2.yml</itemPath>
         <itemPath>../src/config/sam_e54_xpro/sam_e54_xpro.mhc/sercom3.yml</itemPath>
         <itemPath>../src/config/sam_e54_xpro/sam_e54_xpro.mhc/settings.yml</itemPath>
@@ -304,16 +286,6 @@
                    projectFiles="true">
       <logicalFolder name="f1" displayName="config" projectFiles="true">
         <logicalFolder name="f1" displayName="sam_e54_xpro" projectFiles="true">
-          <logicalFolder name="f1" displayName="driver" projectFiles="true">
-            <logicalFolder name="f1" displayName="i2c" projectFiles="true">
-              <itemPath>../src/config/sam_e54_xpro/driver/i2c/src/drv_i2c.c</itemPath>
-              <itemPath>../src/config/sam_e54_xpro/driver/i2c/src/drv_i2c_local.h</itemPath>
-            </logicalFolder>
-            <logicalFolder name="f2" displayName="usart" projectFiles="true">
-              <itemPath>../src/config/sam_e54_xpro/driver/usart/src/drv_usart.c</itemPath>
-              <itemPath>../src/config/sam_e54_xpro/driver/usart/src/drv_usart_local.h</itemPath>
-            </logicalFolder>
-          </logicalFolder>
           <logicalFolder name="f3" displayName="peripheral" projectFiles="true">
             <logicalFolder name="f1" displayName="clock" projectFiles="true">
               <itemPath>../src/config/sam_e54_xpro/peripheral/clock/plib_clock.c</itemPath>
@@ -351,9 +323,6 @@
           <logicalFolder name="f5" displayName="system" projectFiles="true">
             <logicalFolder name="f1" displayName="cache" projectFiles="true">
               <itemPath>../src/config/sam_e54_xpro/system/cache/sys_cache.c</itemPath>
-            </logicalFolder>
-            <logicalFolder name="f2" displayName="dma" projectFiles="true">
-              <itemPath>../src/config/sam_e54_xpro/system/dma/sys_dma.c</itemPath>
             </logicalFolder>
             <logicalFolder name="f3" displayName="int" projectFiles="true">
               <itemPath>../src/config/sam_e54_xpro/system/int/src/sys_int.c</itemPath>
