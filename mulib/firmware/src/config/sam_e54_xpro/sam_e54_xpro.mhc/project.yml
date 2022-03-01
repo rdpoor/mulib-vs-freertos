@@ -328,13 +328,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 3F95A1A7B1479E80077C092E2AA1755F
-- generatedChecksum: 421FAA9548B493910BC33A45878E9222
+- generatedChecksum: E7B44ABDB40D3A723D03CA03159BE7DC
   logicalPath: config/sam_e54_xpro
   name: definitions.h
   physicalPath: ''
   security: NON_SECURE
   type: HEADER
-  userChecksum: 421FAA9548B493910BC33A45878E9222
+  userChecksum: E7B44ABDB40D3A723D03CA03159BE7DC
 - generatedChecksum: AA255350342164F392C52E11EFC2A7F3
   logicalPath: config/sam_e54_xpro
   name: device.h
@@ -552,27 +552,6 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: E8A2704F363F67280CEFFA92E9DE7BF3
-- generatedChecksum: F0AD88762263B7CB89B02AB4F5876059
-  logicalPath: config/sam_e54_xpro/osal
-  name: osal.h
-  physicalPath: osal
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: F0AD88762263B7CB89B02AB4F5876059
-- generatedChecksum: 0AC88C49E4585B606FD5AC6804F0C340
-  logicalPath: config/sam_e54_xpro/osal
-  name: osal_definitions.h
-  physicalPath: osal
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: 0AC88C49E4585B606FD5AC6804F0C340
-- generatedChecksum: B040122CCA94A0636810D6F15F13B751
-  logicalPath: config/sam_e54_xpro/osal
-  name: osal_impl_basic.h
-  physicalPath: osal
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: B040122CCA94A0636810D6F15F13B751
 - generatedChecksum: 199083B1D819ED56532A63E268017656
   logicalPath: packs/ATSAME54P20A_DFP/component
   name: osc32kctrl.h

@@ -25,6 +25,13 @@
 /**
  * @file Singly-linked list support.
  *
+ * IMPORTANT NOTE: Unlike many linked-list libraries, mu_list functions nearly
+ * always operate on a pointer to a "list_ref", which itself is a pointer to the
+ * first element of the list itself.  (If you prefer, you can imagine that you
+ * are passing a pointer to the previos element of the list).  This makes it
+ * possible for functions like pop, delete and reverse to modify the list ref
+ * itself.
+ *
  * # MU_LIST_REF and MU_LIST_CONTAINER
  *
  * A linked list with no associated data isn't particularly useful.  Instead,
@@ -93,11 +100,13 @@ typedef struct _mu_list {
 /**
  * @brief Signature for a function passed to mu_iist_traverse.
  *
- * @param prev A pointer to the previous element in the list.
+ * @param list_ref A pointer to the list head which itself is a pointer to the
+ *        first element in the list, in other words, the previous element in the
+ *        list.  This allows the user-supplied function to modify the list head.
  * @param arg A user-supplied argument.
  * @return A NULL value to continue traversing, a non-null value to stop.
  */
-typedef void *(*mu_list_traverse_fn)(mu_list_t *prev, void *arg);
+typedef void *(*mu_list_traverse_fn)(mu_list_t *list_ref, void *arg);
 
 /**
  * @brief Given a pointer to a structure and the name of the slot containing a
@@ -109,8 +118,9 @@ typedef void *(*mu_list_traverse_fn)(mu_list_t *prev, void *arg);
  * @brief Given a pointer to a mu_list_t slot within a containing structure,
  * return a pointer to the containing structure.
  */
-#define MU_LIST_CONTAINER(_ptr, _type, _member) \
-  ((_type *)((char *)(1 ? (_ptr) : &((_type *)0)->_member) - offsetof(_type, _member)))
+#define MU_LIST_CONTAINER(_ptr, _type, _member)                                \
+  ((_type *)((char *)(1 ? (_ptr) : &((_type *)0)->_member) -                   \
+             offsetof(_type, _member)))
 
 // =============================================================================
 // declarations
@@ -121,21 +131,21 @@ typedef void *(*mu_list_traverse_fn)(mu_list_t *prev, void *arg);
  * @param list A pointer to the list head.
  * @return A pointer to the initialized list head.
  */
-mu_list_t *mu_list_init(mu_list_t *list);
+mu_list_t *mu_list_init(mu_list_t *list_ref);
 
 /**
  * @brief Return (a pointer to) the head of the list.
  *
  * NOTE: this just returns the *list argument.
  */
-mu_list_t *mu_list_first(mu_list_t *list);
+mu_list_t *mu_list_first(mu_list_t *list_ref);
 
 /**
  * @brief Return (a pointer to) the next item in the list.
  *
  * NOTE: As a convenience, if list is NULL, this returns NULL.
  */
-mu_list_t *mu_list_rest(mu_list_t *list);
+mu_list_t *mu_list_rest(mu_list_t *list_ref);
 
 /**
  * @brief Return true if the list is the null list (is empty).
@@ -143,7 +153,7 @@ mu_list_t *mu_list_rest(mu_list_t *list);
  * @param ref A pointer to the list head.
  * @return True if ref or ref->next is NULL.
  */
-bool mu_list_is_empty(mu_list_t *list);
+bool mu_list_is_empty(mu_list_t *list_ref);
 
 /**
  * @brief Return the number of elements in a list.
@@ -151,7 +161,7 @@ bool mu_list_is_empty(mu_list_t *list);
  * @param ref A pointer to the list head.
  * @return The number of elements in the list.
  */
-size_t mu_list_length(mu_list_t *list);
+size_t mu_list_length(mu_list_t *list_ref);
 
 /**
  * @brief Return true if an item is a member of the list.
@@ -160,7 +170,7 @@ size_t mu_list_length(mu_list_t *list);
  * @param item The item to be checked for membership.
  * @return True if the item is a member of the list.
  */
-bool mu_list_contains(mu_list_t *list, mu_list_t *element);
+bool mu_list_contains(mu_list_t *list_ref, mu_list_t *element);
 
 /**
  * @brief Push an item onto the head ot the list.
@@ -169,15 +179,15 @@ bool mu_list_contains(mu_list_t *list, mu_list_t *element);
  * @param element A pointer to a list item.
  * @return The list head.
  */
-mu_list_t *mu_list_push(mu_list_t *list, mu_list_t *element);
+mu_list_t *mu_list_push(mu_list_t *list_ref, mu_list_t *element);
 
 /**
  * @brief Remove the first element from a list.
  *
  * @param list A pointer to the list head.
  * @return The element removed from the list head, or NULL if the list is empty.
-  */
-mu_list_t *mu_list_pop(mu_list_t *list);
+ */
+mu_list_t *mu_list_pop(mu_list_t *list_ref);
 
 /**
  * @brief Find an item in a list, searching from the head.
@@ -187,7 +197,7 @@ mu_list_t *mu_list_pop(mu_list_t *list);
  * @return A pointer to the found element or NULL if the element is not in the
  * list.
  */
-mu_list_t *mu_list_find(mu_list_t *list, mu_list_t *element);
+mu_list_t *mu_list_find(mu_list_t *list_ref, mu_list_t *element);
 
 /**
  * @brief Delete an element from a list.
@@ -196,7 +206,7 @@ mu_list_t *mu_list_find(mu_list_t *list, mu_list_t *element);
  * @param element A pointer the element to delete.
  * @return the element removed from the list, or NULL if it was not in the list
  */
-mu_list_t *mu_list_delete(mu_list_t *list, mu_list_t *element);
+mu_list_t *mu_list_delete(mu_list_t *list_ref, mu_list_t *element);
 
 /**
  * @brief In-place list reversal.
@@ -204,18 +214,18 @@ mu_list_t *mu_list_delete(mu_list_t *list, mu_list_t *element);
  * @param list A pointer to the list head.
  * @return list, now pointing to the reversed list.
  */
-mu_list_t *mu_list_reverse(mu_list_t *list);
+mu_list_t *mu_list_reverse(mu_list_t *list_ref);
 
 /**
  * @brief Call traverse_fn with each successive element of a list, stopping at
  * the end of the list or when the traverse_fn returns a non-NULL value.
  *
- * @param list A pointer to the list head.
+ * @param list_ref A pointer to the list head.
  * @param fn The function to call on each element of the list.
  * @param arg A user-supplied argument, passed as the second argument to fn.
  * @return The final value returned from fn.
  */
-void *mu_list_traverse(mu_list_t *list, mu_list_traverse_fn fn, void *arg);
+void *mu_list_traverse(mu_list_t *list_ref, mu_list_traverse_fn fn, void *arg);
 
 #ifdef __cplusplus
 }

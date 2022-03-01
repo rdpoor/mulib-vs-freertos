@@ -27,18 +27,25 @@
 
 #include "sensor_task.h"
 
+#include "definitions.h"
+#include "mu_rtc.h"
+#include "mu_sched.h"
 #include "mu_task.h"
+#include "mu_time.h"
+#include "printer_task.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 
 // ****************************************************************************=
 // Private types and definitions
 
 #define SENSOR_STATES(M)                                                       \
   M(SENSOR_TASK_STATE_INIT)                                                    \
-  M(SENSOR_TASK_STATE_SUCCESS)                                                 \
+  M(SENSOR_TASK_STATE_AWAIT_PRINTER_AVAILABLE)                                 \
+  M(SENSOR_TASK_STATE_AWAIT_PRINTING_COMPLETE)                                 \
   M(SENSOR_TASK_STATE_ERROR)
 
 #define EXPAND_TASK_STATES(_name) _name,
@@ -46,6 +53,7 @@ typedef enum { SENSOR_STATES(EXPAND_TASK_STATES) } sensor_task_state_t;
 
 typedef struct {
   sensor_task_state_t state;
+  mu_time_abs_t next_wake_at;
 } sensor_task_ctx_t;
 
 // ****************************************************************************=
@@ -71,9 +79,9 @@ static void sensor_task_fn(void *ctx, void *arg);
 
 void sensor_task_init(void) {
   mu_task_init(&s_sensor_task, sensor_task_fn, &s_sensor_task_ctx);
-  s_sensor_task.woke_at = mu_rtc_now();
   s_sensor_task_ctx.state = SENSOR_TASK_STATE_INIT;
-  mu_sched_now(sensor_task());  // start task when sensor runs
+  // Schedule a call to sensor_task for when the scheduler starts.
+  mu_sched_at(sensor_task(), mu_rtc_now());
 }
 
 mu_task_t *sensor_task(void) { return &s_sensor_task; }
@@ -83,8 +91,11 @@ mu_task_t *sensor_task(void) { return &s_sensor_task; }
 
 static void set_state(sensor_task_state_t state) {
   if (state != s_sensor_task_ctx.state) {
-    printf("\n%s => %s", state_name(s_sensor_task_ctx.state),
-           state_name(state));
+    const char *s1 = state_name(s_sensor_task_ctx.state);
+    const char *s2 = state_name(state);
+    (void)s1;
+    (void)s2;
+    // TODO: Use logger to record state transitions.
     s_sensor_task_ctx.state = state;
   }
 }
@@ -99,70 +110,37 @@ static void sensor_task_fn(void *ctx, void *arg) {
 
   switch (self->state) {
   case SENSOR_TASK_STATE_INIT: {
-      self->woke_at = mu_rtc_now();  // capture time at which this task woke up
-      set_state(SENSOR_TASK_STATE_START_READING_TEMPERATURE);
-      mu_sched_reschedule_now();
+    self->next_wake_at = mu_time_offset(mu_rtc_now(), mu_time_ms_to_rel(1000));
+    set_state(SENSOR_TASK_STATE_AWAIT_PRINTER_AVAILABLE);
+  } // break; vvv-- fall through --vvv
+
+  case SENSOR_TASK_STATE_AWAIT_PRINTER_AVAILABLE: {
+    if (printer_task_is_idle()) {
+      // Printer is available -- initiate a print request
+      static char buf[20];
+
+      sprintf(buf, "\nRTC=0x%lx", mu_rtc_now());
+      set_state(SENSOR_TASK_STATE_AWAIT_PRINTING_COMPLETE);
+      printer_task_print((uint8_t *)buf, strlen(buf), sensor_task());
+    } else {
+      // Printer is busy.  check again after a short delay.
+      mu_sched_in(sensor_task(), mu_time_ms_to_rel(1));
+    }
   } break;
 
-  case SENSOR_TASK_STATE_START_READING_TEMPERATURE: {
-      // initiate read here...
-      set_state(SENSOR_TASK_STATE_AWAITING_TEMPERATURE_READING);
-      sched_reschedule_now();
-  } break;
-
-  case SENSOR_TASK_STATE_AWAITING_TEMPERATURE_READING: {
-      if (have_reading) {
-          // Have a reading -- assure that the EEPROM
-          set_state(SENSOR_TASK_STATE_AWAITING_EEPROM_AVAILABLE);
-      } else {
-          // remain in this state
-      }
-      sched_reschedule_now();
-  } break;
-
-  case SENSOR_TASK_STATE_AWAITING_EEPROM_AVAILABLE: {
-      if (eeprom_task_is_idle()) {
-          // eepprom is available -- initiate a write
-          set_state(SENSOR_TASK_STATE_START_WRITING_EEPROM);
-      } else {
-          // remain in this state
-      }
-      sched_reschedule_now();
-  } break;
-
-  case SENSOR_TASK_STATE_START_WRITING_EEPROM: {
-      // initiate eeprom write here.
-      set_state(SENSOR_TASK_STATE_AWAIT_PRINTER_AVAIABLE);
-      sched_reschedule_now();
-  } break;
-
-  case SENSOR_TASK_STATE_AWAIT_PRINTER_AVAIABLE: {
-      if (printer_task_is_idle()) {
-          // printer is available -- initiate a write
-          set_state(SENSOR_TASK_STATE_START_PRINTING);
-      } else {
-          // printer is busy -- remain in this state
-      }
-      sched_reschedule_now();
-  } break;
-
-  case SENSOR_TASK_STATE_START_PRINTING: {
-      uint8_t buf[25];
-      sprintf(buf, "\nTemperature = %d F", sensor_task_get_temperature());
-      printer_task_print(buf, strlen(buf));
-      set_state(SENSOR_TASK_STATE_IDLE);
-      // prepare to wake up 1 second after previous wakeup
-      self->woke_at = mu_time_offset(self->woke_at, mu_time_ms_to_rel(1000));
-      mu_reschedule_at(self->woke_at);
-  } break;
-
-  case SENSOR_TASK_STATE_IDLE: {
-      set_state(SENSOR_TASK_STATE_START_READING_TEMPERATURE);
-      sched_reschedule_now();
+  case SENSOR_TASK_STATE_AWAIT_PRINTING_COMPLETE: {
+    // Arrive here when printing task completes.
+    // Repeat task 1 second after previous wakeup
+    LED_Toggle();
+    set_state(SENSOR_TASK_STATE_AWAIT_PRINTER_AVAILABLE);
+    mu_sched_at(sensor_task(), self->next_wake_at);
+    self->next_wake_at =
+        mu_time_offset(self->next_wake_at, mu_time_ms_to_rel(1000));
   } break;
 
   case SENSOR_TASK_STATE_ERROR: {
-
+    // placeholder...
   } break;
-  }
+
+  } // end switch()
 }

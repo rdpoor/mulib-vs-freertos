@@ -126,8 +126,9 @@ void mu_sched_reset(void) {
   } while (pop_next_event() != NULL);
 }
 
-mu_sched_err_t mu_sched_step(mu_time_abs_t now) {
+mu_sched_err_t mu_sched_step(void) {
   mu_event_t *next_event;
+  mu_time_abs_t now = mu_sched_get_current_time();
 
   process_irq_events();
   next_event = mu_sched_peek_next_event();
@@ -143,6 +144,14 @@ mu_sched_err_t mu_sched_step(mu_time_abs_t now) {
     asm("nop");
   }
   return MU_SCHED_ERR_NONE;
+}
+
+mu_clock_fn mu_sched_get_clock_source(void) {
+  return s_sched.clock_fn;
+}
+
+void mu_sched_set_clock_source(mu_clock_fn clock_fn) {
+  s_sched.clock_fn = clock_fn;
 }
 
 mu_task_t *mu_sched_get_idle_task(void) {
@@ -218,16 +227,9 @@ mu_sched_err_t mu_sched_in(mu_task_t *task, mu_time_rel_t in) {
   return sched_aux(task, at);
 }
 
-mu_sched_err_t mu_sched_reschedule_now(void) {
-  return mu_sched_now(mu_sched_get_current_task());
-}
-
-mu_sched_err_t mu_sched_reschedule_in(mu_time_rel_t in) {
-  return mu_sched_in(mu_sched_get_current_task(), in);
-}
-
-mu_sched_err_t mu_sched_isr_task_now(mu_task_t *task) {
-  if (mu_task_get_link(task)) {
+mu_sched_err_t mu_sched_from_isr(mu_task_t *task) {
+  if (mu_task_get_event(task)) {
+    // task is part of another event -- it may only participate in one.
     return MU_SCHED_ERR_ALREADY_SCHEDULED;
   }
   if (mu_spsc_put(&s_sched.irq_spsc, task) == MU_SPSC_ERR_FULL) {
@@ -349,8 +351,6 @@ static mu_event_t *find_or_create_event(mu_time_abs_t at) {
   // Before creating a new event, make sure there's room.
   if (s_sched.event_idx == MU_SCHED_MAX_EVENTS - 1) {
     return NULL;
-  } else {
-    s_sched.event_idx += 1;
   }
 
   // Here, i is the index at which we need to create a new event.  Start by
@@ -367,6 +367,8 @@ static mu_event_t *find_or_create_event(mu_time_abs_t at) {
   candidate_event = &s_sched.events[i];
   mu_event_init(candidate_event);
   mu_event_set_time(candidate_event, at);
+
+  s_sched.event_idx += 1;
 
   return candidate_event;
 }

@@ -97,60 +97,6 @@ children:
         attributes: {id: enabled}
         children:
         - {type: Value, value: 'true'}
-  - type: File
-    attributes: {id: DMA_DEF}
-    children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: enabled}
-        children:
-        - {type: Value, value: 'false'}
-  - type: File
-    attributes: {id: DMA_HEADER}
-    children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: enabled}
-        children:
-        - {type: Value, value: 'false'}
-  - type: File
-    attributes: {id: DMA_MAPPING}
-    children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: enabled}
-        children:
-        - {type: Value, value: 'false'}
-  - type: File
-    attributes: {id: DMA_SOURCE}
-    children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: enabled}
-        children:
-        - {type: Value, value: 'false'}
-  - type: File
-    attributes: {id: DRIVER_COMMON}
-    children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: enabled}
-        children:
-        - {type: Value, value: 'false'}
-  - type: File
-    attributes: {id: DRIVER_ROOT}
-    children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: enabled}
-        children:
-        - {type: Value, value: 'false'}
   - type: Boolean
     attributes: {id: ENABLE_APP_FILE}
     children:
@@ -161,12 +107,6 @@ children:
   - type: Boolean
     attributes: {id: ENABLE_DRV_COMMON}
     children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: readOnly}
-        children:
-        - {type: Value, value: 'false'}
     - type: Values
       children:
       - type: Dynamic
@@ -178,6 +118,8 @@ children:
       children:
       - type: Dynamic
         attributes: {id: HarmonyCore, value: 'true'}
+      - type: User
+        attributes: {value: 'false'}
   - type: Boolean
     attributes: {id: ENABLE_SYS_CACHE}
     children:
@@ -188,12 +130,6 @@ children:
   - type: Boolean
     attributes: {id: ENABLE_SYS_COMMON}
     children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: readOnly}
-        children:
-        - {type: Value, value: 'false'}
     - type: Values
       children:
       - type: Dynamic
@@ -201,12 +137,6 @@ children:
   - type: Boolean
     attributes: {id: ENABLE_SYS_DMA}
     children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: readOnly}
-        children:
-        - {type: Value, value: 'false'}
     - type: Values
       children:
       - type: Dynamic
@@ -317,7 +247,7 @@ children:
       - type: Boolean
         attributes: {id: enabled}
         children:
-        - {type: Value, value: 'true'}
+        - {type: Value, value: 'false'}
   - type: File
     attributes: {id: OSAL_H}
     children:
@@ -326,7 +256,7 @@ children:
       - type: Boolean
         attributes: {id: enabled}
         children:
-        - {type: Value, value: 'true'}
+        - {type: Value, value: 'false'}
   - type: File
     attributes: {id: OSAL_IMPL_BASIC_H}
     children:
@@ -335,7 +265,7 @@ children:
       - type: Boolean
         attributes: {id: enabled}
         children:
-        - {type: Value, value: 'true'}
+        - {type: Value, value: 'false'}
   - type: File
     attributes: {id: OSAL_SYSDEF_H}
     children:
@@ -344,7 +274,7 @@ children:
       - type: Boolean
         attributes: {id: enabled}
         children:
-        - {type: Value, value: 'true'}
+        - {type: Value, value: 'false'}
   - type: Combo
     attributes: {id: SELECT_RTOS}
     children:

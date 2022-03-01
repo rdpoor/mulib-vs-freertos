@@ -124,7 +124,21 @@ void mu_sched_reset(void);
  * @brief Process the next runnable task or -- if none are runnable -- the idle
  * task.
  */
-mu_sched_err_t mu_sched_step(mu_time_abs_t now);
+mu_sched_err_t mu_sched_step(void);
+
+/**
+ * @brief Return the current clock souce.
+ */
+mu_clock_fn mu_sched_get_clock_source(void);
+
+/**
+ * @brief Set the clock source for the scheduler.
+ *
+ * This function is provided primarily for unit testing.
+ *
+ * @param clock_fn A function that returns the current time.
+ */
+void mu_sched_set_clock_source(mu_clock_fn clock_fn);
 
 /**
  * @brief Return the idle task.
@@ -199,29 +213,6 @@ mu_sched_err_t mu_sched_at(mu_task_t *task, mu_time_abs_t at);
 mu_sched_err_t mu_sched_in(mu_task_t *task, mu_time_rel_t in);
 
 /**
- * @brief Reschedule the current task to run as soon as possible.
- *
- * Note: If there are other runnable tasks, the task will be scheduled after
- * they have run: they get a chance to run first.
- *
- * @return MU_SCHED_ERR_NOT_FOUND if there is no current task, MU_SCHED_ERR_NONE
- * otherwise.
- */
-mu_sched_err_t mu_sched_reschedule_now(void);
-
-/**
- * @brief Reschedule the current task after the given interval.
- *
- * Note that to avoid drift, this increments the task's time rather than
- * the current time.
- *
- * @param in The interval after which to run the task.
- * @return MU_SCHED_ERR_NOT_FOUND if there is no current task, MU_SCHED_ERR_NONE
- * otherwise.
- */
-mu_sched_err_t mu_sched_reschedule_in(mu_time_rel_t in);
-
-/**
  * @brief Schedule a task from interrupt level.
  *
  * Note: At the next call to mu_sched_step(), if the task is currently in the
@@ -231,7 +222,7 @@ mu_sched_err_t mu_sched_reschedule_in(mu_time_rel_t in);
  * @return MU_SCHED_ERR_NONE on no error, MU_SCHED_ERR_FULL if the interrupt
  *         queue is full.
  */
-mu_sched_err_t mu_sched_isr_task_now(mu_task_t *task);
+mu_sched_err_t mu_sched_from_isr(mu_task_t *task);
 
 /**
  * @brief Return the status of a task.

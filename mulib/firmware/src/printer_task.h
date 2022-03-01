@@ -23,18 +23,21 @@
  */
 
 /**
- * @file sensor_task.h
+ * @file printer_task.h
  *
- * @brief Support for the sensor task
+ * @brief Support for the printer task
  */
 
-#ifndef _SENSOR_TASK_H_
-#define _SENSOR_TASK_H_
+#ifndef _PRINTER_TASK_H_
+#define _PRINTER_TASK_H_
 
 // ****************************************************************************=
 // Includes
 
 #include "mu_task.h"
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 // ****************************************************************************=
 // C++ Compatibility
@@ -47,18 +50,45 @@ extern "C" {
 // Public types and definitions
 
 typedef enum {
-    SENSOR_TASK_ERR_NONE,
-} sensor_task_err_t;
+  PRINTER_TASK_ERR_NONE,
+  PRINTER_TASK_ERR_BAD_PARAM,
+  PRINTER_TASK_ERR_BUSY
+} printer_task_err_t;
 
 // ****************************************************************************=
 // Public declarations
 
-void sensor_task_init(void);
+/**
+ * @brief Initialize the printer module.  Called once at initialization.
+ */
+void printer_task_init(void);
 
-mu_task_t *sensor_task(void);
+/**
+ * @brief Return a pointer to the printer task.
+ */
+mu_task_t *printer_task(void);
+
+/**
+ * @brief Return true if the printer is available for printing.
+ */
+bool printer_task_is_idle(void);
+
+/**
+ * @brief Request to start asynchronous printing.
+ *
+ * Note: it is an error to call this function unless printer_task_is_idle()
+ * returns true.
+ *
+ * @param buf The data to be printed.
+ * @param n_bytes The number of bytes to be printed.
+ * @param on_completion The task to call upon completion.  May be NULL.
+ * @return PRINTER_TASK_ERR_NONE on success.
+ */
+printer_task_err_t printer_task_print(uint8_t *buffer, size_t n_bytes,
+                                      mu_task_t *on_completion);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _SENSOR_TASK_H_ */
+#endif /* #ifndef _PRINTER_TASK_H_ */

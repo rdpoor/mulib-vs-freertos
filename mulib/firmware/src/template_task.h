@@ -28,15 +28,13 @@
  * @brief Support for the template task
  */
 
-#ifndef _template_TASK_H_
-#define _template_TASK_H_
+#ifndef _TEMPLATE_TASK_H_
+#define _TEMPLATE_TASK_H_
 
 // ****************************************************************************=
 // Includes
 
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
+#include "mu_task.h"
 
 // ****************************************************************************=
 // C++ Compatibility
@@ -49,7 +47,7 @@ extern "C" {
 // Public types and definitions
 
 typedef enum {
-    template_TASK_ERR_NONE,
+    TEMPLATE_TASK_ERR_NONE,
 } template_task_err_t;
 
 // ****************************************************************************=
@@ -57,8 +55,13 @@ typedef enum {
 
 void template_task_init(void);
 
+/**
+ * @brief Return a pointer to the template_task.
+ */
+mu_task_t *template_task(void);
+
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _template_TASK_H_ */
+#endif /* #ifndef _TEMPLATE_TASK_H_ */

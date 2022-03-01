@@ -1411,5 +1411,12 @@ children:
       children:
       - type: Dynamic
         attributes: {id: core, value: '32768'}
+  - type: Boolean
+    attributes: {id: XOSC32K_RUNSTDBY}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: 'true'}
 - type: ElementPosition
   attributes: {x: '55', y: '187', id: core}

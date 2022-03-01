@@ -133,8 +133,11 @@ void mu_event_call(mu_event_t *event, void *arg, bool retain) {
 // *****************************************************************************
 // Local (private, static) code
 
-static void *call_task(mu_list_t *list, void *arg) {
-  mu_task_t *task = MU_LIST_CONTAINER(list, mu_task_t, _link);
-  mu_task_call(task, arg);
+static void *call_task(mu_list_t *list_ref, void *arg) {
+  mu_list_t *list = list_ref->next;
+  if (list != NULL) {
+      mu_task_t *task = MU_LIST_CONTAINER(list, mu_task_t, _link);
+      mu_task_call(task, arg);
+  }
   return NULL;
 }
