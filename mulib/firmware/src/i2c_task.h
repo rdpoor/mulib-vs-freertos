@@ -52,6 +52,8 @@ extern "C" {
 
 typedef enum {
     I2C_TASK_ERR_NONE,
+    I2C_TASK_ERR_BUSY,
+    I2C_TASK_ERR_BAD_PARAM,    
 } i2c_task_err_t;
 
 // ****************************************************************************=

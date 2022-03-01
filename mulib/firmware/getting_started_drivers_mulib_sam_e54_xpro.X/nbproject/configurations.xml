@@ -247,6 +247,7 @@
       <itemPath>../src/eeprom_task.h</itemPath>
       <itemPath>../src/printer_task.h</itemPath>
       <itemPath>../src/sensor_task.h</itemPath>
+      <itemPath>../src/i2c_task.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -386,6 +387,7 @@
       <itemPath>../src/eeprom_task.c</itemPath>
       <itemPath>../src/printer_task.c</itemPath>
       <itemPath>../src/sensor_task.c</itemPath>
+      <itemPath>../src/i2c_task.c</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
@@ -624,6 +626,8 @@
         <property key="memories.programmemory.ranges" value="0-fffff"/>
         <property key="memories.rww" value="true"/>
         <property key="poweroptions.powerenable" value="false"/>
+        <property key="programmerToGoFilePath"
+                  value="/Users/r/Projects/mulib-vs-freertos/mulib/firmware/getting_started_drivers_mulib_sam_e54_xpro.X/debug/sam_e54_xpro/getting_started_drivers_mulib_sam_e54_xpro_ptg"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"

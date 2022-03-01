@@ -28,6 +28,7 @@
 #include "sensor_task.h"
 
 #include "definitions.h"
+#include "i2c_task.h"
 #include "mu_rtc.h"
 #include "mu_sched.h"
 #include "mu_task.h"
@@ -44,6 +45,8 @@
 
 #define SENSOR_STATES(M)                                                       \
   M(SENSOR_TASK_STATE_INIT)                                                    \
+  M(SENSOR_TASK_AWAIT_I2C_AVAILABLE)                                           \
+  M(SENSOR_TASK_START_TEMPERATURE_READ)                                        \
   M(SENSOR_TASK_STATE_AWAIT_PRINTER_AVAILABLE)                                 \
   M(SENSOR_TASK_STATE_AWAIT_PRINTING_COMPLETE)                                 \
   M(SENSOR_TASK_STATE_ERROR)
@@ -53,6 +56,7 @@ typedef enum { SENSOR_STATES(EXPAND_TASK_STATES) } sensor_task_state_t;
 
 typedef struct {
   sensor_task_state_t state;
+  int8_t fahrenheit;
   mu_time_abs_t next_wake_at;
 } sensor_task_ctx_t;
 
@@ -111,15 +115,38 @@ static void sensor_task_fn(void *ctx, void *arg) {
   switch (self->state) {
   case SENSOR_TASK_STATE_INIT: {
     self->next_wake_at = mu_time_offset(mu_rtc_now(), mu_time_ms_to_rel(1000));
-    set_state(SENSOR_TASK_STATE_AWAIT_PRINTER_AVAILABLE);
+    set_state(SENSOR_TASK_AWAIT_I2C_AVAILABLE);
   } // break; vvv-- fall through --vvv
 
+  case SENSOR_TASK_AWAIT_I2C_AVAILABLE: {
+    if (!i2c_task_is_idle()) {
+      // remain in this state until i2c is available.
+    } else {
+      set_state(SENSOR_TASK_START_TEMPERATURE_READ);
+      mu_sched_now(sensor_task());
+    }
+  } break;
+
+  case SENSOR_TASK_START_TEMPERATURE_READ: {
+    // initiate a read operation on temperature I2C.
+    i2c_task_err_t err =
+        i2c_task_read_temperature(&s_sensor_task_ctx.fahrenheit, sensor_task());
+    if (err != I2C_TASK_ERR_NONE) {
+      set_state(SENSOR_TASK_STATE_ERROR);
+    } else {
+      set_state(SENSOR_TASK_STATE_AWAIT_PRINTER_AVAILABLE);
+      // wait for i2c_task_read_temperature() callback to resume task
+    }
+  } break;
+
   case SENSOR_TASK_STATE_AWAIT_PRINTER_AVAILABLE: {
+    // Arrive here with temperature in s_sensor_task_ctx.fahrenheit
     if (printer_task_is_idle()) {
       // Printer is available -- initiate a print request
-      static char buf[20];
+      static char buf[30];
 
-      sprintf(buf, "\nRTC=0x%lx", mu_rtc_now());
+      sprintf(buf, "\n%08lx Temperature = %d", mu_rtc_now(),
+              s_sensor_task_ctx.fahrenheit);
       set_state(SENSOR_TASK_STATE_AWAIT_PRINTING_COMPLETE);
       printer_task_print((uint8_t *)buf, strlen(buf), sensor_task());
     } else {
@@ -132,7 +159,7 @@ static void sensor_task_fn(void *ctx, void *arg) {
     // Arrive here when printing task completes.
     // Repeat task 1 second after previous wakeup
     LED_Toggle();
-    set_state(SENSOR_TASK_STATE_AWAIT_PRINTER_AVAILABLE);
+    set_state(SENSOR_TASK_AWAIT_I2C_AVAILABLE);
     mu_sched_at(sensor_task(), self->next_wake_at);
     self->next_wake_at =
         mu_time_offset(self->next_wake_at, mu_time_ms_to_rel(1000));
