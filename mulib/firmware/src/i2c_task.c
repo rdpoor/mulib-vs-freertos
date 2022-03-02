@@ -112,6 +112,7 @@ void i2c_task_init(void) {
   SERCOM3_I2C_CallbackRegister(i2c_cb, (uintptr_t)&s_i2c_task_ctx);
   mu_task_init(&s_i2c_task, i2c_task_fn, &s_i2c_task_ctx);
   s_i2c_task_ctx.state = I2C_TASK_STATE_IDLE;
+  s_i2c_task_ctx.write_idx = 0;
   s_i2c_task_ctx.on_completion = NULL;
 }
 
