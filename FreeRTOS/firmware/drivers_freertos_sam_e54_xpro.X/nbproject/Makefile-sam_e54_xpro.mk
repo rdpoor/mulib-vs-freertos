@@ -19,7 +19,7 @@ endif
 endif
 
 # Environment
-MKDIR=mkdir -p
+MKDIR=gnumkdir -p
 RM=rm -f 
 MV=mv 
 CP=cp 
@@ -88,15 +88,15 @@ LDLIBSOPTIONS=
 FIXDEPS=fixDeps
 
 # The following macros may be used in the pre and post step lines
-_/_=/
-ShExtension=.sh
+_/_=\\
+ShExtension=.bat
 Device=ATSAME54P20A
-ProjectDir=/Users/r/Projects/mulib-vs-freertos/FreeRTOS/firmware/drivers_freertos_sam_e54_xpro.X
+ProjectDir="C:\Users\r\Projects\mulib-vs-freertos\FreeRTOS\firmware\drivers_freertos_sam_e54_xpro.X"
 ProjectName=getting_started_drivers_freertos_sam_e54_xpro
 ConfName=sam_e54_xpro
-ImagePath=${DISTDIR}/drivers_freertos_sam_e54_xpro.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-ImageDir=${DISTDIR}
-ImageName=drivers_freertos_sam_e54_xpro.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+ImagePath="${DISTDIR}\drivers_freertos_sam_e54_xpro.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}"
+ImageDir="${DISTDIR}"
+ImageName="drivers_freertos_sam_e54_xpro.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}"
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
 IsDebug="true"
 else
@@ -114,7 +114,7 @@ endif
 	@echo "--------------------------------------"
 
 MP_PROCESSOR_OPTION=ATSAME54P20A
-MP_LINKER_FILE_OPTION=,--script="../src/config/sam_e54_xpro/ATSAME54P20A.ld"
+MP_LINKER_FILE_OPTION=,--script="..\src\config\sam_e54_xpro\ATSAME54P20A.ld"
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: assemble
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
@@ -130,422 +130,422 @@ endif
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/_ext/1852710732/drv_i2c.o: ../src/config/sam_e54_xpro/driver/i2c/src/drv_i2c.c  .generated_files/flags/sam_e54_xpro/8b0e80d60bf4d575a23df8541d59798712c1d338 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/1852710732/drv_i2c.o: ../src/config/sam_e54_xpro/driver/i2c/src/drv_i2c.c  .generated_files/flags/sam_e54_xpro/4dca6f3014fc28a3be5f6915808dd11c91a92859 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/1852710732" 
 	@${RM} ${OBJECTDIR}/_ext/1852710732/drv_i2c.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1852710732/drv_i2c.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/1852710732/drv_i2c.o.d" -o ${OBJECTDIR}/_ext/1852710732/drv_i2c.o ../src/config/sam_e54_xpro/driver/i2c/src/drv_i2c.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/797555617/drv_usart.o: ../src/config/sam_e54_xpro/driver/usart/src/drv_usart.c  .generated_files/flags/sam_e54_xpro/f75144acf0abb78be2f92c9b2715d3d243d78750 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/797555617/drv_usart.o: ../src/config/sam_e54_xpro/driver/usart/src/drv_usart.c  .generated_files/flags/sam_e54_xpro/8f2871c9e22199c4f7cbfc3c1a4c9906bf0f5ba0 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/797555617" 
 	@${RM} ${OBJECTDIR}/_ext/797555617/drv_usart.o.d 
 	@${RM} ${OBJECTDIR}/_ext/797555617/drv_usart.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/797555617/drv_usart.o.d" -o ${OBJECTDIR}/_ext/797555617/drv_usart.o ../src/config/sam_e54_xpro/driver/usart/src/drv_usart.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/293059771/osal_freertos.o: ../src/config/sam_e54_xpro/osal/osal_freertos.c  .generated_files/flags/sam_e54_xpro/906485c1f5880100e5a2dfa07bf306f1e7d3514d .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/293059771/osal_freertos.o: ../src/config/sam_e54_xpro/osal/osal_freertos.c  .generated_files/flags/sam_e54_xpro/ab15e806da7180cac31f3c8b1f55b1efe1221bdc .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/293059771" 
 	@${RM} ${OBJECTDIR}/_ext/293059771/osal_freertos.o.d 
 	@${RM} ${OBJECTDIR}/_ext/293059771/osal_freertos.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/293059771/osal_freertos.o.d" -o ${OBJECTDIR}/_ext/293059771/osal_freertos.o ../src/config/sam_e54_xpro/osal/osal_freertos.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/2056749927/plib_clock.o: ../src/config/sam_e54_xpro/peripheral/clock/plib_clock.c  .generated_files/flags/sam_e54_xpro/d8325cc2f8db76796b9b6139d180f598f34e4907 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/2056749927/plib_clock.o: ../src/config/sam_e54_xpro/peripheral/clock/plib_clock.c  .generated_files/flags/sam_e54_xpro/917ba05b693c016b2d26c6393973355e4c074b46 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/2056749927" 
 	@${RM} ${OBJECTDIR}/_ext/2056749927/plib_clock.o.d 
 	@${RM} ${OBJECTDIR}/_ext/2056749927/plib_clock.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/2056749927/plib_clock.o.d" -o ${OBJECTDIR}/_ext/2056749927/plib_clock.o ../src/config/sam_e54_xpro/peripheral/clock/plib_clock.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/349294639/plib_cmcc.o: ../src/config/sam_e54_xpro/peripheral/cmcc/plib_cmcc.c  .generated_files/flags/sam_e54_xpro/40f5a0aa20d8d4da059cca2c47abb9930c52b0f4 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/349294639/plib_cmcc.o: ../src/config/sam_e54_xpro/peripheral/cmcc/plib_cmcc.c  .generated_files/flags/sam_e54_xpro/2c02367aa7d247aa629ed24252918d15c9d4fe .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/349294639" 
 	@${RM} ${OBJECTDIR}/_ext/349294639/plib_cmcc.o.d 
 	@${RM} ${OBJECTDIR}/_ext/349294639/plib_cmcc.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/349294639/plib_cmcc.o.d" -o ${OBJECTDIR}/_ext/349294639/plib_cmcc.o ../src/config/sam_e54_xpro/peripheral/cmcc/plib_cmcc.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/2058899413/plib_evsys.o: ../src/config/sam_e54_xpro/peripheral/evsys/plib_evsys.c  .generated_files/flags/sam_e54_xpro/1f5358c840b19984ae9812ed4f64be3c5d95e2d7 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/2058899413/plib_evsys.o: ../src/config/sam_e54_xpro/peripheral/evsys/plib_evsys.c  .generated_files/flags/sam_e54_xpro/3880802e1330329070016b24ee4ee1f9dc97d1b .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/2058899413" 
 	@${RM} ${OBJECTDIR}/_ext/2058899413/plib_evsys.o.d 
 	@${RM} ${OBJECTDIR}/_ext/2058899413/plib_evsys.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/2058899413/plib_evsys.o.d" -o ${OBJECTDIR}/_ext/2058899413/plib_evsys.o ../src/config/sam_e54_xpro/peripheral/evsys/plib_evsys.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/348958103/plib_nvic.o: ../src/config/sam_e54_xpro/peripheral/nvic/plib_nvic.c  .generated_files/flags/sam_e54_xpro/4cd69f4deee2e4efc44394ed3e592934c7bf3204 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/348958103/plib_nvic.o: ../src/config/sam_e54_xpro/peripheral/nvic/plib_nvic.c  .generated_files/flags/sam_e54_xpro/a1f4962ccb0f2ee41ab9208a59611636e9a10d96 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/348958103" 
 	@${RM} ${OBJECTDIR}/_ext/348958103/plib_nvic.o.d 
 	@${RM} ${OBJECTDIR}/_ext/348958103/plib_nvic.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/348958103/plib_nvic.o.d" -o ${OBJECTDIR}/_ext/348958103/plib_nvic.o ../src/config/sam_e54_xpro/peripheral/nvic/plib_nvic.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/1986180951/plib_nvmctrl.o: ../src/config/sam_e54_xpro/peripheral/nvmctrl/plib_nvmctrl.c  .generated_files/flags/sam_e54_xpro/343ef0643a76a06e456517929c9bb55fd5a8a09e .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/1986180951/plib_nvmctrl.o: ../src/config/sam_e54_xpro/peripheral/nvmctrl/plib_nvmctrl.c  .generated_files/flags/sam_e54_xpro/656656e17876bf4ed10f9f34b3526c913b00535f .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/1986180951" 
 	@${RM} ${OBJECTDIR}/_ext/1986180951/plib_nvmctrl.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1986180951/plib_nvmctrl.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/1986180951/plib_nvmctrl.o.d" -o ${OBJECTDIR}/_ext/1986180951/plib_nvmctrl.o ../src/config/sam_e54_xpro/peripheral/nvmctrl/plib_nvmctrl.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/348904952/plib_port.o: ../src/config/sam_e54_xpro/peripheral/port/plib_port.c  .generated_files/flags/sam_e54_xpro/d18ad49f41bc045774e6c61e0318c6cae5d23b96 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/348904952/plib_port.o: ../src/config/sam_e54_xpro/peripheral/port/plib_port.c  .generated_files/flags/sam_e54_xpro/e043f5d214e42a3ac62ca995acde186329291335 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/348904952" 
 	@${RM} ${OBJECTDIR}/_ext/348904952/plib_port.o.d 
 	@${RM} ${OBJECTDIR}/_ext/348904952/plib_port.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/348904952/plib_port.o.d" -o ${OBJECTDIR}/_ext/348904952/plib_port.o ../src/config/sam_e54_xpro/peripheral/port/plib_port.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/1267767598/plib_sercom3_i2c_master.o: ../src/config/sam_e54_xpro/peripheral/sercom/i2c_master/plib_sercom3_i2c_master.c  .generated_files/flags/sam_e54_xpro/4e349dd560a4e971b67d4716dd362dfeadaae592 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/1267767598/plib_sercom3_i2c_master.o: ../src/config/sam_e54_xpro/peripheral/sercom/i2c_master/plib_sercom3_i2c_master.c  .generated_files/flags/sam_e54_xpro/c4a480f8a93fc094c903357ee0bb14d23f9c6f09 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/1267767598" 
 	@${RM} ${OBJECTDIR}/_ext/1267767598/plib_sercom3_i2c_master.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1267767598/plib_sercom3_i2c_master.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/1267767598/plib_sercom3_i2c_master.o.d" -o ${OBJECTDIR}/_ext/1267767598/plib_sercom3_i2c_master.o ../src/config/sam_e54_xpro/peripheral/sercom/i2c_master/plib_sercom3_i2c_master.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/2060180706/plib_sercom2_usart.o: ../src/config/sam_e54_xpro/peripheral/sercom/usart/plib_sercom2_usart.c  .generated_files/flags/sam_e54_xpro/4e48b6e3a39f3e5b43917dcf3706115055f51238 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/2060180706/plib_sercom2_usart.o: ../src/config/sam_e54_xpro/peripheral/sercom/usart/plib_sercom2_usart.c  .generated_files/flags/sam_e54_xpro/330dff9ae983873cb29ecf78a214508350a48cc5 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/2060180706" 
 	@${RM} ${OBJECTDIR}/_ext/2060180706/plib_sercom2_usart.o.d 
 	@${RM} ${OBJECTDIR}/_ext/2060180706/plib_sercom2_usart.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/2060180706/plib_sercom2_usart.o.d" -o ${OBJECTDIR}/_ext/2060180706/plib_sercom2_usart.o ../src/config/sam_e54_xpro/peripheral/sercom/usart/plib_sercom2_usart.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/498645085/xc32_monitor.o: ../src/config/sam_e54_xpro/stdio/xc32_monitor.c  .generated_files/flags/sam_e54_xpro/d626fa938fb425e63638bbe82b62e641eedf06bb .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/498645085/xc32_monitor.o: ../src/config/sam_e54_xpro/stdio/xc32_monitor.c  .generated_files/flags/sam_e54_xpro/c22cf10a923e648ab5cecb81761999d08d8a5fcf .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/498645085" 
 	@${RM} ${OBJECTDIR}/_ext/498645085/xc32_monitor.o.d 
 	@${RM} ${OBJECTDIR}/_ext/498645085/xc32_monitor.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/498645085/xc32_monitor.o.d" -o ${OBJECTDIR}/_ext/498645085/xc32_monitor.o ../src/config/sam_e54_xpro/stdio/xc32_monitor.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/2098947918/sys_cache.o: ../src/config/sam_e54_xpro/system/cache/sys_cache.c  .generated_files/flags/sam_e54_xpro/92ff47b3d21cf00099df7c17701ecf1e34efd0eb .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/2098947918/sys_cache.o: ../src/config/sam_e54_xpro/system/cache/sys_cache.c  .generated_files/flags/sam_e54_xpro/36790553db81bff442052cfa8afb540330f94 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/2098947918" 
 	@${RM} ${OBJECTDIR}/_ext/2098947918/sys_cache.o.d 
 	@${RM} ${OBJECTDIR}/_ext/2098947918/sys_cache.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/2098947918/sys_cache.o.d" -o ${OBJECTDIR}/_ext/2098947918/sys_cache.o ../src/config/sam_e54_xpro/system/cache/sys_cache.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/2044739644/sys_dma.o: ../src/config/sam_e54_xpro/system/dma/sys_dma.c  .generated_files/flags/sam_e54_xpro/fca134341fec41a6e5573b89757fac8e071297c0 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/2044739644/sys_dma.o: ../src/config/sam_e54_xpro/system/dma/sys_dma.c  .generated_files/flags/sam_e54_xpro/4c6cc0c6b197625fe9e695c25f30f65ce1471966 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/2044739644" 
 	@${RM} ${OBJECTDIR}/_ext/2044739644/sys_dma.o.d 
 	@${RM} ${OBJECTDIR}/_ext/2044739644/sys_dma.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/2044739644/sys_dma.o.d" -o ${OBJECTDIR}/_ext/2044739644/sys_dma.o ../src/config/sam_e54_xpro/system/dma/sys_dma.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/129427312/sys_int.o: ../src/config/sam_e54_xpro/system/int/src/sys_int.c  .generated_files/flags/sam_e54_xpro/210c2630c81bd9c013cd0605900e8c09dbe804ba .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/129427312/sys_int.o: ../src/config/sam_e54_xpro/system/int/src/sys_int.c  .generated_files/flags/sam_e54_xpro/576beebb2589b16f9449318bf4cf28a6395dbccf .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/129427312" 
 	@${RM} ${OBJECTDIR}/_ext/129427312/sys_int.o.d 
 	@${RM} ${OBJECTDIR}/_ext/129427312/sys_int.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/129427312/sys_int.o.d" -o ${OBJECTDIR}/_ext/129427312/sys_int.o ../src/config/sam_e54_xpro/system/int/src/sys_int.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/68098787/initialization.o: ../src/config/sam_e54_xpro/initialization.c  .generated_files/flags/sam_e54_xpro/255852f46b36b3110bb2add3329b91be780848b4 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/68098787/initialization.o: ../src/config/sam_e54_xpro/initialization.c  .generated_files/flags/sam_e54_xpro/fbe1f062c127ee6b7acd0631ef1b45753562c9fa .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/68098787" 
 	@${RM} ${OBJECTDIR}/_ext/68098787/initialization.o.d 
 	@${RM} ${OBJECTDIR}/_ext/68098787/initialization.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/68098787/initialization.o.d" -o ${OBJECTDIR}/_ext/68098787/initialization.o ../src/config/sam_e54_xpro/initialization.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/68098787/interrupts.o: ../src/config/sam_e54_xpro/interrupts.c  .generated_files/flags/sam_e54_xpro/24f2814585d991f9642717a0f667cf31ddd2d1c4 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/68098787/interrupts.o: ../src/config/sam_e54_xpro/interrupts.c  .generated_files/flags/sam_e54_xpro/863a22ab57be9439c53040715f7d8274ba3a76bb .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/68098787" 
 	@${RM} ${OBJECTDIR}/_ext/68098787/interrupts.o.d 
 	@${RM} ${OBJECTDIR}/_ext/68098787/interrupts.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/68098787/interrupts.o.d" -o ${OBJECTDIR}/_ext/68098787/interrupts.o ../src/config/sam_e54_xpro/interrupts.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/68098787/exceptions.o: ../src/config/sam_e54_xpro/exceptions.c  .generated_files/flags/sam_e54_xpro/98fcc9a873866f87113820019759142ad5cff293 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/68098787/exceptions.o: ../src/config/sam_e54_xpro/exceptions.c  .generated_files/flags/sam_e54_xpro/2031cc30e862957084597212a5a8e4366f3f3b07 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/68098787" 
 	@${RM} ${OBJECTDIR}/_ext/68098787/exceptions.o.d 
 	@${RM} ${OBJECTDIR}/_ext/68098787/exceptions.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/68098787/exceptions.o.d" -o ${OBJECTDIR}/_ext/68098787/exceptions.o ../src/config/sam_e54_xpro/exceptions.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/68098787/startup_xc32.o: ../src/config/sam_e54_xpro/startup_xc32.c  .generated_files/flags/sam_e54_xpro/59bb15e429ab83e4c8f635517b8a6874f3a3c7a5 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/68098787/startup_xc32.o: ../src/config/sam_e54_xpro/startup_xc32.c  .generated_files/flags/sam_e54_xpro/63eca11506536e58136e8d773869bf2da20c818e .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/68098787" 
 	@${RM} ${OBJECTDIR}/_ext/68098787/startup_xc32.o.d 
 	@${RM} ${OBJECTDIR}/_ext/68098787/startup_xc32.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/68098787/startup_xc32.o.d" -o ${OBJECTDIR}/_ext/68098787/startup_xc32.o ../src/config/sam_e54_xpro/startup_xc32.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/68098787/libc_syscalls.o: ../src/config/sam_e54_xpro/libc_syscalls.c  .generated_files/flags/sam_e54_xpro/f0da20aa158b4a36f2267d0999809a88c3494b82 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/68098787/libc_syscalls.o: ../src/config/sam_e54_xpro/libc_syscalls.c  .generated_files/flags/sam_e54_xpro/33c3c02a5923c3d0a3b6201586f99737b5ee8660 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/68098787" 
 	@${RM} ${OBJECTDIR}/_ext/68098787/libc_syscalls.o.d 
 	@${RM} ${OBJECTDIR}/_ext/68098787/libc_syscalls.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/68098787/libc_syscalls.o.d" -o ${OBJECTDIR}/_ext/68098787/libc_syscalls.o ../src/config/sam_e54_xpro/libc_syscalls.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/68098787/freertos_hooks.o: ../src/config/sam_e54_xpro/freertos_hooks.c  .generated_files/flags/sam_e54_xpro/7363ff9b72bc91c67fd31c0223a27061808f8325 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/68098787/freertos_hooks.o: ../src/config/sam_e54_xpro/freertos_hooks.c  .generated_files/flags/sam_e54_xpro/99a90009d0d05af1e0528cf1498ab5230632a0d9 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/68098787" 
 	@${RM} ${OBJECTDIR}/_ext/68098787/freertos_hooks.o.d 
 	@${RM} ${OBJECTDIR}/_ext/68098787/freertos_hooks.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/68098787/freertos_hooks.o.d" -o ${OBJECTDIR}/_ext/68098787/freertos_hooks.o ../src/config/sam_e54_xpro/freertos_hooks.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/68098787/tasks.o: ../src/config/sam_e54_xpro/tasks.c  .generated_files/flags/sam_e54_xpro/2586ad2e56087207fc11010378f02b2a024cc1a7 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/68098787/tasks.o: ../src/config/sam_e54_xpro/tasks.c  .generated_files/flags/sam_e54_xpro/1e235a83f775642039f3b1de88956336e22fe65e .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/68098787" 
 	@${RM} ${OBJECTDIR}/_ext/68098787/tasks.o.d 
 	@${RM} ${OBJECTDIR}/_ext/68098787/tasks.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/68098787/tasks.o.d" -o ${OBJECTDIR}/_ext/68098787/tasks.o ../src/config/sam_e54_xpro/tasks.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/246609638/port.o: ../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F/port.c  .generated_files/flags/sam_e54_xpro/8bcd945464993ebf4831f3249f5e09e542897a2d .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/246609638/port.o: ../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F/port.c  .generated_files/flags/sam_e54_xpro/5f42c456bf37377ddc28984ee811d568423651fb .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/246609638" 
 	@${RM} ${OBJECTDIR}/_ext/246609638/port.o.d 
 	@${RM} ${OBJECTDIR}/_ext/246609638/port.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/246609638/port.o.d" -o ${OBJECTDIR}/_ext/246609638/port.o ../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F/port.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/1665200909/heap_1.o: ../src/third_party/rtos/FreeRTOS/Source/portable/MemMang/heap_1.c  .generated_files/flags/sam_e54_xpro/dfdf30d977bc872c601c74e274c352bfdc4269c4 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/1665200909/heap_1.o: ../src/third_party/rtos/FreeRTOS/Source/portable/MemMang/heap_1.c  .generated_files/flags/sam_e54_xpro/8ae862f6bd54f41a08ddca92d61fbbfac5811c22 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/1665200909" 
 	@${RM} ${OBJECTDIR}/_ext/1665200909/heap_1.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1665200909/heap_1.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/1665200909/heap_1.o.d" -o ${OBJECTDIR}/_ext/1665200909/heap_1.o ../src/third_party/rtos/FreeRTOS/Source/portable/MemMang/heap_1.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/404212886/croutine.o: ../src/third_party/rtos/FreeRTOS/Source/croutine.c  .generated_files/flags/sam_e54_xpro/6d892a78ff6f78843f6b9229c04d8a81962423a7 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/404212886/croutine.o: ../src/third_party/rtos/FreeRTOS/Source/croutine.c  .generated_files/flags/sam_e54_xpro/42ba66cb2de2e4da560251f82d8ea1e3fc3421ce .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/404212886" 
 	@${RM} ${OBJECTDIR}/_ext/404212886/croutine.o.d 
 	@${RM} ${OBJECTDIR}/_ext/404212886/croutine.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/404212886/croutine.o.d" -o ${OBJECTDIR}/_ext/404212886/croutine.o ../src/third_party/rtos/FreeRTOS/Source/croutine.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/404212886/list.o: ../src/third_party/rtos/FreeRTOS/Source/list.c  .generated_files/flags/sam_e54_xpro/a6471a135822d1dccda62b6a354dbe83a48233f0 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/404212886/list.o: ../src/third_party/rtos/FreeRTOS/Source/list.c  .generated_files/flags/sam_e54_xpro/a47901f7600c723c5f3184cb65b79fcb78c9dadc .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/404212886" 
 	@${RM} ${OBJECTDIR}/_ext/404212886/list.o.d 
 	@${RM} ${OBJECTDIR}/_ext/404212886/list.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/404212886/list.o.d" -o ${OBJECTDIR}/_ext/404212886/list.o ../src/third_party/rtos/FreeRTOS/Source/list.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/404212886/queue.o: ../src/third_party/rtos/FreeRTOS/Source/queue.c  .generated_files/flags/sam_e54_xpro/1b02a61a3de9023c59453e36ea53be0b366f24d5 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/404212886/queue.o: ../src/third_party/rtos/FreeRTOS/Source/queue.c  .generated_files/flags/sam_e54_xpro/29b5f555781707e7fb94b614fc58cb0dd7f5df47 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/404212886" 
 	@${RM} ${OBJECTDIR}/_ext/404212886/queue.o.d 
 	@${RM} ${OBJECTDIR}/_ext/404212886/queue.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/404212886/queue.o.d" -o ${OBJECTDIR}/_ext/404212886/queue.o ../src/third_party/rtos/FreeRTOS/Source/queue.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/404212886/FreeRTOS_tasks.o: ../src/third_party/rtos/FreeRTOS/Source/FreeRTOS_tasks.c  .generated_files/flags/sam_e54_xpro/b8ec65c1dde000dcc90ebd1dc0e592bebdee77b0 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/404212886/FreeRTOS_tasks.o: ../src/third_party/rtos/FreeRTOS/Source/FreeRTOS_tasks.c  .generated_files/flags/sam_e54_xpro/379a930e5cfc8e6b42517bf40b5c8259d68eeca0 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/404212886" 
 	@${RM} ${OBJECTDIR}/_ext/404212886/FreeRTOS_tasks.o.d 
 	@${RM} ${OBJECTDIR}/_ext/404212886/FreeRTOS_tasks.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/404212886/FreeRTOS_tasks.o.d" -o ${OBJECTDIR}/_ext/404212886/FreeRTOS_tasks.o ../src/third_party/rtos/FreeRTOS/Source/FreeRTOS_tasks.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/404212886/timers.o: ../src/third_party/rtos/FreeRTOS/Source/timers.c  .generated_files/flags/sam_e54_xpro/481e484183df9635f6616c35a2258f62f374558a .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/404212886/timers.o: ../src/third_party/rtos/FreeRTOS/Source/timers.c  .generated_files/flags/sam_e54_xpro/48c0942264bcbcc3f7aeffcf5bb4ccdd0d6f3a3a .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/404212886" 
 	@${RM} ${OBJECTDIR}/_ext/404212886/timers.o.d 
 	@${RM} ${OBJECTDIR}/_ext/404212886/timers.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/404212886/timers.o.d" -o ${OBJECTDIR}/_ext/404212886/timers.o ../src/third_party/rtos/FreeRTOS/Source/timers.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/404212886/event_groups.o: ../src/third_party/rtos/FreeRTOS/Source/event_groups.c  .generated_files/flags/sam_e54_xpro/6d47b99547751820b926d06b34fdde3302164b84 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/404212886/event_groups.o: ../src/third_party/rtos/FreeRTOS/Source/event_groups.c  .generated_files/flags/sam_e54_xpro/3304ac91e7fed86826447f0aeb9a55731e3ed2f4 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/404212886" 
 	@${RM} ${OBJECTDIR}/_ext/404212886/event_groups.o.d 
 	@${RM} ${OBJECTDIR}/_ext/404212886/event_groups.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/404212886/event_groups.o.d" -o ${OBJECTDIR}/_ext/404212886/event_groups.o ../src/third_party/rtos/FreeRTOS/Source/event_groups.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/404212886/stream_buffer.o: ../src/third_party/rtos/FreeRTOS/Source/stream_buffer.c  .generated_files/flags/sam_e54_xpro/4ad202d224566873fa89a5cce1b4d1f73a47cb42 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/404212886/stream_buffer.o: ../src/third_party/rtos/FreeRTOS/Source/stream_buffer.c  .generated_files/flags/sam_e54_xpro/a06a34d8204847c452491ce8c041d669bc3a283 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/404212886" 
 	@${RM} ${OBJECTDIR}/_ext/404212886/stream_buffer.o.d 
 	@${RM} ${OBJECTDIR}/_ext/404212886/stream_buffer.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/404212886/stream_buffer.o.d" -o ${OBJECTDIR}/_ext/404212886/stream_buffer.o ../src/third_party/rtos/FreeRTOS/Source/stream_buffer.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/1360937237/app_sensor_thread.o: ../src/app_sensor_thread.c  .generated_files/flags/sam_e54_xpro/4484e9a7cea6abdb2875bfac5fd83d78ea07982b .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/1360937237/app_sensor_thread.o: ../src/app_sensor_thread.c  .generated_files/flags/sam_e54_xpro/e97c5caa8491b4661f32b8c6c8bc343493cc28b4 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/1360937237" 
 	@${RM} ${OBJECTDIR}/_ext/1360937237/app_sensor_thread.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1360937237/app_sensor_thread.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/1360937237/app_sensor_thread.o.d" -o ${OBJECTDIR}/_ext/1360937237/app_sensor_thread.o ../src/app_sensor_thread.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/1360937237/app_eeprom_thread.o: ../src/app_eeprom_thread.c  .generated_files/flags/sam_e54_xpro/176a91c7cb8b4fb30d5b11330adbf5ec413a3080 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/1360937237/app_eeprom_thread.o: ../src/app_eeprom_thread.c  .generated_files/flags/sam_e54_xpro/395ec69bd0d1c497831723efcbc846fc00ea9d76 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/1360937237" 
 	@${RM} ${OBJECTDIR}/_ext/1360937237/app_eeprom_thread.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1360937237/app_eeprom_thread.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/1360937237/app_eeprom_thread.o.d" -o ${OBJECTDIR}/_ext/1360937237/app_eeprom_thread.o ../src/app_eeprom_thread.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/1360937237/app_user_input_thread.o: ../src/app_user_input_thread.c  .generated_files/flags/sam_e54_xpro/a7255a0460a688338573496cbf0f045e6d526dfb .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/1360937237/app_user_input_thread.o: ../src/app_user_input_thread.c  .generated_files/flags/sam_e54_xpro/735585c86114b3b1d991ed76185aabe84e67b759 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/1360937237" 
 	@${RM} ${OBJECTDIR}/_ext/1360937237/app_user_input_thread.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1360937237/app_user_input_thread.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/1360937237/app_user_input_thread.o.d" -o ${OBJECTDIR}/_ext/1360937237/app_user_input_thread.o ../src/app_user_input_thread.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/1360937237/main_e54.o: ../src/main_e54.c  .generated_files/flags/sam_e54_xpro/399c511ddc0dc67591a75c0dbd2e15396a2b61b0 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/1360937237/main_e54.o: ../src/main_e54.c  .generated_files/flags/sam_e54_xpro/a42c0e5b09919e35551186ee2035eca78a774c88 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/1360937237" 
 	@${RM} ${OBJECTDIR}/_ext/1360937237/main_e54.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1360937237/main_e54.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/1360937237/main_e54.o.d" -o ${OBJECTDIR}/_ext/1360937237/main_e54.o ../src/main_e54.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
 else
-${OBJECTDIR}/_ext/1852710732/drv_i2c.o: ../src/config/sam_e54_xpro/driver/i2c/src/drv_i2c.c  .generated_files/flags/sam_e54_xpro/66bf55726ed930b8434e516239b468b4825b0359 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/1852710732/drv_i2c.o: ../src/config/sam_e54_xpro/driver/i2c/src/drv_i2c.c  .generated_files/flags/sam_e54_xpro/71b9ee0ab863b15969ff480f1f78ad8422829094 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/1852710732" 
 	@${RM} ${OBJECTDIR}/_ext/1852710732/drv_i2c.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1852710732/drv_i2c.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/1852710732/drv_i2c.o.d" -o ${OBJECTDIR}/_ext/1852710732/drv_i2c.o ../src/config/sam_e54_xpro/driver/i2c/src/drv_i2c.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/797555617/drv_usart.o: ../src/config/sam_e54_xpro/driver/usart/src/drv_usart.c  .generated_files/flags/sam_e54_xpro/56b2005a50770a1e86e7683064ceed5a729b680e .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/797555617/drv_usart.o: ../src/config/sam_e54_xpro/driver/usart/src/drv_usart.c  .generated_files/flags/sam_e54_xpro/8e22ccacdeb33f2852753f110fc5f68ee72bbcdb .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/797555617" 
 	@${RM} ${OBJECTDIR}/_ext/797555617/drv_usart.o.d 
 	@${RM} ${OBJECTDIR}/_ext/797555617/drv_usart.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/797555617/drv_usart.o.d" -o ${OBJECTDIR}/_ext/797555617/drv_usart.o ../src/config/sam_e54_xpro/driver/usart/src/drv_usart.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/293059771/osal_freertos.o: ../src/config/sam_e54_xpro/osal/osal_freertos.c  .generated_files/flags/sam_e54_xpro/a7b9f78f45000ddbca38fc546ad328ee6c1a8002 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/293059771/osal_freertos.o: ../src/config/sam_e54_xpro/osal/osal_freertos.c  .generated_files/flags/sam_e54_xpro/22f860c4d4fd2c530e76e6be7bda286b25a4064d .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/293059771" 
 	@${RM} ${OBJECTDIR}/_ext/293059771/osal_freertos.o.d 
 	@${RM} ${OBJECTDIR}/_ext/293059771/osal_freertos.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/293059771/osal_freertos.o.d" -o ${OBJECTDIR}/_ext/293059771/osal_freertos.o ../src/config/sam_e54_xpro/osal/osal_freertos.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/2056749927/plib_clock.o: ../src/config/sam_e54_xpro/peripheral/clock/plib_clock.c  .generated_files/flags/sam_e54_xpro/8f0d36e5aeb6df726d3f5bee3bdffa69f2f875f2 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/2056749927/plib_clock.o: ../src/config/sam_e54_xpro/peripheral/clock/plib_clock.c  .generated_files/flags/sam_e54_xpro/921c5fd6360aef58df506a84c75f1c19fe21ea09 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/2056749927" 
 	@${RM} ${OBJECTDIR}/_ext/2056749927/plib_clock.o.d 
 	@${RM} ${OBJECTDIR}/_ext/2056749927/plib_clock.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/2056749927/plib_clock.o.d" -o ${OBJECTDIR}/_ext/2056749927/plib_clock.o ../src/config/sam_e54_xpro/peripheral/clock/plib_clock.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/349294639/plib_cmcc.o: ../src/config/sam_e54_xpro/peripheral/cmcc/plib_cmcc.c  .generated_files/flags/sam_e54_xpro/fd6f0818270195154d0c6a00a98a20f7abf4a09f .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/349294639/plib_cmcc.o: ../src/config/sam_e54_xpro/peripheral/cmcc/plib_cmcc.c  .generated_files/flags/sam_e54_xpro/f7cf1ea72eaab679aadc0b351c96233d5fc9bc70 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/349294639" 
 	@${RM} ${OBJECTDIR}/_ext/349294639/plib_cmcc.o.d 
 	@${RM} ${OBJECTDIR}/_ext/349294639/plib_cmcc.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/349294639/plib_cmcc.o.d" -o ${OBJECTDIR}/_ext/349294639/plib_cmcc.o ../src/config/sam_e54_xpro/peripheral/cmcc/plib_cmcc.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/2058899413/plib_evsys.o: ../src/config/sam_e54_xpro/peripheral/evsys/plib_evsys.c  .generated_files/flags/sam_e54_xpro/e026e4754e3c157b8b5495b0a8690c4be78e8089 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/2058899413/plib_evsys.o: ../src/config/sam_e54_xpro/peripheral/evsys/plib_evsys.c  .generated_files/flags/sam_e54_xpro/d68a190345e418b04b40f88c8bda1b56ed7f21f3 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/2058899413" 
 	@${RM} ${OBJECTDIR}/_ext/2058899413/plib_evsys.o.d 
 	@${RM} ${OBJECTDIR}/_ext/2058899413/plib_evsys.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/2058899413/plib_evsys.o.d" -o ${OBJECTDIR}/_ext/2058899413/plib_evsys.o ../src/config/sam_e54_xpro/peripheral/evsys/plib_evsys.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/348958103/plib_nvic.o: ../src/config/sam_e54_xpro/peripheral/nvic/plib_nvic.c  .generated_files/flags/sam_e54_xpro/72f43c4f761f3e56ca2f607470823f3008508423 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/348958103/plib_nvic.o: ../src/config/sam_e54_xpro/peripheral/nvic/plib_nvic.c  .generated_files/flags/sam_e54_xpro/1606010e1de15c2810f0419d0503a3787e348555 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/348958103" 
 	@${RM} ${OBJECTDIR}/_ext/348958103/plib_nvic.o.d 
 	@${RM} ${OBJECTDIR}/_ext/348958103/plib_nvic.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/348958103/plib_nvic.o.d" -o ${OBJECTDIR}/_ext/348958103/plib_nvic.o ../src/config/sam_e54_xpro/peripheral/nvic/plib_nvic.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/1986180951/plib_nvmctrl.o: ../src/config/sam_e54_xpro/peripheral/nvmctrl/plib_nvmctrl.c  .generated_files/flags/sam_e54_xpro/3e06445ab1474593c4c621e2020de376bd099c0 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/1986180951/plib_nvmctrl.o: ../src/config/sam_e54_xpro/peripheral/nvmctrl/plib_nvmctrl.c  .generated_files/flags/sam_e54_xpro/52ab381ab16cf06faae3ea64f267833de1649be6 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/1986180951" 
 	@${RM} ${OBJECTDIR}/_ext/1986180951/plib_nvmctrl.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1986180951/plib_nvmctrl.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/1986180951/plib_nvmctrl.o.d" -o ${OBJECTDIR}/_ext/1986180951/plib_nvmctrl.o ../src/config/sam_e54_xpro/peripheral/nvmctrl/plib_nvmctrl.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/348904952/plib_port.o: ../src/config/sam_e54_xpro/peripheral/port/plib_port.c  .generated_files/flags/sam_e54_xpro/63ad4525f6c97f6908b4bcb80afb480b7fd70bf0 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/348904952/plib_port.o: ../src/config/sam_e54_xpro/peripheral/port/plib_port.c  .generated_files/flags/sam_e54_xpro/dd2199ce7d7595c88dcd4cc8adf35bed4c9274d9 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/348904952" 
 	@${RM} ${OBJECTDIR}/_ext/348904952/plib_port.o.d 
 	@${RM} ${OBJECTDIR}/_ext/348904952/plib_port.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/348904952/plib_port.o.d" -o ${OBJECTDIR}/_ext/348904952/plib_port.o ../src/config/sam_e54_xpro/peripheral/port/plib_port.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/1267767598/plib_sercom3_i2c_master.o: ../src/config/sam_e54_xpro/peripheral/sercom/i2c_master/plib_sercom3_i2c_master.c  .generated_files/flags/sam_e54_xpro/88bd8489d4f6189df440e6f241ca00a16e092883 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/1267767598/plib_sercom3_i2c_master.o: ../src/config/sam_e54_xpro/peripheral/sercom/i2c_master/plib_sercom3_i2c_master.c  .generated_files/flags/sam_e54_xpro/5b4b4f05d9adaf0a5cab2c6f2428ea807b21c85f .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/1267767598" 
 	@${RM} ${OBJECTDIR}/_ext/1267767598/plib_sercom3_i2c_master.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1267767598/plib_sercom3_i2c_master.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/1267767598/plib_sercom3_i2c_master.o.d" -o ${OBJECTDIR}/_ext/1267767598/plib_sercom3_i2c_master.o ../src/config/sam_e54_xpro/peripheral/sercom/i2c_master/plib_sercom3_i2c_master.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/2060180706/plib_sercom2_usart.o: ../src/config/sam_e54_xpro/peripheral/sercom/usart/plib_sercom2_usart.c  .generated_files/flags/sam_e54_xpro/fbbce90398b56946e22435567a66990216eda70b .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/2060180706/plib_sercom2_usart.o: ../src/config/sam_e54_xpro/peripheral/sercom/usart/plib_sercom2_usart.c  .generated_files/flags/sam_e54_xpro/59d91defe4ab912008d24db87ea4f686f688858 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/2060180706" 
 	@${RM} ${OBJECTDIR}/_ext/2060180706/plib_sercom2_usart.o.d 
 	@${RM} ${OBJECTDIR}/_ext/2060180706/plib_sercom2_usart.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/2060180706/plib_sercom2_usart.o.d" -o ${OBJECTDIR}/_ext/2060180706/plib_sercom2_usart.o ../src/config/sam_e54_xpro/peripheral/sercom/usart/plib_sercom2_usart.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/498645085/xc32_monitor.o: ../src/config/sam_e54_xpro/stdio/xc32_monitor.c  .generated_files/flags/sam_e54_xpro/798f580027999bcf094c48d7d0841a782330355 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/498645085/xc32_monitor.o: ../src/config/sam_e54_xpro/stdio/xc32_monitor.c  .generated_files/flags/sam_e54_xpro/13e9f495f19552cd4451c159226003f73fc36344 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/498645085" 
 	@${RM} ${OBJECTDIR}/_ext/498645085/xc32_monitor.o.d 
 	@${RM} ${OBJECTDIR}/_ext/498645085/xc32_monitor.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/498645085/xc32_monitor.o.d" -o ${OBJECTDIR}/_ext/498645085/xc32_monitor.o ../src/config/sam_e54_xpro/stdio/xc32_monitor.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/2098947918/sys_cache.o: ../src/config/sam_e54_xpro/system/cache/sys_cache.c  .generated_files/flags/sam_e54_xpro/ec328aba05a728e64458af958fd6fd814016cd6e .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/2098947918/sys_cache.o: ../src/config/sam_e54_xpro/system/cache/sys_cache.c  .generated_files/flags/sam_e54_xpro/c18c7cb520086ced3c94f24d4ecdfa898a1358e .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/2098947918" 
 	@${RM} ${OBJECTDIR}/_ext/2098947918/sys_cache.o.d 
 	@${RM} ${OBJECTDIR}/_ext/2098947918/sys_cache.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/2098947918/sys_cache.o.d" -o ${OBJECTDIR}/_ext/2098947918/sys_cache.o ../src/config/sam_e54_xpro/system/cache/sys_cache.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/2044739644/sys_dma.o: ../src/config/sam_e54_xpro/system/dma/sys_dma.c  .generated_files/flags/sam_e54_xpro/384a328c1c24cbf37d32f80959e3a981ed8f1c51 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/2044739644/sys_dma.o: ../src/config/sam_e54_xpro/system/dma/sys_dma.c  .generated_files/flags/sam_e54_xpro/eb646fb0017b5f5642d82400dbd24e514e38eebe .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/2044739644" 
 	@${RM} ${OBJECTDIR}/_ext/2044739644/sys_dma.o.d 
 	@${RM} ${OBJECTDIR}/_ext/2044739644/sys_dma.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/2044739644/sys_dma.o.d" -o ${OBJECTDIR}/_ext/2044739644/sys_dma.o ../src/config/sam_e54_xpro/system/dma/sys_dma.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/129427312/sys_int.o: ../src/config/sam_e54_xpro/system/int/src/sys_int.c  .generated_files/flags/sam_e54_xpro/46648be69b8d36b6b563a2c07d87eea6b9e5d8e4 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/129427312/sys_int.o: ../src/config/sam_e54_xpro/system/int/src/sys_int.c  .generated_files/flags/sam_e54_xpro/aed44dd1df58ac0cc1fba2365963f6d702aebaa0 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/129427312" 
 	@${RM} ${OBJECTDIR}/_ext/129427312/sys_int.o.d 
 	@${RM} ${OBJECTDIR}/_ext/129427312/sys_int.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/129427312/sys_int.o.d" -o ${OBJECTDIR}/_ext/129427312/sys_int.o ../src/config/sam_e54_xpro/system/int/src/sys_int.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/68098787/initialization.o: ../src/config/sam_e54_xpro/initialization.c  .generated_files/flags/sam_e54_xpro/4eeefaff279559ae035f370a48e64f794f599f1d .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/68098787/initialization.o: ../src/config/sam_e54_xpro/initialization.c  .generated_files/flags/sam_e54_xpro/c303812f80b557d8e9039e3331f1ea11efb39d33 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/68098787" 
 	@${RM} ${OBJECTDIR}/_ext/68098787/initialization.o.d 
 	@${RM} ${OBJECTDIR}/_ext/68098787/initialization.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/68098787/initialization.o.d" -o ${OBJECTDIR}/_ext/68098787/initialization.o ../src/config/sam_e54_xpro/initialization.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/68098787/interrupts.o: ../src/config/sam_e54_xpro/interrupts.c  .generated_files/flags/sam_e54_xpro/c5f5ad6e81ff145680b1bd1c7de3b9715919d33d .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/68098787/interrupts.o: ../src/config/sam_e54_xpro/interrupts.c  .generated_files/flags/sam_e54_xpro/bc283aaf9e0ef700642d00407243e3e976e5e156 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/68098787" 
 	@${RM} ${OBJECTDIR}/_ext/68098787/interrupts.o.d 
 	@${RM} ${OBJECTDIR}/_ext/68098787/interrupts.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/68098787/interrupts.o.d" -o ${OBJECTDIR}/_ext/68098787/interrupts.o ../src/config/sam_e54_xpro/interrupts.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/68098787/exceptions.o: ../src/config/sam_e54_xpro/exceptions.c  .generated_files/flags/sam_e54_xpro/4979480995edaf9f7e3ac00ffa17394d5a04c483 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/68098787/exceptions.o: ../src/config/sam_e54_xpro/exceptions.c  .generated_files/flags/sam_e54_xpro/64c74712019a3f45e1c8d1d88121ad5f59403d6b .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/68098787" 
 	@${RM} ${OBJECTDIR}/_ext/68098787/exceptions.o.d 
 	@${RM} ${OBJECTDIR}/_ext/68098787/exceptions.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/68098787/exceptions.o.d" -o ${OBJECTDIR}/_ext/68098787/exceptions.o ../src/config/sam_e54_xpro/exceptions.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/68098787/startup_xc32.o: ../src/config/sam_e54_xpro/startup_xc32.c  .generated_files/flags/sam_e54_xpro/405fbe172b0249aee4cb0131808ed84ec670eab8 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/68098787/startup_xc32.o: ../src/config/sam_e54_xpro/startup_xc32.c  .generated_files/flags/sam_e54_xpro/476fcbef3395d79cb5f95d9ab8833580f03827d9 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/68098787" 
 	@${RM} ${OBJECTDIR}/_ext/68098787/startup_xc32.o.d 
 	@${RM} ${OBJECTDIR}/_ext/68098787/startup_xc32.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/68098787/startup_xc32.o.d" -o ${OBJECTDIR}/_ext/68098787/startup_xc32.o ../src/config/sam_e54_xpro/startup_xc32.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/68098787/libc_syscalls.o: ../src/config/sam_e54_xpro/libc_syscalls.c  .generated_files/flags/sam_e54_xpro/b2ecfdf958c0df9f04afd7ba9dbbd32921f94cc9 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/68098787/libc_syscalls.o: ../src/config/sam_e54_xpro/libc_syscalls.c  .generated_files/flags/sam_e54_xpro/78c6574e7ed9b457798c3297700ab65b4005033a .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/68098787" 
 	@${RM} ${OBJECTDIR}/_ext/68098787/libc_syscalls.o.d 
 	@${RM} ${OBJECTDIR}/_ext/68098787/libc_syscalls.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/68098787/libc_syscalls.o.d" -o ${OBJECTDIR}/_ext/68098787/libc_syscalls.o ../src/config/sam_e54_xpro/libc_syscalls.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/68098787/freertos_hooks.o: ../src/config/sam_e54_xpro/freertos_hooks.c  .generated_files/flags/sam_e54_xpro/49a97270d829f83bca4464a2218194eef34dfe8d .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/68098787/freertos_hooks.o: ../src/config/sam_e54_xpro/freertos_hooks.c  .generated_files/flags/sam_e54_xpro/5de88987d706c94fe35359a9b164c923288641b0 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/68098787" 
 	@${RM} ${OBJECTDIR}/_ext/68098787/freertos_hooks.o.d 
 	@${RM} ${OBJECTDIR}/_ext/68098787/freertos_hooks.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/68098787/freertos_hooks.o.d" -o ${OBJECTDIR}/_ext/68098787/freertos_hooks.o ../src/config/sam_e54_xpro/freertos_hooks.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/68098787/tasks.o: ../src/config/sam_e54_xpro/tasks.c  .generated_files/flags/sam_e54_xpro/68c632d01d9086e726601412aa3a293f864dde80 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/68098787/tasks.o: ../src/config/sam_e54_xpro/tasks.c  .generated_files/flags/sam_e54_xpro/c49a59a1dba95ab9b136ce32d185bc26f072ca11 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/68098787" 
 	@${RM} ${OBJECTDIR}/_ext/68098787/tasks.o.d 
 	@${RM} ${OBJECTDIR}/_ext/68098787/tasks.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/68098787/tasks.o.d" -o ${OBJECTDIR}/_ext/68098787/tasks.o ../src/config/sam_e54_xpro/tasks.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/246609638/port.o: ../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F/port.c  .generated_files/flags/sam_e54_xpro/262ba2d35679f05a98103e70928ed100a0e7d12f .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/246609638/port.o: ../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F/port.c  .generated_files/flags/sam_e54_xpro/1573a6f8f87971da20f9d53bc6e919345200af17 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/246609638" 
 	@${RM} ${OBJECTDIR}/_ext/246609638/port.o.d 
 	@${RM} ${OBJECTDIR}/_ext/246609638/port.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/246609638/port.o.d" -o ${OBJECTDIR}/_ext/246609638/port.o ../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F/port.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/1665200909/heap_1.o: ../src/third_party/rtos/FreeRTOS/Source/portable/MemMang/heap_1.c  .generated_files/flags/sam_e54_xpro/66097bf3b5a7c866a9eac4d642263f729c83ae1f .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/1665200909/heap_1.o: ../src/third_party/rtos/FreeRTOS/Source/portable/MemMang/heap_1.c  .generated_files/flags/sam_e54_xpro/782d63b5e3d7715d490d756b65077387f1645d00 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/1665200909" 
 	@${RM} ${OBJECTDIR}/_ext/1665200909/heap_1.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1665200909/heap_1.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/1665200909/heap_1.o.d" -o ${OBJECTDIR}/_ext/1665200909/heap_1.o ../src/third_party/rtos/FreeRTOS/Source/portable/MemMang/heap_1.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/404212886/croutine.o: ../src/third_party/rtos/FreeRTOS/Source/croutine.c  .generated_files/flags/sam_e54_xpro/2b42b922d599f27bc51e4d66dce886ffbd3c8fc0 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/404212886/croutine.o: ../src/third_party/rtos/FreeRTOS/Source/croutine.c  .generated_files/flags/sam_e54_xpro/a7d4f2e99961e3834c01350cafefde47ff75bab5 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/404212886" 
 	@${RM} ${OBJECTDIR}/_ext/404212886/croutine.o.d 
 	@${RM} ${OBJECTDIR}/_ext/404212886/croutine.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/404212886/croutine.o.d" -o ${OBJECTDIR}/_ext/404212886/croutine.o ../src/third_party/rtos/FreeRTOS/Source/croutine.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/404212886/list.o: ../src/third_party/rtos/FreeRTOS/Source/list.c  .generated_files/flags/sam_e54_xpro/8fcfd709903a3e3103c7431358884dfdd6d85dc4 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/404212886/list.o: ../src/third_party/rtos/FreeRTOS/Source/list.c  .generated_files/flags/sam_e54_xpro/9bffbab12b5e560d81845aaa4deac551bc161ac5 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/404212886" 
 	@${RM} ${OBJECTDIR}/_ext/404212886/list.o.d 
 	@${RM} ${OBJECTDIR}/_ext/404212886/list.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/404212886/list.o.d" -o ${OBJECTDIR}/_ext/404212886/list.o ../src/third_party/rtos/FreeRTOS/Source/list.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/404212886/queue.o: ../src/third_party/rtos/FreeRTOS/Source/queue.c  .generated_files/flags/sam_e54_xpro/b5fe49310468bdd11503b658b94bd92ec4c86396 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/404212886/queue.o: ../src/third_party/rtos/FreeRTOS/Source/queue.c  .generated_files/flags/sam_e54_xpro/89824744c8973ea6c0d1ea948d5f58fe65dd03ec .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/404212886" 
 	@${RM} ${OBJECTDIR}/_ext/404212886/queue.o.d 
 	@${RM} ${OBJECTDIR}/_ext/404212886/queue.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/404212886/queue.o.d" -o ${OBJECTDIR}/_ext/404212886/queue.o ../src/third_party/rtos/FreeRTOS/Source/queue.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/404212886/FreeRTOS_tasks.o: ../src/third_party/rtos/FreeRTOS/Source/FreeRTOS_tasks.c  .generated_files/flags/sam_e54_xpro/34791b4edb33e80abb9ba63d9992d55e7830ee63 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/404212886/FreeRTOS_tasks.o: ../src/third_party/rtos/FreeRTOS/Source/FreeRTOS_tasks.c  .generated_files/flags/sam_e54_xpro/f4037adf373c3ab84f4c42ca5203d526d4d58a34 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/404212886" 
 	@${RM} ${OBJECTDIR}/_ext/404212886/FreeRTOS_tasks.o.d 
 	@${RM} ${OBJECTDIR}/_ext/404212886/FreeRTOS_tasks.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/404212886/FreeRTOS_tasks.o.d" -o ${OBJECTDIR}/_ext/404212886/FreeRTOS_tasks.o ../src/third_party/rtos/FreeRTOS/Source/FreeRTOS_tasks.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/404212886/timers.o: ../src/third_party/rtos/FreeRTOS/Source/timers.c  .generated_files/flags/sam_e54_xpro/38a68dec732a6d3bb8f57c1645f3ae89f7176440 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/404212886/timers.o: ../src/third_party/rtos/FreeRTOS/Source/timers.c  .generated_files/flags/sam_e54_xpro/d7c5a9cdafeccbcc61a55e0866735bcf211720cb .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/404212886" 
 	@${RM} ${OBJECTDIR}/_ext/404212886/timers.o.d 
 	@${RM} ${OBJECTDIR}/_ext/404212886/timers.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/404212886/timers.o.d" -o ${OBJECTDIR}/_ext/404212886/timers.o ../src/third_party/rtos/FreeRTOS/Source/timers.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/404212886/event_groups.o: ../src/third_party/rtos/FreeRTOS/Source/event_groups.c  .generated_files/flags/sam_e54_xpro/6c9ffc7820fa2f86da47b015662072dea5bdac2a .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/404212886/event_groups.o: ../src/third_party/rtos/FreeRTOS/Source/event_groups.c  .generated_files/flags/sam_e54_xpro/43fcd65bb6a14b0d7f8c37996b1dcaa87b60a922 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/404212886" 
 	@${RM} ${OBJECTDIR}/_ext/404212886/event_groups.o.d 
 	@${RM} ${OBJECTDIR}/_ext/404212886/event_groups.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/404212886/event_groups.o.d" -o ${OBJECTDIR}/_ext/404212886/event_groups.o ../src/third_party/rtos/FreeRTOS/Source/event_groups.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/404212886/stream_buffer.o: ../src/third_party/rtos/FreeRTOS/Source/stream_buffer.c  .generated_files/flags/sam_e54_xpro/7d3bbc500dba19ac705058ad0f9e361e536acd53 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/404212886/stream_buffer.o: ../src/third_party/rtos/FreeRTOS/Source/stream_buffer.c  .generated_files/flags/sam_e54_xpro/67cfcbb16fce7ef51e6b019d92ef80089455888e .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/404212886" 
 	@${RM} ${OBJECTDIR}/_ext/404212886/stream_buffer.o.d 
 	@${RM} ${OBJECTDIR}/_ext/404212886/stream_buffer.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/404212886/stream_buffer.o.d" -o ${OBJECTDIR}/_ext/404212886/stream_buffer.o ../src/third_party/rtos/FreeRTOS/Source/stream_buffer.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/1360937237/app_sensor_thread.o: ../src/app_sensor_thread.c  .generated_files/flags/sam_e54_xpro/93b67275e19a150f8ecf6ebefef25dbf3674abeb .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/1360937237/app_sensor_thread.o: ../src/app_sensor_thread.c  .generated_files/flags/sam_e54_xpro/c109a6663cafc44dd10dda80dcfa78d36a1e2d62 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/1360937237" 
 	@${RM} ${OBJECTDIR}/_ext/1360937237/app_sensor_thread.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1360937237/app_sensor_thread.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/1360937237/app_sensor_thread.o.d" -o ${OBJECTDIR}/_ext/1360937237/app_sensor_thread.o ../src/app_sensor_thread.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/1360937237/app_eeprom_thread.o: ../src/app_eeprom_thread.c  .generated_files/flags/sam_e54_xpro/51c7d6cdb45cfe725448449925a26928bf468c87 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/1360937237/app_eeprom_thread.o: ../src/app_eeprom_thread.c  .generated_files/flags/sam_e54_xpro/6ec25f322fc17e7e1af4fde166a1dc2761098e78 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/1360937237" 
 	@${RM} ${OBJECTDIR}/_ext/1360937237/app_eeprom_thread.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1360937237/app_eeprom_thread.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/1360937237/app_eeprom_thread.o.d" -o ${OBJECTDIR}/_ext/1360937237/app_eeprom_thread.o ../src/app_eeprom_thread.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/1360937237/app_user_input_thread.o: ../src/app_user_input_thread.c  .generated_files/flags/sam_e54_xpro/4d5757939797a5b6dd42f0c919494b956432db4d .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/1360937237/app_user_input_thread.o: ../src/app_user_input_thread.c  .generated_files/flags/sam_e54_xpro/b91feaaa3064a2808d2118e30c49a9f77f39a2a0 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/1360937237" 
 	@${RM} ${OBJECTDIR}/_ext/1360937237/app_user_input_thread.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1360937237/app_user_input_thread.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -fdata-sections -O1 -I"../src" -I"../src/config/sam_e54_xpro" -I"../src/packs/ATSAME54P20A_DFP" -I"../src/packs/CMSIS/CMSIS/Core/Include" -I"../src/packs/CMSIS/" -I"../src/third_party/rtos/FreeRTOS/Source/include" -I"../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F" -Werror -Wall -MP -MMD -MF "${OBJECTDIR}/_ext/1360937237/app_user_input_thread.o.d" -o ${OBJECTDIR}/_ext/1360937237/app_user_input_thread.o ../src/app_user_input_thread.c    -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}" ${PACK_COMMON_OPTIONS} 
 	
-${OBJECTDIR}/_ext/1360937237/main_e54.o: ../src/main_e54.c  .generated_files/flags/sam_e54_xpro/8690cababa76743b7b3ba002fc709fa360234f24 .generated_files/flags/sam_e54_xpro/443cc31b251e2cc9dbab357e258a78d389ff174b
+${OBJECTDIR}/_ext/1360937237/main_e54.o: ../src/main_e54.c  .generated_files/flags/sam_e54_xpro/ad0acdc4f32400a15906183c5ccd13db938bcde5 .generated_files/flags/sam_e54_xpro/fbbc84267070fee52123817a2f4c766c86c00a78
 	@${MKDIR} "${OBJECTDIR}/_ext/1360937237" 
 	@${RM} ${OBJECTDIR}/_ext/1360937237/main_e54.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1360937237/main_e54.o 
@@ -570,7 +570,7 @@ else
 ${DISTDIR}/drivers_freertos_sam_e54_xpro.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk   ../src/config/sam_e54_xpro/ATSAME54P20A.ld
 	@${MKDIR} ${DISTDIR} 
 	${MP_CC} $(MP_EXTRA_LD_PRE)  -mprocessor=$(MP_PROCESSOR_OPTION) -mno-device-startup-code -o ${DISTDIR}/drivers_freertos_sam_e54_xpro.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}          -DXPRJ_sam_e54_xpro=$(CND_CONF)    $(COMPARISON_BUILD)  -Wl,--defsym=__MPLAB_BUILD=1$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION),--defsym=_min_heap_size=512,--gc-sections,-Map="${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map",--memorysummary,${DISTDIR}/memoryfile.xml -mdfp="${DFP_DIR}"
-	${MP_CC_DIR}/xc32-bin2hex ${DISTDIR}/drivers_freertos_sam_e54_xpro.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX} 
+	${MP_CC_DIR}\\xc32-bin2hex ${DISTDIR}/drivers_freertos_sam_e54_xpro.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX} 
 endif
 
 
@@ -589,7 +589,7 @@ endif
 # Enable dependency checking
 .dep.inc: .depcheck-impl
 
-DEPFILES=$(shell "${PATH_TO_IDE_BIN}"mplabwildcard ${POSSIBLE_DEPFILES})
+DEPFILES=$(shell mplabwildcard ${POSSIBLE_DEPFILES})
 ifneq (${DEPFILES},)
 include ${DEPFILES}
 endif

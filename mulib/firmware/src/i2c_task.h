@@ -32,31 +32,31 @@
 #ifndef _I2C_TASK_H_
 #define _I2C_TASK_H_
 
-// ****************************************************************************=
+// *****************************************************************************
 // Includes
 
 #include "mu_task.h"
 #include <stdint.h>
 
-// ****************************************************************************=
+// *****************************************************************************
 // C++ Compatibility
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// ****************************************************************************=
+// *****************************************************************************
 // Public types and definitions
 
 #define I2C_TASK_EEPROM_MAX_LOG_VALUES 5
 
 typedef enum {
-    I2C_TASK_ERR_NONE,
-    I2C_TASK_ERR_BUSY,
-    I2C_TASK_ERR_BAD_PARAM,    
+  I2C_TASK_ERR_NONE,
+  I2C_TASK_ERR_BUSY,
+  I2C_TASK_ERR_BAD_PARAM,
 } i2c_task_err_t;
 
-// ****************************************************************************=
+// *****************************************************************************
 // Public declarations
 
 /**
@@ -99,13 +99,12 @@ i2c_task_err_t i2c_task_read_temperature(int8_t *fahrenheit,
  * Note: If on_completion is non-NULL, it will be triggered when the write
  * operation completes.  In addition, i2c_task_is_idle() will return true.
  *
- * @param buf The data to be written.
- * @param n_bytes The number of bytes to be written.
+ * @param byte The byt e to be written.
  * @param on_completion The task to call upon completion.  May be NULL.
  * @return I2C_TASK_ERR_NONE on success.
  */
-i2c_task_err_t eeprom_task_write(uint8_t *buffer, size_t n_bytes,
-                                 mu_task_t *on_completion);
+i2c_task_err_t i2c_task_write_eeprom_byte(uint8_t byte,
+                                          mu_task_t *on_completion);
 
 /**
  * @brief Request to start asynchronous read from eeprom.
@@ -121,10 +120,9 @@ i2c_task_err_t eeprom_task_write(uint8_t *buffer, size_t n_bytes,
  * @param on_completion The task to call upon completion.  May be NULL.
  * @return I2C_TASK_ERR_NONE on success.
  */
-i2c_task_err_t eeprom_task_read(uint8_t *buffer, size_t n_bytes,
-                                mu_task_t *on_completion);
-
-
+i2c_task_err_t i2c_task_read_eeprom_bytes(uint8_t *buffer,
+                                          size_t n_bytes,
+                                          mu_task_t *on_completion);
 
 #ifdef __cplusplus
 }

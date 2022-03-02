@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-// ****************************************************************************=
+// *****************************************************************************
 // Includes
 
 #include "sensor_task.h"
@@ -40,13 +40,13 @@
 #include <stdio.h>
 #include <string.h>
 
-// ****************************************************************************=
+// *****************************************************************************
 // Private types and definitions
 
 #define SENSOR_STATES(M)                                                       \
   M(SENSOR_TASK_STATE_INIT)                                                    \
-  M(SENSOR_TASK_AWAIT_I2C_AVAILABLE)                                           \
-  M(SENSOR_TASK_START_TEMPERATURE_READ)                                        \
+  M(SENSOR_TASK_STATE_AWAIT_TEMPERATURE_AVAILABLE)                             \
+  M(SENSOR_TASK_STATE_AWAIT_EEPROM_AVAILABLE)                                  \
   M(SENSOR_TASK_STATE_AWAIT_PRINTER_AVAILABLE)                                 \
   M(SENSOR_TASK_STATE_AWAIT_PRINTING_COMPLETE)                                 \
   M(SENSOR_TASK_STATE_ERROR)
@@ -60,7 +60,7 @@ typedef struct {
   mu_time_abs_t next_wake_at;
 } sensor_task_ctx_t;
 
-// ****************************************************************************=
+// *****************************************************************************
 // Private (static) storage
 
 #define EXPAND_TASK_STATE_NAMES(_name) #_name,
@@ -71,14 +71,14 @@ static sensor_task_ctx_t s_sensor_task_ctx;
 
 static mu_task_t s_sensor_task;
 
-// ****************************************************************************=
+// *****************************************************************************
 // Private (forward) declarations
 
 static void set_state(sensor_task_state_t state);
 static const char *state_name(sensor_task_state_t state);
 static void sensor_task_fn(void *ctx, void *arg);
 
-// ****************************************************************************=
+// *****************************************************************************
 // Public code
 
 void sensor_task_init(void) {
@@ -90,7 +90,7 @@ void sensor_task_init(void) {
 
 mu_task_t *sensor_task(void) { return &s_sensor_task; }
 
-// ****************************************************************************=
+// *****************************************************************************
 // Private (static) code
 
 static void set_state(sensor_task_state_t state) {
@@ -115,27 +115,41 @@ static void sensor_task_fn(void *ctx, void *arg) {
   switch (self->state) {
   case SENSOR_TASK_STATE_INIT: {
     self->next_wake_at = mu_time_offset(mu_rtc_now(), mu_time_ms_to_rel(1000));
-    set_state(SENSOR_TASK_AWAIT_I2C_AVAILABLE);
+    set_state(SENSOR_TASK_STATE_AWAIT_TEMPERATURE_AVAILABLE);
   } // break; vvv-- fall through --vvv
 
-  case SENSOR_TASK_AWAIT_I2C_AVAILABLE: {
-    if (!i2c_task_is_idle()) {
-      // remain in this state until i2c is available.
+  case SENSOR_TASK_STATE_AWAIT_TEMPERATURE_AVAILABLE: {
+    if (i2c_task_is_idle()) {
+      // Temperature sensor is available: initiate a read operation.
+      i2c_task_err_t err = i2c_task_read_temperature(
+          &s_sensor_task_ctx.fahrenheit, sensor_task());
+      if (err != I2C_TASK_ERR_NONE) {
+        set_state(SENSOR_TASK_STATE_ERROR);
+      } else {
+        set_state(SENSOR_TASK_STATE_AWAIT_EEPROM_AVAILABLE);
+        // wait for i2c_task_read_temperature() callback to resume task
+      }
     } else {
-      set_state(SENSOR_TASK_START_TEMPERATURE_READ);
-      mu_sched_now(sensor_task());
+      // I2C is busy.  check again after a short delay.
+      mu_sched_in(sensor_task(), mu_time_ms_to_rel(1));
     }
   } break;
 
-  case SENSOR_TASK_START_TEMPERATURE_READ: {
-    // initiate a read operation on temperature I2C.
-    i2c_task_err_t err =
-        i2c_task_read_temperature(&s_sensor_task_ctx.fahrenheit, sensor_task());
-    if (err != I2C_TASK_ERR_NONE) {
-      set_state(SENSOR_TASK_STATE_ERROR);
+  case SENSOR_TASK_STATE_AWAIT_EEPROM_AVAILABLE: {
+    // Arrive here with temperature in s_sensor_task_ctx.fahrenheit
+    if (i2c_task_is_idle()) {
+      // EEPROM is available -- initiate a write request
+      i2c_task_err_t err = i2c_task_write_eeprom_byte(
+          s_sensor_task_ctx.fahrenheit, sensor_task());
+      if (err != I2C_TASK_ERR_NONE) {
+        set_state(SENSOR_TASK_STATE_ERROR);
+      } else {
+        set_state(SENSOR_TASK_STATE_AWAIT_PRINTER_AVAILABLE);
+        // the i2c_task_write_eeprom_byte() callback will trigger next step
+      }
     } else {
-      set_state(SENSOR_TASK_STATE_AWAIT_PRINTER_AVAILABLE);
-      // wait for i2c_task_read_temperature() callback to resume task
+      // I2C is busy.  check again after a short delay.
+      mu_sched_in(sensor_task(), mu_time_ms_to_rel(1));
     }
   } break;
 
@@ -145,7 +159,8 @@ static void sensor_task_fn(void *ctx, void *arg) {
       // Printer is available -- initiate a print request
       static char buf[30];
 
-      sprintf(buf, "\n%08lx Temperature = %d", mu_rtc_now(),
+      sprintf(buf,
+              "\nTemperature = %d F",
               s_sensor_task_ctx.fahrenheit);
       set_state(SENSOR_TASK_STATE_AWAIT_PRINTING_COMPLETE);
       printer_task_print((uint8_t *)buf, strlen(buf), sensor_task());
@@ -159,7 +174,11 @@ static void sensor_task_fn(void *ctx, void *arg) {
     // Arrive here when printing task completes.
     // Repeat task 1 second after previous wakeup
     LED_Toggle();
-    set_state(SENSOR_TASK_AWAIT_I2C_AVAILABLE);
+    set_state(SENSOR_TASK_STATE_AWAIT_TEMPERATURE_AVAILABLE);
+    // Pause until the next wake-up time.  Note that we do NOT do
+    //     mu_sched_in(sensor_task() , now + 60 seconds)
+    // since that would cause drift over time.  Instead, we keep track of the
+    // intended wake-up time and increment that by 60 seconds.
     mu_sched_at(sensor_task(), self->next_wake_at);
     self->next_wake_at =
         mu_time_offset(self->next_wake_at, mu_time_ms_to_rel(1000));

@@ -5,10 +5,10 @@ frameworkPath: D:\MassMarket\github_repos
 processor: ATSAME54P20A
 projectName: getting_started_drivers_freertos_same54-pro
 settings:
-  PackageFilter: crypto;core_apps_sam_d21_da1;dev_packs;net;csp_apps_sam_d5x_e5x;core;core_apps_sam_d5x_e5x;csp_apps_sam_d21_da1;bsp;quick_docs;reference_apps;usb;cryptoauthlib;wireless_wifi;csp;wireless_apps_winc3400;wireless_apps_winc1500
+  PackageFilter: audio;bootloader;bootloader_apps_uart;bsp;core;core_apps_sam_d21_da1;core_apps_sam_d5x_e5x;core_apps_sam_e70_s70_v70_v71;core_apps_sam_l22;crypto;cryptoauthlib;csp;csp_apps_sam_d11;csp_apps_sam_d21_da1;csp_apps_sam_d5x_e5x;csp_apps_sam_e70_s70_v70_v71;csp_apps_sam_l22;dev_packs;gfx;gfx_apps;gfx_apps_sam_d5x_e5x;gfx_apps_sam_e70_s70_v70_v71;gfx_aria;MPLAB-Harmony-Reference-Apps;net;net_apps_sam_e5x;net_apps_sam_e70_v71;quick_docs;touch;usb;wireless_apps_winc1500;wireless_wifi
   FORCE_OPTIMIZATION: 'false'
   GENERATE_BACKUP: 'true'
   TRUSTZONE: 'false'
-  CMSISPath: ./dev_packs/arm/CMSIS/5.8.0
+  CMSISPath: .\dev_packs\arm\CMSIS\5.8.0
   MERGE_STRATEGY: USER_ALL
-  DFPPath: ./dev_packs/Microchip/SAME54_DFP/3.6.95/atdf/ATSAME54P20A.atdf
+  DFPPath: .\dev_packs\Microchip\SAME54_DFP\3.6.95\atdf\ATSAME54P20A.atdf

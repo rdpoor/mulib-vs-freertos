@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-// ****************************************************************************=
+// *****************************************************************************
 // Includes
 
 #include "template_task.h"
@@ -33,7 +33,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-// ****************************************************************************=
+// *****************************************************************************
 // Private types and definitions
 
 #define TEMPLATE_STATES(M)                                                     \
@@ -48,7 +48,7 @@ typedef struct {
   template_task_state_t state;
 } template_task_ctx_t;
 
-// ****************************************************************************=
+// *****************************************************************************
 // Private (static) storage
 
 #define EXPAND_TASK_STATE_NAMES(_name) #_name,
@@ -59,14 +59,14 @@ static template_task_ctx_t s_template_task_ctx;
 
 static mu_task_t s_template_task;
 
-// ****************************************************************************=
+// *****************************************************************************
 // Private (forward) declarations
 
 static void set_state(template_task_state_t state);
 static const char *state_name(template_task_state_t state);
 static void template_task_fn(void *ctx, void *arg);
 
-// ****************************************************************************=
+// *****************************************************************************
 // Public code
 
 void template_task_init(void) {
@@ -90,7 +90,7 @@ template_task_err_t template_task_read(uint8_t *buf, size_t n_bytes) {
   return TEMPLATE_TASK_ERR_NONE;
 }
 
-// ****************************************************************************=
+// *****************************************************************************
 // Private (static) code
 
 static void set_state(template_task_state_t state) {

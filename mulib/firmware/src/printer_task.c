@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-// ****************************************************************************=
+// *****************************************************************************
 // Includes
 
 #include "printer_task.h"
@@ -35,7 +35,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-// ****************************************************************************=
+// *****************************************************************************
 // Private types and definitions
 
 #define PRINTER_STATES(M)                                                      \
@@ -52,7 +52,7 @@ typedef struct {
   mu_task_t *on_completion;
 } printer_task_ctx_t;
 
-// ****************************************************************************=
+// *****************************************************************************
 // Private (static) storage
 
 #define EXPAND_TASK_STATE_NAMES(_name) #_name,
@@ -63,7 +63,7 @@ static printer_task_ctx_t s_printer_task_ctx;
 
 static mu_task_t s_printer_task;
 
-// ****************************************************************************=
+// *****************************************************************************
 // Private (forward) declarations
 
 static void set_state(printer_task_state_t state);
@@ -72,7 +72,7 @@ static void printer_task_fn(void *ctx, void *arg);
 
 static void usart_tx_cb(uintptr_t context);
 
-// ****************************************************************************=
+// *****************************************************************************
 // Public code
 
 void printer_task_init(void) {
@@ -105,7 +105,7 @@ printer_task_err_t printer_task_print(uint8_t *buffer, size_t n_bytes,
   }
 }
 
-// ****************************************************************************=
+// *****************************************************************************
 // Private (static) code
 
 static void set_state(printer_task_state_t state) {

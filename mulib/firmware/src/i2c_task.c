@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-// ****************************************************************************=
+// *****************************************************************************
 // Includes
 
 #include "i2c_task.h"
@@ -36,7 +36,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-// ****************************************************************************=
+// *****************************************************************************
 // Private types and definitions
 
 #define I2C_TASK_TEMPERATURE_CLOCK_SPEED 100000
@@ -47,8 +47,6 @@
 #define I2C_TASK_EEPROM_CLOCK_SPEED 400000
 #define I2C_TASK_EEPROM_SLAVE_ADDR 0x0057
 #define I2C_TASK_EEPROM_LOG_MEMORY_ADDR 0x00
-
-#define I2C_TASK_EEPROM_MAX_LOG_VALUES 5
 
 #define I2C_STATES(M)                                                          \
   M(I2C_TASK_STATE_IDLE)                                                       \
@@ -72,7 +70,7 @@ typedef struct {
   mu_task_t *on_completion;
 } i2c_task_ctx_t;
 
-// ****************************************************************************=
+// *****************************************************************************
 // Private (static) storage
 
 #define EXPAND_TASK_STATE_NAMES(_name) #_name,
@@ -83,7 +81,7 @@ static i2c_task_ctx_t s_i2c_task_ctx;
 
 static mu_task_t s_i2c_task;
 
-// ****************************************************************************=
+// *****************************************************************************
 // Private (forward) declarations
 
 static void set_state(i2c_task_state_t state);
@@ -105,7 +103,7 @@ static int8_t convert_to_fahrenheit(uint8_t *pRawValue);
  */
 static void i2c_cb(uintptr_t context);
 
-// ****************************************************************************=
+// *****************************************************************************
 // Public code
 
 void i2c_task_init(void) {
@@ -141,8 +139,11 @@ i2c_task_err_t i2c_task_read_temperature(int8_t *fahrenheit,
 
     uint8_t registerAddr = I2C_TASK_TEMPERATURE_REG_ADDR;
 
-    if (!SERCOM3_I2C_WriteRead(I2C_TASK_TEMPERATURE_SLAVE_ADDR, &registerAddr,
-                               1, s_i2c_task_ctx.rxBuffer, 2)) {
+    if (!SERCOM3_I2C_WriteRead(I2C_TASK_TEMPERATURE_SLAVE_ADDR,
+                               &registerAddr,
+                               1,
+                               s_i2c_task_ctx.rxBuffer,
+                               2)) {
       err = I2C_TASK_ERR_BAD_PARAM;
       break;
     }
@@ -156,7 +157,8 @@ i2c_task_err_t i2c_task_read_temperature(int8_t *fahrenheit,
   return err;
 }
 
-i2c_task_err_t i2c_task_write_eeprom(int8_t byte, mu_task_t *on_completion) {
+i2c_task_err_t i2c_task_write_eeprom_byte(uint8_t byte,
+                                          mu_task_t *on_completion) {
   i2c_task_err_t err = I2C_TASK_ERR_NONE;
   SERCOM_I2C_TRANSFER_SETUP setup;
 
@@ -175,8 +177,13 @@ i2c_task_err_t i2c_task_write_eeprom(int8_t byte, mu_task_t *on_completion) {
     s_i2c_task_ctx.txBuffer[0] =
         I2C_TASK_EEPROM_LOG_MEMORY_ADDR + s_i2c_task_ctx.write_idx;
     s_i2c_task_ctx.txBuffer[1] = byte;
-    if (!SERCOM3_I2C_Write(I2C_TASK_EEPROM_SLAVE_ADDR,
-                           (void *)s_i2c_task_ctx.txBuffer, 2)) {
+
+    // NB: it is important to set up state before calling SERCOM3_I2C_Write
+    // since the interrupt can happen nearly immediately
+    s_i2c_task_ctx.on_completion = on_completion;
+    set_state(I2C_TASK_STATE_WRITING_EEPROM);
+    if (!SERCOM3_I2C_Write(
+            I2C_TASK_EEPROM_SLAVE_ADDR, (void *)s_i2c_task_ctx.txBuffer, 2)) {
       err = I2C_TASK_ERR_BAD_PARAM;
       break;
     }
@@ -186,15 +193,14 @@ i2c_task_err_t i2c_task_write_eeprom(int8_t byte, mu_task_t *on_completion) {
     if (s_i2c_task_ctx.write_idx == I2C_TASK_EEPROM_MAX_LOG_VALUES) {
       s_i2c_task_ctx.write_idx = 0;
     }
-    s_i2c_task_ctx.on_completion = on_completion;
-    set_state(I2C_TASK_STATE_WRITING_EEPROM);
     mu_sched_at(i2c_task(), mu_rtc_now());
   } while (false);
 
   return err;
 }
 
-i2c_task_err_t i2c_task_read_eeprom_bytes(uint8_t *bytes, size_t n_bytes,
+i2c_task_err_t i2c_task_read_eeprom_bytes(uint8_t *bytes,
+                                          size_t n_bytes,
                                           mu_task_t *on_completion) {
   i2c_task_err_t err = I2C_TASK_ERR_NONE;
   SERCOM_I2C_TRANSFER_SETUP setup;
@@ -211,6 +217,10 @@ i2c_task_err_t i2c_task_read_eeprom_bytes(uint8_t *bytes, size_t n_bytes,
       break;
     }
 
+    // NB: it is important to set up state before calling SERCOM3_I2C_Read
+    // since the interrupt can happen nearly immediately
+    s_i2c_task_ctx.on_completion = on_completion;
+    set_state(I2C_TASK_STATE_READING_EEPROM);
     s_i2c_task_ctx.txBuffer[0] = I2C_TASK_EEPROM_LOG_MEMORY_ADDR;
     if (!SERCOM3_I2C_WriteRead(I2C_TASK_EEPROM_SLAVE_ADDR,
                                (void *)s_i2c_task_ctx.txBuffer,
@@ -221,15 +231,13 @@ i2c_task_err_t i2c_task_read_eeprom_bytes(uint8_t *bytes, size_t n_bytes,
       break;
     }
 
-    s_i2c_task_ctx.on_completion = on_completion;
-    set_state(I2C_TASK_STATE_READING_EEPROM);
     mu_sched_at(i2c_task(), mu_rtc_now());
   } while (false);
 
   return err;
 }
 
-// ****************************************************************************=
+// *****************************************************************************
 // Private (static) code
 
 static void set_state(i2c_task_state_t state) {
@@ -296,6 +304,9 @@ static void do_callback(void) {
   }
 }
 
+// This is the code from the original FreeRTOS version.  I'm not sure why it was
+// written this way, but it shouldn't require floating point operations.
+//
 static int8_t convert_to_fahrenheit(uint8_t *pRawValue) {
   int16_t temp = (pRawValue[0] << 8) | pRawValue[1];
   if ((temp & 0x8000) == 0) {
@@ -308,6 +319,14 @@ static int8_t convert_to_fahrenheit(uint8_t *pRawValue) {
   temp = (temp * (float)9 / 5) + 32;
   return (int8_t)temp;
 }
+
+// Candidate for replacement
+// static int8_t convert_to_fahrenheit(uint8_t *pRawValue) {
+//   int16_t t1 = (pRawValue[0] << 8) | pRawValue[1];
+//   int32_t t2 = t1;  // sign extend
+//   uint16_t f = (t2 * 9) / 5;
+//   return f / 256 + 32;
+// }
 
 // Called from interrupt level when I2C read or write operation completes.
 // Set the i2c_task state and schedule a call to the task when the interrupt
