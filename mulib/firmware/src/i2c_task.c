@@ -137,8 +137,11 @@ i2c_task_err_t i2c_task_read_temperature(int8_t *fahrenheit,
       break;
     }
 
-    uint8_t registerAddr = I2C_TASK_TEMPERATURE_REG_ADDR;
+    s_i2c_task_ctx.fahrenheit = fahrenheit;
+    s_i2c_task_ctx.on_completion = on_completion;
+    set_state(I2C_TASK_STATE_READING_TEMPERATURE);
 
+    uint8_t registerAddr = I2C_TASK_TEMPERATURE_REG_ADDR;
     if (!SERCOM3_I2C_WriteRead(I2C_TASK_TEMPERATURE_SLAVE_ADDR,
                                &registerAddr,
                                1,
@@ -148,9 +151,6 @@ i2c_task_err_t i2c_task_read_temperature(int8_t *fahrenheit,
       break;
     }
 
-    s_i2c_task_ctx.fahrenheit = fahrenheit;
-    s_i2c_task_ctx.on_completion = on_completion;
-    set_state(I2C_TASK_STATE_READING_TEMPERATURE);
     mu_sched_at(i2c_task(), mu_rtc_now());
   } while (false);
 

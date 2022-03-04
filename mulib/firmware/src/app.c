@@ -20,6 +20,16 @@ void APP_Initialize(void) {
 
 void APP_Tasks(void) { mu_sched_step(); }
 
+// For reasons I don't understand yet, if the following is omitted, the linker
+// includes a LARGE body of code related to printing gloating point values.  But
+// by defining _printf_float() here, none of that code is included.  (And as far
+// as I can tell, this code never prints floating point values, so this appears
+// to be safe.)
+void _printf_float(void) {
+  asm("nop");
+}
+
+
 /*******************************************************************************
  End of File
  */
