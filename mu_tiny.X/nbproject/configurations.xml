@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="65">
+  <logicalFolder name="root" displayName="root" projectFiles="true">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+      <logicalFolder name="MCC Generated Files"
+                     displayName="MCC Generated Files"
+                     projectFiles="true">
+        <logicalFolder name="config" displayName="config" projectFiles="true">
+          <itemPath>mcc_generated_files/config/clock_config.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="examples" displayName="examples" projectFiles="true">
+          <itemPath>mcc_generated_files/examples/twi0_master_example.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="include" displayName="include" projectFiles="true">
+          <itemPath>mcc_generated_files/include/pin_manager.h</itemPath>
+          <itemPath>mcc_generated_files/include/usart0.h</itemPath>
+          <itemPath>mcc_generated_files/include/rstctrl.h</itemPath>
+          <itemPath>mcc_generated_files/include/port.h</itemPath>
+          <itemPath>mcc_generated_files/include/cpuint.h</itemPath>
+          <itemPath>mcc_generated_files/include/rtc.h</itemPath>
+          <itemPath>mcc_generated_files/include/ccp.h</itemPath>
+          <itemPath>mcc_generated_files/include/protected_io.h</itemPath>
+          <itemPath>mcc_generated_files/include/twi0_master.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="utils" displayName="utils" projectFiles="true">
+          <logicalFolder name="assembler" displayName="assembler" projectFiles="true">
+            <itemPath>mcc_generated_files/utils/assembler/gas.h</itemPath>
+            <itemPath>mcc_generated_files/utils/assembler/iar.h</itemPath>
+          </logicalFolder>
+          <itemPath>mcc_generated_files/utils/interrupt_avr8.h</itemPath>
+          <itemPath>mcc_generated_files/utils/utils_assert.h</itemPath>
+          <itemPath>mcc_generated_files/utils/compiler.h</itemPath>
+          <itemPath>mcc_generated_files/utils/utils.h</itemPath>
+          <itemPath>mcc_generated_files/utils/assembler.h</itemPath>
+          <itemPath>mcc_generated_files/utils/atomic.h</itemPath>
+        </logicalFolder>
+        <itemPath>mcc_generated_files/mcc.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="mu_platform" displayName="mu_platform" projectFiles="true">
+        <logicalFolder name="inc" displayName="inc" projectFiles="true">
+          <itemPath>third_party/rtos/mu_platform/inc/mu_config.h</itemPath>
+          <itemPath>third_party/rtos/mu_platform/inc/mu_rtc.h</itemPath>
+          <itemPath>third_party/rtos/mu_platform/inc/mu_time.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="src" displayName="src" projectFiles="true">
+        </logicalFolder>
+      </logicalFolder>
+      <logicalFolder name="mulib" displayName="mulib" projectFiles="true">
+        <logicalFolder name="collections" displayName="collections" projectFiles="true">
+          <logicalFolder name="inc" displayName="inc" projectFiles="true">
+            <itemPath>third_party/rtos/mulib/collections/inc/mu_array.h</itemPath>
+            <itemPath>third_party/rtos/mulib/collections/inc/mu_bvec.h</itemPath>
+            <itemPath>third_party/rtos/mulib/collections/inc/mu_cirq.h</itemPath>
+            <itemPath>third_party/rtos/mulib/collections/inc/mu_dlist.h</itemPath>
+            <itemPath>third_party/rtos/mulib/collections/inc/mu_list.h</itemPath>
+            <itemPath>third_party/rtos/mulib/collections/inc/mu_pstore.h</itemPath>
+            <itemPath>third_party/rtos/mulib/collections/inc/mu_queue.h</itemPath>
+            <itemPath>third_party/rtos/mulib/collections/inc/mu_vect.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="src" displayName="src" projectFiles="true">
+          </logicalFolder>
+        </logicalFolder>
+        <logicalFolder name="log" displayName="log" projectFiles="true">
+          <logicalFolder name="inc" displayName="inc" projectFiles="true">
+            <itemPath>third_party/rtos/mulib/log/inc/mu_log.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="src" displayName="src" projectFiles="true">
+          </logicalFolder>
+        </logicalFolder>
+        <logicalFolder name="sched" displayName="sched" projectFiles="true">
+          <logicalFolder name="inc" displayName="inc" projectFiles="true">
+            <itemPath>third_party/rtos/mulib/sched/inc/mu_event.h</itemPath>
+            <itemPath>third_party/rtos/mulib/sched/inc/mu_sched.h</itemPath>
+            <itemPath>third_party/rtos/mulib/sched/inc/mu_spsc.h</itemPath>
+            <itemPath>third_party/rtos/mulib/sched/inc/mu_task.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="src" displayName="src" projectFiles="true">
+          </logicalFolder>
+        </logicalFolder>
+        <logicalFolder name="string" displayName="string" projectFiles="true">
+          <logicalFolder name="inc" displayName="inc" projectFiles="true">
+            <itemPath>third_party/rtos/mulib/string/inc/mu_str.h</itemPath>
+            <itemPath>third_party/rtos/mulib/string/inc/mu_strbuf.h</itemPath>
+            <itemPath>third_party/rtos/mulib/string/inc/mu_stream.h</itemPath>
+            <itemPath>third_party/rtos/mulib/string/inc/mu_str_utils.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="src" displayName="src" projectFiles="true">
+          </logicalFolder>
+        </logicalFolder>
+        <logicalFolder name="utils" displayName="utils" projectFiles="true">
+          <logicalFolder name="inc" displayName="inc" projectFiles="true">
+            <itemPath>third_party/rtos/mulib/utils/inc/mu_macros.h</itemPath>
+            <itemPath>third_party/rtos/mulib/utils/inc/mu_parse_url.h</itemPath>
+            <itemPath>third_party/rtos/mulib/utils/inc/mu_random.h</itemPath>
+            <itemPath>third_party/rtos/mulib/utils/inc/mu_rfc_1123.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="src" displayName="src" projectFiles="true">
+          </logicalFolder>
+        </logicalFolder>
+      </logicalFolder>
+      <itemPath>app.h</itemPath>
+      <itemPath>i2c_task.h</itemPath>
+      <itemPath>printer_task.h</itemPath>
+      <itemPath>sensor_task.h</itemPath>
+      <itemPath>ui_task.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="LinkerScript"
+                   displayName="Linker Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <logicalFolder name="MCC Generated Files"
+                     displayName="MCC Generated Files"
+                     projectFiles="true">
+        <logicalFolder name="examples" displayName="examples" projectFiles="true">
+          <itemPath>mcc_generated_files/examples/twi0_master_example.c</itemPath>
+        </logicalFolder>
+        <logicalFolder name="src" displayName="src" projectFiles="true">
+          <itemPath>mcc_generated_files/src/cpuint.c</itemPath>
+          <itemPath>mcc_generated_files/src/pin_manager.c</itemPath>
+          <itemPath>mcc_generated_files/src/rtc.c</itemPath>
+          <itemPath>mcc_generated_files/src/usart0.c</itemPath>
+          <itemPath>mcc_generated_files/src/protected_io.S</itemPath>
+          <itemPath>mcc_generated_files/src/twi0_master.c</itemPath>
+        </logicalFolder>
+        <itemPath>mcc_generated_files/mcc.c</itemPath>
+        <itemPath>mcc_generated_files/device_config.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="mu_platform" displayName="mu_platform" projectFiles="true">
+        <logicalFolder name="inc" displayName="inc" projectFiles="true">
+        </logicalFolder>
+        <logicalFolder name="src" displayName="src" projectFiles="true">
+          <itemPath>third_party/rtos/mu_platform/src/mu_rtc.c</itemPath>
+          <itemPath>third_party/rtos/mu_platform/src/mu_time.c</itemPath>
+        </logicalFolder>
+      </logicalFolder>
+      <logicalFolder name="mulib" displayName="mulib" projectFiles="true">
+        <logicalFolder name="collections" displayName="collections" projectFiles="true">
+          <logicalFolder name="inc" displayName="inc" projectFiles="true">
+          </logicalFolder>
+          <logicalFolder name="src" displayName="src" projectFiles="true">
+            <itemPath>third_party/rtos/mulib/collections/src/mu_array.c</itemPath>
+            <itemPath>third_party/rtos/mulib/collections/src/mu_bvec.c</itemPath>
+            <itemPath>third_party/rtos/mulib/collections/src/mu_cirq.c</itemPath>
+            <itemPath>third_party/rtos/mulib/collections/src/mu_dlist.c</itemPath>
+            <itemPath>third_party/rtos/mulib/collections/src/mu_list.c</itemPath>
+            <itemPath>third_party/rtos/mulib/collections/src/mu_pstore.c</itemPath>
+            <itemPath>third_party/rtos/mulib/collections/src/mu_queue.c</itemPath>
+            <itemPath>third_party/rtos/mulib/collections/src/mu_vect.c</itemPath>
+          </logicalFolder>
+        </logicalFolder>
+        <logicalFolder name="log" displayName="log" projectFiles="true">
+          <logicalFolder name="inc" displayName="inc" projectFiles="true">
+          </logicalFolder>
+          <logicalFolder name="src" displayName="src" projectFiles="true">
+            <itemPath>third_party/rtos/mulib/log/src/mu_log.c</itemPath>
+          </logicalFolder>
+        </logicalFolder>
+        <logicalFolder name="sched" displayName="sched" projectFiles="true">
+          <logicalFolder name="inc" displayName="inc" projectFiles="true">
+          </logicalFolder>
+          <logicalFolder name="src" displayName="src" projectFiles="true">
+            <itemPath>third_party/rtos/mulib/sched/src/mu_event.c</itemPath>
+            <itemPath>third_party/rtos/mulib/sched/src/mu_sched.c</itemPath>
+            <itemPath>third_party/rtos/mulib/sched/src/mu_spsc.c</itemPath>
+            <itemPath>third_party/rtos/mulib/sched/src/mu_task.c</itemPath>
+          </logicalFolder>
+        </logicalFolder>
+        <logicalFolder name="string" displayName="string" projectFiles="true">
+          <logicalFolder name="inc" displayName="inc" projectFiles="true">
+          </logicalFolder>
+          <logicalFolder name="src" displayName="src" projectFiles="true">
+            <itemPath>third_party/rtos/mulib/string/src/mu_str.c</itemPath>
+            <itemPath>third_party/rtos/mulib/string/src/mu_strbuf.c</itemPath>
+            <itemPath>third_party/rtos/mulib/string/src/mu_stream.c</itemPath>
+            <itemPath>third_party/rtos/mulib/string/src/mu_str_utils.c</itemPath>
+          </logicalFolder>
+        </logicalFolder>
+        <logicalFolder name="utils" displayName="utils" projectFiles="true">
+          <logicalFolder name="inc" displayName="inc" projectFiles="true">
+          </logicalFolder>
+          <logicalFolder name="src" displayName="src" projectFiles="true">
+            <itemPath>third_party/rtos/mulib/utils/src/mu_parse_url.c</itemPath>
+            <itemPath>third_party/rtos/mulib/utils/src/mu_random.c</itemPath>
+            <itemPath>third_party/rtos/mulib/utils/src/mu_rfc_1123.c</itemPath>
+          </logicalFolder>
+        </logicalFolder>
+      </logicalFolder>
+      <itemPath>main.c</itemPath>
+      <itemPath>app.c</itemPath>
+      <itemPath>i2c_task.c</itemPath>
+      <itemPath>printer_task.c</itemPath>
+      <itemPath>sensor_task.c</itemPath>
+      <itemPath>ui_task.c</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false">
+      <itemPath>Makefile</itemPath>
+      <itemPath>mu_tiny.mc3</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="default" type="2">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <targetDevice>ATtiny3217</targetDevice>
+        <targetHeader></targetHeader>
+        <targetPluginBoard></targetPluginBoard>
+        <platformTool>noID</platformTool>
+        <languageToolchain>XC8</languageToolchain>
+        <languageToolchainVersion>2.36</languageToolchainVersion>
+        <platform>3</platform>
+      </toolsSet>
+      <packs>
+        <pack name="ATtiny_DFP" vendor="Microchip" version="3.0.151"/>
+      </packs>
+      <ScriptingSettings>
+      </ScriptingSettings>
+      <compileType>
+        <linkerTool>
+          <linkerLibItems>
+          </linkerLibItems>
+        </linkerTool>
+        <archiverTool>
+        </archiverTool>
+        <loading>
+          <useAlternateLoadableFile>false</useAlternateLoadableFile>
+          <parseOnProdLoad>false</parseOnProdLoad>
+          <alternateLoadableFile></alternateLoadableFile>
+        </loading>
+        <subordinates>
+        </subordinates>
+      </compileType>
+      <makeCustomizationType>
+        <makeCustomizationPreStepEnabled>false</makeCustomizationPreStepEnabled>
+        <makeUseCleanTarget>false</makeUseCleanTarget>
+        <makeCustomizationPreStep></makeCustomizationPreStep>
+        <makeCustomizationPostStepEnabled>false</makeCustomizationPostStepEnabled>
+        <makeCustomizationPostStep></makeCustomizationPostStep>
+        <makeCustomizationPutChecksumInUserID>false</makeCustomizationPutChecksumInUserID>
+        <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
+        <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
+      </makeCustomizationType>
+      <HI-TECH-COMP>
+        <property key="additional-warnings" value="true"/>
+        <property key="asmlist" value="true"/>
+        <property key="call-prologues" value="false"/>
+        <property key="default-bitfield-type" value="true"/>
+        <property key="default-char-type" value="true"/>
+        <property key="define-macros" value=""/>
+        <property key="disable-optimizations" value="false"/>
+        <property key="extra-include-directories"
+                  value="third_party\rtos\mu_platform\inc;third_party\rtos\mulib\collections\inc;third_party\rtos\mulib\log\inc;third_party\rtos\mulib\sched\inc;third_party\rtos\mulib\string\inc;third_party\rtos\mulib\utils\inc"/>
+        <property key="favor-optimization-for" value="-speed,+space"/>
+        <property key="garbage-collect-data" value="true"/>
+        <property key="garbage-collect-functions" value="true"/>
+        <property key="identifier-length" value="255"/>
+        <property key="local-generation" value="false"/>
+        <property key="operation-mode" value="free"/>
+        <property key="opt-xc8-compiler-strict_ansi" value="false"/>
+        <property key="optimization-assembler" value="true"/>
+        <property key="optimization-assembler-files" value="true"/>
+        <property key="optimization-debug" value="false"/>
+        <property key="optimization-invariant-enable" value="false"/>
+        <property key="optimization-invariant-value" value="16"/>
+        <property key="optimization-level" value="-O1"/>
+        <property key="optimization-speed" value="false"/>
+        <property key="optimization-stable-enable" value="false"/>
+        <property key="preprocess-assembler" value="true"/>
+        <property key="short-enums" value="true"/>
+        <property key="tentative-definitions" value="-fno-common"/>
+        <property key="undefine-macros" value=""/>
+        <property key="use-cci" value="false"/>
+        <property key="use-iar" value="false"/>
+        <property key="verbose" value="false"/>
+        <property key="warning-level" value="-3"/>
+        <property key="what-to-do" value="ignore"/>
+      </HI-TECH-COMP>
+      <HI-TECH-LINK>
+        <property key="additional-options-checksum" value=""/>
+        <property key="additional-options-code-offset" value=""/>
+        <property key="additional-options-command-line" value=""/>
+        <property key="additional-options-errata" value=""/>
+        <property key="additional-options-extend-address" value="false"/>
+        <property key="additional-options-trace-type" value=""/>
+        <property key="additional-options-use-response-files" value="false"/>
+        <property key="backup-reset-condition-flags" value="false"/>
+        <property key="calibrate-oscillator" value="false"/>
+        <property key="calibrate-oscillator-value" value="0x3400"/>
+        <property key="clear-bss" value="true"/>
+        <property key="code-model-external" value="wordwrite"/>
+        <property key="code-model-rom" value=""/>
+        <property key="create-html-files" value="false"/>
+        <property key="data-model-ram" value=""/>
+        <property key="data-model-size-of-double" value="24"/>
+        <property key="data-model-size-of-double-gcc" value="no-short-double"/>
+        <property key="data-model-size-of-float" value="24"/>
+        <property key="data-model-size-of-float-gcc" value="no-short-float"/>
+        <property key="display-class-usage" value="false"/>
+        <property key="display-hex-usage" value="false"/>
+        <property key="display-overall-usage" value="true"/>
+        <property key="display-psect-usage" value="false"/>
+        <property key="extra-lib-directories" value=""/>
+        <property key="fill-flash-options-addr" value=""/>
+        <property key="fill-flash-options-const" value=""/>
+        <property key="fill-flash-options-how" value="0"/>
+        <property key="fill-flash-options-inc-const" value="1"/>
+        <property key="fill-flash-options-increment" value=""/>
+        <property key="fill-flash-options-seq" value=""/>
+        <property key="fill-flash-options-what" value="0"/>
+        <property key="format-hex-file-for-download" value="false"/>
+        <property key="initialize-data" value="true"/>
+        <property key="input-libraries" value="libm"/>
+        <property key="keep-generated-startup.as" value="false"/>
+        <property key="link-in-c-library" value="true"/>
+        <property key="link-in-c-library-gcc" value=""/>
+        <property key="link-in-peripheral-library" value="false"/>
+        <property key="managed-stack" value="false"/>
+        <property key="opt-xc8-linker-file" value="false"/>
+        <property key="opt-xc8-linker-link_startup" value="false"/>
+        <property key="opt-xc8-linker-serial" value=""/>
+        <property key="program-the-device-with-default-config-words" value="true"/>
+        <property key="remove-unused-sections" value="true"/>
+      </HI-TECH-LINK>
+      <XC8-CO>
+        <property key="coverage-enable" value=""/>
+        <property key="stack-guidance" value="false"/>
+      </XC8-CO>
+      <XC8-config-global>
+        <property key="advanced-elf" value="true"/>
+        <property key="gcc-opt-driver-new" value="true"/>
+        <property key="gcc-opt-std" value="-std=c99"/>
+        <property key="gcc-output-file-format" value="dwarf-3"/>
+        <property key="omit-pack-options" value="false"/>
+        <property key="omit-pack-options-new" value="1"/>
+        <property key="output-file-format" value="-mcof,+elf"/>
+        <property key="stack-size-high" value="auto"/>
+        <property key="stack-size-low" value="auto"/>
+        <property key="stack-size-main" value="auto"/>
+        <property key="stack-type" value="compiled"/>
+        <property key="user-pack-device-support" value=""/>
+        <property key="wpo-lto" value="false"/>
+      </XC8-config-global>
+    </conf>
+  </confs>
+</configurationDescriptor>
