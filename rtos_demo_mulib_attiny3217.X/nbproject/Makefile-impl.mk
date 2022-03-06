@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=mu_tiny.X
+PROJECTNAME=rtos_demo_mulib_attiny3217.X
 
 # Active Configuration
 DEFAULTCONF=default
