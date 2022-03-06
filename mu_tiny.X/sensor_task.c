@@ -27,8 +27,8 @@
 
 #include "sensor_task.h"
 
-#include "mcc_generated_files/mcc.h"
 #include "i2c_task.h"
+#include "mcc_generated_files/mcc.h"
 #include "mu_rtc.h"
 #include "mu_sched.h"
 #include "mu_task.h"
@@ -74,9 +74,28 @@ static mu_task_t s_sensor_task;
 // *****************************************************************************
 // Private (forward) declarations
 
-static void set_state(sensor_task_state_t state);
-static const char *state_name(sensor_task_state_t state);
+/**
+ * @brief The main state machine for the task.
+ */
 static void sensor_task_fn(void *ctx, void *arg);
+
+/**
+ * @brief Set the state for the task.  Provided for debugging.
+ */
+static void set_state(sensor_task_state_t state);
+
+/**
+ * @brief Return a printable name for the state.
+ */
+static const char *state_name(sensor_task_state_t state);
+
+// ==========
+// platform-specific declarations
+
+/**
+ * @brief Toggle the on-board LED.
+ */
+static void sensor_platform_toggle_led(void);
 
 // *****************************************************************************
 // Public code
@@ -92,21 +111,6 @@ mu_task_t *sensor_task(void) { return &s_sensor_task; }
 
 // *****************************************************************************
 // Private (static) code
-
-static void set_state(sensor_task_state_t state) {
-  if (state != s_sensor_task_ctx.state) {
-    const char *s1 = state_name(s_sensor_task_ctx.state);
-    const char *s2 = state_name(state);
-    (void)s1;
-    (void)s2;
-    // TODO: Use logger to record state transitions.
-    s_sensor_task_ctx.state = state;
-  }
-}
-
-static const char *state_name(sensor_task_state_t state) {
-  return s_sensor_task_state_names[state];
-}
 
 static void sensor_task_fn(void *ctx, void *arg) {
   (void)arg;
@@ -173,7 +177,7 @@ static void sensor_task_fn(void *ctx, void *arg) {
   case SENSOR_TASK_STATE_AWAIT_PRINTING_COMPLETE: {
     // Arrive here when printing task completes.
     // Repeat task 1 second after previous wakeup
-    LED_Toggle();
+    sensor_platform_toggle_led();
     set_state(SENSOR_TASK_STATE_AWAIT_TEMPERATURE_AVAILABLE);
     // Pause until the next wake-up time.  Note that we do NOT do
     //     mu_sched_in(sensor_task() , now + 60 seconds)
@@ -189,4 +193,26 @@ static void sensor_task_fn(void *ctx, void *arg) {
   } break;
 
   } // end switch()
+}
+
+static void set_state(sensor_task_state_t state) {
+  if (state != s_sensor_task_ctx.state) {
+    const char *s1 = state_name(s_sensor_task_ctx.state);
+    const char *s2 = state_name(state);
+    (void)s1;
+    (void)s2;
+    // TODO: Use logger to record state transitions.
+    s_sensor_task_ctx.state = state;
+  }
+}
+
+static const char *state_name(sensor_task_state_t state) {
+  return s_sensor_task_state_names[state];
+}
+
+// *****************************************************************************
+// platform specific code below here...
+
+static void sensor_platform_toggle_led(void) {
+  LED_Toggle();
 }

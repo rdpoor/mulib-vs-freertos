@@ -70,32 +70,47 @@ static mu_task_t s_ui_task;
 // *****************************************************************************
 // Private (forward) declarations
 
-static void set_state(ui_task_state_t state);
-static const char *state_name(ui_task_state_t state);
-
 /**
  * @brief The primary state maachine for the ui_task.
  */
 static void ui_task_fn(void *ctx, void *arg);
 
 /**
+ * @brief Set the state for the task.  Provided for debugging.
+ */
+static void set_state(ui_task_state_t state);
+
+/**
+ * @brief Return a printable name for the state.
+ */
+static const char *state_name(ui_task_state_t state);
+
+// ==========
+// platform-specific declarations
+
+/**
+ * @brief Perform one-time platform specific setup.
+ */
+static void ui_platform_init(void);
+
+/**
  * @brief Initiate a serial read for one byte.
  *
  * Note: tihs is required in order to receive serial read interrupt callbacks
- * (see usart_rx_cb).
+ * (see ui_platform_rx_cb).
  */
-static void start_serial_read(void);
+static void ui_platform_rx(void);
 
 /**
  * @brief Called from interrupt level when a character is received on usart.
  */
-static void usart_rx_cb(uintptr_t context);
+static void ui_platform_rx_cb(void);
 
 // *****************************************************************************
 // Public code
 
 void ui_task_init(void) {
-  /* FIXME SERCOM2_USART_ReadCallbackRegister(usart_rx_cb, 0); */
+  ui_platform_init();
   mu_task_init(&s_ui_task, ui_task_fn, &s_ui_task_ctx);
   s_ui_task_ctx.state = UI_TASK_STATE_INIT;
   mu_sched_now(ui_task());  // schedule initial call when scheduler starts.
@@ -106,17 +121,6 @@ mu_task_t *ui_task(void) { return &s_ui_task; }
 // *****************************************************************************
 // Private (static) code
 
-static void set_state(ui_task_state_t state) {
-  if (state != s_ui_task_ctx.state) {
-    printf("\n%s => %s", state_name(s_ui_task_ctx.state), state_name(state));
-    s_ui_task_ctx.state = state;
-  }
-}
-
-static const char *state_name(ui_task_state_t state) {
-  return s_ui_task_state_names[state];
-}
-
 static void ui_task_fn(void *ctx, void *arg) {
   (void)arg;
   ui_task_ctx_t *self = (ui_task_ctx_t *)ctx;
@@ -125,13 +129,13 @@ static void ui_task_fn(void *ctx, void *arg) {
   case UI_TASK_STATE_INIT: {
     // Perform any one-time initializatoin that requires that xxx_task_init()
     // has been called and the scheduler is running.
-    start_serial_read(); // start waiting for a character
+    ui_platform_rx(); // start waiting for a character
     set_state(UI_TASK_STATE_IDLE);
     mu_sched_now(ui_task());
   } break;
 
   case UI_TASK_STATE_IDLE: {
-    // Wait here for usart_rx_cb() to advance the state
+    // Wait here for ui_platform_rx_cb() to advance the state
   } break;
 
   case UI_TASK_AWAIT_EEPROM_AVAILABLE: {
@@ -139,7 +143,7 @@ static void ui_task_fn(void *ctx, void *arg) {
     i2c_task_err_t err;
     if (i2c_task_is_idle()) {
       // Initiate a read from the eeprom
-      start_serial_read(); // discard current char, prepare for another...
+      ui_platform_rx(); // discard current char, prepare for another...
       err = i2c_task_read_eeprom_bytes(
           self->rx_buf, I2C_TASK_EEPROM_MAX_LOG_VALUES, ui_task());
       if (err != I2C_TASK_ERR_NONE) {
@@ -181,13 +185,38 @@ static void ui_task_fn(void *ctx, void *arg) {
   } // switch()
 }
 
-static void start_serial_read(void) {
-  /* FIXME: SERCOM2_USART_ReadAbort(); */                 // flush any stray input
-  /* FIXME: SERCOM2_USART_Read(&s_ui_task_ctx.ch, 1); */  // start a read of one byte.
+static void set_state(ui_task_state_t state) {
+  if (state != s_ui_task_ctx.state) {
+    const char *s1 = state_name(s_ui_task_ctx.state);
+    const char *s2 = state_name(state);
+    (void)s1;
+    (void)s2;
+    // TODO: Use logger to record state transitions.
+    s_ui_task_ctx.state = state;
+  }
 }
 
-static void usart_rx_cb(uintptr_t context) {
-  (void)context;
+static const char *state_name(ui_task_state_t state) {
+  return s_ui_task_state_names[state];
+}
+
+// *****************************************************************************
+// Platform specific code below here.
+
+static void ui_platform_init(void) {
+  USART0_SetRXISRCb(ui_platform_rx_cb);
+}
+
+static void ui_platform_rx(void) {
+  uint8_t data = USART0.RXDATAL; // clear the rx buffer
+  (void)data;                    // supress unused variable warning
+  USART0_EnableRx();             // make sure USART receiver is enabled
+}
+
+static void ui_platform_rx_cb(void) {
+  uint8_t data = USART0.RXDATAL; // clear the rx buffer
+  (void)data;                    // supress unused variable warning
+
   ui_task_ctx_t *self = (ui_task_ctx_t *)mu_task_get_ctx(ui_task());
   if (self->state == UI_TASK_STATE_IDLE) {
     self->state = UI_TASK_AWAIT_EEPROM_AVAILABLE;

@@ -39,12 +39,9 @@
 // *****************************************************************************
 // Private types and definitions
 
-#define I2C_TASK_TEMPERATURE_CLOCK_SPEED 100000
 #define I2C_TASK_TEMPERATURE_SLAVE_ADDR 0x004F
 #define I2C_TASK_TEMPERATURE_REG_ADDR 0x00
-#define I2C_TASK_TEMPERATURE_SAMPLING_INTERVAL_MSEC 1000
 
-#define I2C_TASK_EEPROM_CLOCK_SPEED 400000
 #define I2C_TASK_EEPROM_SLAVE_ADDR 0x0057
 #define I2C_TASK_EEPROM_LOG_MEMORY_ADDR 0x00
 
@@ -84,9 +81,20 @@ static mu_task_t s_i2c_task;
 // *****************************************************************************
 // Private (forward) declarations
 
-static void set_state(i2c_task_state_t state);
-static const char *state_name(i2c_task_state_t state);
+/**
+ * @brief The main state machine for the task.
+ */
 static void i2c_task_fn(void *ctx, void *arg);
+
+/**
+ * @brief Set the state for the task.  Provided for debugging.
+ */
+static void set_state(i2c_task_state_t state);
+
+/**
+ * @brief Return a printable name for the state.
+ */
+static const char *state_name(i2c_task_state_t state);
 
 /**
  * @brief Trigger the callback function if non-NULL
@@ -98,16 +106,40 @@ static void do_callback(void);
  */
 static int8_t convert_to_fahrenheit(uint8_t *pRawValue);
 
+// ==========
+// platform-specific declarations
+
 /**
- * @brief Interrupt-level callback when i2c operation completes.
+ * @brief Perform platform-specific initialization.  Called once at startup.
  */
-static void i2c_complete_cb(void);
+static void i2c_platform_init(void);
+
+/**
+ * @brief Initiate an asynchronous i2c transfer.
+ *
+ * @param addr The i2c peripheral address
+ * @param tx_buf The bytes to be transmitted
+ * @param tx_size The number of bytes to be transmitted
+ * @param rx_buf The buffer to receive the result
+ * @param rx_size The number of bytes to read.
+ * @return true on any failure, false on success.
+ */
+static bool i2c_platform_xfer(uint8_t addr,
+                              const uint8_t *tx_buf,
+                              size_t tx_size,
+                              uint8_t *rx_buf,
+                              size_t rx_size);
+
+/**
+ * @brief Called from interrupt level when the i2c operation completes.
+ */
+static twi0_operations_t i2c_platform_xfer_cb(void *arg);
 
 // *****************************************************************************
 // Public code
 
 void i2c_task_init(void) {
-  /* FIXME: SPI0_RegisterTransferDoneCallback(i2c_complete_cb); */
+  i2c_platform_init();
   mu_task_init(&s_i2c_task, i2c_task_fn, &s_i2c_task_ctx);
   s_i2c_task_ctx.state = I2C_TASK_STATE_IDLE;
   s_i2c_task_ctx.write_idx = 0;
@@ -125,28 +157,30 @@ i2c_task_err_t i2c_task_read_temperature(int8_t *fahrenheit,
   i2c_task_err_t err = I2C_TASK_ERR_NONE;
 
   do {
+    // calling i2c_task_read_temperature() while i2c_task busy is an error
     if (!i2c_task_is_idle()) {
       err = I2C_TASK_ERR_BUSY;
       break;
     }
 
     s_i2c_task_ctx.fahrenheit = fahrenheit;
-    // NB: it is important to set up state before initiating the SPI operation
+    // NB: it is important to set up state before initiating the I2C operation
     // since the interrupt can happen nearly immediately
     s_i2c_task_ctx.on_completion = on_completion;
     set_state(I2C_TASK_STATE_READING_TEMPERATURE);
-    uint8_t registerAddr = I2C_TASK_TEMPERATURE_REG_ADDR;
-    (void)registerAddr; // FIXME 
-    if (false /* FIXME !SERCOM3_I2C_WriteRead(I2C_TASK_TEMPERATURE_SLAVE_ADDR,
-                               &registerAddr,
-                               1,
-                               s_i2c_task_ctx.rxBuffer,
-                               2) */) {
+    // compose transmit buffer
+    s_i2c_task_ctx.txBuffer[0] = I2C_TASK_TEMPERATURE_REG_ADDR;
+    if (!i2c_platform_xfer(I2C_TASK_TEMPERATURE_SLAVE_ADDR,
+                           s_i2c_task_ctx.txBuffer,
+                           1,
+                           s_i2c_task_ctx.txBuffer,
+                           2)) {
       err = I2C_TASK_ERR_BAD_PARAM;
       break;
     }
 
-    mu_sched_at(i2c_task(), mu_rtc_now());
+    // start the i2c_task
+    mu_sched_now(i2c_task());
   } while (false);
 
   return err;
@@ -157,21 +191,31 @@ i2c_task_err_t i2c_task_write_eeprom_byte(uint8_t byte,
   i2c_task_err_t err = I2C_TASK_ERR_NONE;
 
   do {
+    // Calling i2c_task_write_eeprom_byte() while i2c_task busy is an error
     if (!i2c_task_is_idle()) {
       err = I2C_TASK_ERR_BUSY;
       break;
     }
 
+    // Prepare the i2c buffer to be transmitted.
     s_i2c_task_ctx.txBuffer[0] =
         I2C_TASK_EEPROM_LOG_MEMORY_ADDR + s_i2c_task_ctx.write_idx;
     s_i2c_task_ctx.txBuffer[1] = byte;
 
-    // NB: it is important to set up state before initiating the SPI operation
+    // NB: it is important to set up state before initiating the I2C operation
     // since the interrupt can happen nearly immediately
     s_i2c_task_ctx.on_completion = on_completion;
     set_state(I2C_TASK_STATE_WRITING_EEPROM);
-    if (false /* !SERCOM3_I2C_Write(
-            I2C_TASK_EEPROM_SLAVE_ADDR, (void *)s_i2c_task_ctx.txBuffer, 2) */) {
+
+    // compose transmit buffer to write one byte to the EEPROM: addr, data
+    s_i2c_task_ctx.txBuffer[0] =
+      I2C_TASK_EEPROM_LOG_MEMORY_ADDR + s_i2c_task_ctx.write_idx;
+    s_i2c_task_ctx.txBuffer[1] = byte;
+    if (!i2c_platform_xfer(I2C_TASK_TEMPERATURE_SLAVE_ADDR,
+                           s_i2c_task_ctx.txBuffer,
+                           2,
+                           NULL,
+                           0)) {
       err = I2C_TASK_ERR_BAD_PARAM;
       break;
     }
@@ -181,7 +225,9 @@ i2c_task_err_t i2c_task_write_eeprom_byte(uint8_t byte,
     if (s_i2c_task_ctx.write_idx == I2C_TASK_EEPROM_MAX_LOG_VALUES) {
       s_i2c_task_ctx.write_idx = 0;
     }
-    mu_sched_at(i2c_task(), mu_rtc_now());
+
+    // Start the i2c_task
+    mu_sched_now(i2c_task());
   } while (false);
 
   return err;
@@ -193,21 +239,26 @@ i2c_task_err_t i2c_task_read_eeprom_bytes(uint8_t *bytes,
   i2c_task_err_t err = I2C_TASK_ERR_NONE;
 
   do {
+    // Calling i2c_task_write_eeprom_byte() while i2c_task busy is an error
     if (!i2c_task_is_idle()) {
       err = I2C_TASK_ERR_BUSY;
       break;
     }
 
-    // NB: it is important to set up state before initiating the SPI operation
+    // NB: it is important to set up state before initiating the I2C operation
     // since the interrupt can happen nearly immediately
     s_i2c_task_ctx.on_completion = on_completion;
     set_state(I2C_TASK_STATE_READING_EEPROM);
     s_i2c_task_ctx.txBuffer[0] = I2C_TASK_EEPROM_LOG_MEMORY_ADDR;
-    if (false /* FIXME !SERCOM3_I2C_WriteRead(I2C_TASK_EEPROM_SLAVE_ADDR,
-                               (void *)s_i2c_task_ctx.txBuffer,
-                               1,
-                               bytes,
-                               n_bytes) */) {
+
+    // compose message to write one byte to the EEPROM and to
+    // read n_bytes starting at I2C_TASK_EEPROM_LOG_MEMORY_ADDR
+    s_i2c_task_ctx.txBuffer[0] = I2C_TASK_EEPROM_LOG_MEMORY_ADDR;
+    if (!i2c_platform_xfer(I2C_TASK_TEMPERATURE_SLAVE_ADDR,
+                           s_i2c_task_ctx.txBuffer,
+                           1,
+                           bytes,
+                           n_bytes)) {
       err = I2C_TASK_ERR_BAD_PARAM;
       break;
     }
@@ -220,17 +271,6 @@ i2c_task_err_t i2c_task_read_eeprom_bytes(uint8_t *bytes,
 
 // *****************************************************************************
 // Private (static) code
-
-static void set_state(i2c_task_state_t state) {
-  if (state != s_i2c_task_ctx.state) {
-    printf("\n%s => %s", state_name(s_i2c_task_ctx.state), state_name(state));
-    s_i2c_task_ctx.state = state;
-  }
-}
-
-static const char *state_name(i2c_task_state_t state) {
-  return s_i2c_task_state_names[state];
-}
 
 static void i2c_task_fn(void *ctx, void *arg) {
   (void)arg;
@@ -278,6 +318,21 @@ static void i2c_task_fn(void *ctx, void *arg) {
   } // switch()
 }
 
+static void set_state(i2c_task_state_t state) {
+  if (state != s_i2c_task_ctx.state) {
+    const char *s1 = state_name(s_i2c_task_ctx.state);
+    const char *s2 = state_name(state);
+    (void)s1;
+    (void)s2;
+    // TODO: Use logger to record & report state transitions.
+    s_i2c_task_ctx.state = state;
+  }
+}
+
+static const char *state_name(i2c_task_state_t state) {
+  return s_i2c_task_state_names[state];
+}
+
 static void do_callback(void) {
   set_state(I2C_TASK_STATE_IDLE);
   if (s_i2c_task_ctx.on_completion != NULL) {
@@ -285,8 +340,8 @@ static void do_callback(void) {
   }
 }
 
-// This is the code from the original FreeRTOS version.  I'm not sure why it was
-// written this way, but it shouldn't require floating point operations.
+// This is the code from the original FreeRTOS version.  It uses floating point,
+// but see below for an alternate integer-only implementation.
 //
 // static int8_t convert_to_fahrenheit(uint8_t *pRawValue) {
 //   int16_t temp = (pRawValue[0] << 8) | pRawValue[1];
@@ -310,10 +365,33 @@ static int8_t convert_to_fahrenheit(uint8_t *pRawValue) {
   return f / 256 + 32;
 }
 
+// *****************************************************************************
+// platform specific code below here...
+
+static void i2c_platform_init(void) {
+  I2C0_SetDataCompleteCallback(i2c_platform_xfer_cb, NULL);
+}
+
+static bool i2c_platform_xfer(uint8_t addr,
+                              const uint8_t *tx_buf,
+                              size_t tx_size,
+                              uint8_t *rx_buf,
+                              size_t rx_size) {
+  (void)addr;
+  (void)tx_buf;
+  (void)tx_size;
+  (void)rx_buf;
+  (void)rx_size;
+  bool error = false;
+  return error;
+}
+
 // Called from interrupt level when I2C read or write operation completes.
 // Set the i2c_task state and schedule a call to the task when the interrupt
 // returns
-static void i2c_complete_cb(void) {
+static twi0_operations_t i2c_platform_xfer_cb(void *arg) {
+  (void)arg;
+
   i2c_task_ctx_t *self = &s_i2c_task_ctx;
   // Because we are at interrupt level, set state directly rather than calling
   // set_state() to avoid extra I/O while in interrupt level.
@@ -324,6 +402,8 @@ static void i2c_complete_cb(void) {
   } else if (self->state == I2C_TASK_STATE_READING_EEPROM) {
     self->state = I2C_TASK_STATE_DID_READ_EEPROM;
   }
-  // Run the task at the next call to sched_step()
+  // Run the i2c task at the next call to sched_step()
   mu_sched_from_isr(i2c_task());
+
+  return I2C0_STOP;
 }

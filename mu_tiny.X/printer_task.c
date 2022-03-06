@@ -66,19 +66,51 @@ static mu_task_t s_printer_task;
 // *****************************************************************************
 // Private (forward) declarations
 
-static void set_state(printer_task_state_t state);
-static const char *state_name(printer_task_state_t state);
+/**
+ * @brief The main state machine for the task.
+ */
 static void printer_task_fn(void *ctx, void *arg);
 
-static void usart_tx_cb(uintptr_t context);
+/**
+ * @brief Set the state for the task.  Provided for debugging.
+ */
+static void set_state(printer_task_state_t state);
+
+/**
+ * @brief Return a printable name for the state.
+ */
+static const char *state_name(printer_task_state_t state);
+
+// ==========
+// platform-specific declarations
+
+/**
+ * @brief Perform platform-specific initialization.  Called once at startup.
+ */
+static void printer_platform_init(void);
+
+/**
+ * @brief Initiate serial transmit.  Return true on any error.
+ */
+static bool printer_platform_tx(const uint8_t *buf, size_t n_bytes);
+
+/**
+ * @brief Called from interrrupt level when tx operation completes.
+ */
+static void printer_platform_tx_cb(void);
+
+/**
+ * @brief Return true if USART0 has printed the last char.
+ *
+ * NOTE: Called from interrupt level.
+ */
+static bool printer_platform_tx_is_complete(void);
 
 // *****************************************************************************
 // Public code
 
 void printer_task_init(void) {
-  // register the callback function.
-  /* FIXME: SERCOM2_USART_WriteCallbackRegister(usart_tx_cb,
-                                      (uintptr_t)&s_printer_task_ctx); */
+  printer_platform_init();
   mu_task_init(&s_printer_task, printer_task_fn, &s_printer_task_ctx);
   s_printer_task_ctx.state = PRINTER_TASK_STATE_IDLE;
   s_printer_task_ctx.on_completion = NULL;
@@ -94,19 +126,44 @@ printer_task_err_t printer_task_print(uint8_t *buffer, size_t n_bytes,
                                       mu_task_t *on_completion) {
   if (!printer_task_is_idle()) {
     return PRINTER_TASK_ERR_BUSY;
-  } else if (false /* FIXME !SERCOM2_USART_Write(buffer, n_bytes) */) {
+  } else if (printer_platform_tx(buffer, n_bytes)) {
     return PRINTER_TASK_ERR_BAD_PARAM;
   } else {
     s_printer_task_ctx.on_completion = on_completion;
     set_state(PRINTER_TASK_STATE_PRINTING);
-    // TODO: mu_sched_now(...);
-    mu_sched_at(printer_task(), mu_rtc_now());
+    mu_sched_now(printer_task());
     return PRINTER_TASK_ERR_NONE;
   }
 }
 
 // *****************************************************************************
 // Private (static) code
+
+static void printer_task_fn(void *ctx, void *arg) {
+  (void)arg;
+  printer_task_ctx_t *self = (printer_task_ctx_t *)ctx;
+
+  switch (self->state) {
+  case PRINTER_TASK_STATE_IDLE: {
+    // wait here until a call to printer_task_print() advances the state.
+  } break;
+
+  case PRINTER_TASK_STATE_PRINTING: {
+    // wait here until the printer_platform_tx_cb advances the state.
+  } break;
+
+  case PRINTER_TASK_STATE_COMPLETED: {
+    set_state(PRINTER_TASK_STATE_IDLE);
+    if (s_printer_task_ctx.on_completion != NULL) {
+      mu_task_call(s_printer_task_ctx.on_completion, NULL);
+    }
+  } break;
+
+  case PRINTER_TASK_STATE_ERROR: {
+    // arrive here upon some error in printing.
+  } break;
+  }
+}
 
 static void set_state(printer_task_state_t state) {
   if (state != s_printer_task_ctx.state) {
@@ -123,37 +180,38 @@ static const char *state_name(printer_task_state_t state) {
   return s_printer_task_state_names[state];
 }
 
-static void printer_task_fn(void *ctx, void *arg) {
-  (void)arg;
-  printer_task_ctx_t *self = (printer_task_ctx_t *)ctx;
+// *****************************************************************************
+// platform specific code below here...
 
-  switch (self->state) {
-  case PRINTER_TASK_STATE_IDLE: {
-    // wait here until a call to printer_task_print() advances the state.
-  } break;
+static void printer_platform_init(void) {
+  // register to receive interrupt callbacks
+  USART0_SetTXISRCb(printer_platform_tx_cb);
+}
 
-  case PRINTER_TASK_STATE_PRINTING: {
-    // wait here until the usart_tx_cb advances the state.
-  } break;
+static bool printer_platform_tx(const uint8_t *buf, size_t n_bytes) {
+  return false;
+}
 
-  case PRINTER_TASK_STATE_COMPLETED: {
-    set_state(PRINTER_TASK_STATE_IDLE);
-    if (s_printer_task_ctx.on_completion != NULL) {
-      mu_task_call(s_printer_task_ctx.on_completion, NULL);
-    }
-  } break;
+static void printer_platform_tx_cb(void) {
+  printer_task_ctx_t *self = &s_printer_task_ctx;
 
-  case PRINTER_TASK_STATE_ERROR: {
-    // arrive here upon some error in printing.
-  } break;
+  // perform regular processing...
+  USART0_DefaultTxIsrCb();
+
+  // If transmit buffer is empty, resume printer_task state machine at next
+  // call to sched_step()
+  if (printer_platform_tx_is_complete()) {
+    self->state = PRINTER_TASK_STATE_COMPLETED;
+    mu_sched_from_isr(printer_task());
   }
 }
 
-// Called from interrupt level when printing completes
-static void usart_tx_cb(uintptr_t context) {
-  printer_task_ctx_t *self = (printer_task_ctx_t *)context;
-  // Because we are at interrupt level, set state directly rather than calling
-  // set_state() to avoid extra I/O while in interrupt level.
-  self->state = PRINTER_TASK_STATE_COMPLETED;
-  mu_sched_from_isr(printer_task());
+static bool printer_platform_tx_is_complete(void) {
+  // this is a bit of a hack.  The usart.h API does not provide a means to know
+  // if the entire buffer has been printed.  However, in USART0_DefaultTxIsrCb,
+  // after the last char has been printed, it disables the TX interrupt:
+  //    USART0.CTRLA &= ~(1 << USART_DREIE_bp);
+  // So we can examine that bit: if interrupts are disabled, the last char was
+  // printed.
+  return (USART0.CTRLA & (1 << USART_DREIE_bp)) == 0;
 }
