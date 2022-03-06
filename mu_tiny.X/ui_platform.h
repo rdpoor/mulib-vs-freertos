@@ -1,7 +1,10 @@
 /**
+ * @file ui_platform.h
+ * @brief platform-specific support for ui_task
+ *
  * MIT License
  *
- * Copyright (c) 2021 R. D. Poor <rdpoor@gmail.com>
+ * Copyright (c) 2022 R. Dunbar Poor
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,25 +23,20 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- */
-
-/**
- * @file ui_task.h
  *
- * @brief When a character is received on the serial port, fetch and print the
- *        temperature history from eeprom.
  */
 
-#ifndef _UI_TASK_H_
-#define _UI_TASK_H_
+#ifndef _UI_PLATFORM_H_
+#define _UI_PLATFORM_H_
 
 // *****************************************************************************
 // Includes
 
-#include "mu_task.h"
+#include <stdint.h>
+#include <stdbool.h>
 
-// *****************************************************************************
-// C++ Compatibility
+// =============================================================================
+// C++ compatibility
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,30 +45,24 @@ extern "C" {
 // *****************************************************************************
 // Public types and definitions
 
-typedef enum {
-    UI_TASK_ERR_NONE,
-} ui_task_err_t;
-
 // *****************************************************************************
 // Public declarations
 
 /**
- * @brief One-time initialization of the ui_task module.
+ * @brief Perform one-time platform specific setup.
  */
-void ui_task_init(void);
+void ui_platform_init(void);
 
 /**
- * @brief Return a pointer to the ui_task.
+ * @brief Initiate a serial read for one byte.
+ *
+ * Note: tihs is required in order to receive serial read interrupt callbacks
+ * (see ui_platform_rx_cb).
  */
-mu_task_t *ui_task(void);
-
-/**
- * @brief Called from interrupt level when a serial characater is received.
- */
-void ui_task_handle_irq(void);
+void ui_platform_rx(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _UI_TASK_H_ */
+#endif /* #ifndef _UI_PLATFORM_H_ */

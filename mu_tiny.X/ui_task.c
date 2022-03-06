@@ -27,12 +27,11 @@
 
 #include "ui_task.h"
 
-#include "mcc_generated_files/mcc.h"
 #include "i2c_task.h"
 #include "mu_sched.h"
 #include "mu_task.h"
 #include "printer_task.h"
-#include "ui_task.h"
+#include "ui_platform.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -85,27 +84,6 @@ static void set_state(ui_task_state_t state);
  */
 static const char *state_name(ui_task_state_t state);
 
-// ==========
-// platform-specific declarations
-
-/**
- * @brief Perform one-time platform specific setup.
- */
-static void ui_platform_init(void);
-
-/**
- * @brief Initiate a serial read for one byte.
- *
- * Note: tihs is required in order to receive serial read interrupt callbacks
- * (see ui_platform_rx_cb).
- */
-static void ui_platform_rx(void);
-
-/**
- * @brief Called from interrupt level when a character is received on usart.
- */
-static void ui_platform_rx_cb(void);
-
 // *****************************************************************************
 // Public code
 
@@ -117,6 +95,16 @@ void ui_task_init(void) {
 }
 
 mu_task_t *ui_task(void) { return &s_ui_task; }
+
+// Called from interrupt level when a character is received by the UART.
+void ui_task_handle_irq(void) {
+  ui_task_ctx_t *self = &s_ui_task_ctx;
+
+  if (self->state == UI_TASK_STATE_IDLE) {
+    self->state = UI_TASK_AWAIT_EEPROM_AVAILABLE;
+    mu_sched_from_isr(ui_task());
+  }
+}
 
 // *****************************************************************************
 // Private (static) code
@@ -198,28 +186,4 @@ static void set_state(ui_task_state_t state) {
 
 static const char *state_name(ui_task_state_t state) {
   return s_ui_task_state_names[state];
-}
-
-// *****************************************************************************
-// Platform specific code below here.
-
-static void ui_platform_init(void) {
-  USART0_SetRXISRCb(ui_platform_rx_cb);
-}
-
-static void ui_platform_rx(void) {
-  uint8_t data = USART0.RXDATAL; // clear the rx buffer
-  (void)data;                    // supress unused variable warning
-  USART0_EnableRx();             // make sure USART receiver is enabled
-}
-
-static void ui_platform_rx_cb(void) {
-  uint8_t data = USART0.RXDATAL; // clear the rx buffer
-  (void)data;                    // supress unused variable warning
-
-  ui_task_ctx_t *self = (ui_task_ctx_t *)mu_task_get_ctx(ui_task());
-  if (self->state == UI_TASK_STATE_IDLE) {
-    self->state = UI_TASK_AWAIT_EEPROM_AVAILABLE;
-    mu_sched_from_isr(ui_task());
-  }
 }

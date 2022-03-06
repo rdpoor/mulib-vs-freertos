@@ -87,6 +87,11 @@ bool printer_task_is_idle(void);
 printer_task_err_t printer_task_print(uint8_t *buffer, size_t n_bytes,
                                       mu_task_t *on_completion);
 
+/**
+ * @brief Called from interrupt level when printing has completed.
+ */
+void printer_task_handle_irq(void);
+
 #ifdef __cplusplus
 }
 #endif

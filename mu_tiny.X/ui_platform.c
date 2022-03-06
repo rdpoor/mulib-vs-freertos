@@ -1,7 +1,10 @@
 /**
+ * @file ui_platform.c
+ * @brief platform-specific support for ui_task
+ *
  * MIT License
  *
- * Copyright (c) 2021 R. D. Poor <rdpoor@gmail.com>
+ * Copyright (c) 2022 R. Dunbar Poor
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,57 +23,54 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- */
-
-/**
- * @file ui_task.h
  *
- * @brief When a character is received on the serial port, fetch and print the
- *        temperature history from eeprom.
  */
-
-#ifndef _UI_TASK_H_
-#define _UI_TASK_H_
 
 // *****************************************************************************
 // Includes
 
-#include "mu_task.h"
+#include "ui_platform.h"
+
+#include "mcc_generated_files/mcc.h"
+#include "ui_task.h"
+#include <stdbool.h>
+#include <stdint.h>
 
 // *****************************************************************************
-// C++ Compatibility
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+// Private types and definitions
 
 // *****************************************************************************
-// Public types and definitions
+// Private (static, forward) declarations
 
-typedef enum {
-    UI_TASK_ERR_NONE,
-} ui_task_err_t;
+/**
+ * @brief Called from interrupt level when a character is received on usart.
+ */
+static void ui_platform_rx_cb(void);
 
 // *****************************************************************************
-// Public declarations
+// Private (static) storage
 
-/**
- * @brief One-time initialization of the ui_task module.
- */
-void ui_task_init(void);
+// *****************************************************************************
+// Public code
 
-/**
- * @brief Return a pointer to the ui_task.
- */
-mu_task_t *ui_task(void);
+// *****************************************************************************
+// Platform specific code below here.
 
-/**
- * @brief Called from interrupt level when a serial characater is received.
- */
-void ui_task_handle_irq(void);
-
-#ifdef __cplusplus
+void ui_platform_init(void) {
+  USART0_SetRXISRCb(ui_platform_rx_cb);
 }
-#endif
 
-#endif /* #ifndef _UI_TASK_H_ */
+void ui_platform_rx(void) {
+  uint8_t data = USART0.RXDATAL; // clear the rx buffer
+  (void)data;                    // supress unused variable warning
+  USART0_EnableRx();             // make sure USART receiver is enabled
+}
+
+// *****************************************************************************
+// Private (static) code
+
+static void ui_platform_rx_cb(void) {
+  uint8_t data = USART0.RXDATAL; // clear the rx buffer
+  (void)data;                    // supress unused variable warning
+  ui_task_handle_irq();
+}

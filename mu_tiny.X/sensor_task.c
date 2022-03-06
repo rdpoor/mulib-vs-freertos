@@ -28,12 +28,12 @@
 #include "sensor_task.h"
 
 #include "i2c_task.h"
-#include "mcc_generated_files/mcc.h"
 #include "mu_rtc.h"
 #include "mu_sched.h"
 #include "mu_task.h"
 #include "mu_time.h"
 #include "printer_task.h"
+#include "sensor_platform.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -88,14 +88,6 @@ static void set_state(sensor_task_state_t state);
  * @brief Return a printable name for the state.
  */
 static const char *state_name(sensor_task_state_t state);
-
-// ==========
-// platform-specific declarations
-
-/**
- * @brief Toggle the on-board LED.
- */
-static void sensor_platform_toggle_led(void);
 
 // *****************************************************************************
 // Public code
@@ -208,11 +200,4 @@ static void set_state(sensor_task_state_t state) {
 
 static const char *state_name(sensor_task_state_t state) {
   return s_sensor_task_state_names[state];
-}
-
-// *****************************************************************************
-// platform specific code below here...
-
-static void sensor_platform_toggle_led(void) {
-  LED_Toggle();
 }

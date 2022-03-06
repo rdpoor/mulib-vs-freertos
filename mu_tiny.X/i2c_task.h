@@ -124,6 +124,11 @@ i2c_task_err_t i2c_task_read_eeprom_bytes(uint8_t *buffer,
                                           size_t n_bytes,
                                           mu_task_t *on_completion);
 
+/**
+ * @brief Handle I2C transfer complete interrrupt (at interrupt level).
+ */
+void i2c_task_handle_irq(void);
+
 #ifdef __cplusplus
 }
 #endif

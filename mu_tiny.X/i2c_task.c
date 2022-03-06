@@ -27,7 +27,7 @@
 
 #include "i2c_task.h"
 
-#include "mcc_generated_files/mcc.h"
+#include "i2c_platform.h"
 #include "mu_rtc.h"
 #include "mu_sched.h"
 #include "mu_task.h"
@@ -105,35 +105,6 @@ static void do_callback(void);
  * @brief Convert array of two uint8_t to fahrenheit.
  */
 static int8_t convert_to_fahrenheit(uint8_t *pRawValue);
-
-// ==========
-// platform-specific declarations
-
-/**
- * @brief Perform platform-specific initialization.  Called once at startup.
- */
-static void i2c_platform_init(void);
-
-/**
- * @brief Initiate an asynchronous i2c transfer.
- *
- * @param addr The i2c peripheral address
- * @param tx_buf The bytes to be transmitted
- * @param tx_size The number of bytes to be transmitted
- * @param rx_buf The buffer to receive the result
- * @param rx_size The number of bytes to read.
- * @return true on any failure, false on success.
- */
-static bool i2c_platform_xfer(uint8_t addr,
-                              const uint8_t *tx_buf,
-                              size_t tx_size,
-                              uint8_t *rx_buf,
-                              size_t rx_size);
-
-/**
- * @brief Called from interrupt level when the i2c operation completes.
- */
-static twi0_operations_t i2c_platform_xfer_cb(void *arg);
 
 // *****************************************************************************
 // Public code
@@ -269,6 +240,25 @@ i2c_task_err_t i2c_task_read_eeprom_bytes(uint8_t *bytes,
   return err;
 }
 
+// Called from interrupt level when I2C read or write operation completes.
+// Set the i2c_task state and schedule a call to the task when the interrupt
+// returns
+void i2c_task_handle_irq(void) {
+
+  i2c_task_ctx_t *self = &s_i2c_task_ctx;
+  // Because we are at interrupt level, set state directly rather than calling
+  // set_state() to avoid extra I/O while in interrupt level.
+  if (self->state == I2C_TASK_STATE_READING_TEMPERATURE) {
+    self->state = I2C_TASK_STATE_DID_READ_TEMPERATURE;
+  } else if (self->state == I2C_TASK_STATE_WRITING_EEPROM) {
+    self->state = I2C_TASK_STATE_DID_WRITE_EEPROM;
+  } else if (self->state == I2C_TASK_STATE_READING_EEPROM) {
+    self->state = I2C_TASK_STATE_DID_READ_EEPROM;
+  }
+  // Run the i2c task at the next call to sched_step()
+  mu_sched_from_isr(i2c_task());
+}
+
 // *****************************************************************************
 // Private (static) code
 
@@ -363,47 +353,4 @@ static int8_t convert_to_fahrenheit(uint8_t *pRawValue) {
   int32_t t2 = t1;  // sign extend
   uint16_t f = (t2 * 9) / 5;
   return f / 256 + 32;
-}
-
-// *****************************************************************************
-// platform specific code below here...
-
-static void i2c_platform_init(void) {
-  I2C0_SetDataCompleteCallback(i2c_platform_xfer_cb, NULL);
-}
-
-static bool i2c_platform_xfer(uint8_t addr,
-                              const uint8_t *tx_buf,
-                              size_t tx_size,
-                              uint8_t *rx_buf,
-                              size_t rx_size) {
-  (void)addr;
-  (void)tx_buf;
-  (void)tx_size;
-  (void)rx_buf;
-  (void)rx_size;
-  bool error = false;
-  return error;
-}
-
-// Called from interrupt level when I2C read or write operation completes.
-// Set the i2c_task state and schedule a call to the task when the interrupt
-// returns
-static twi0_operations_t i2c_platform_xfer_cb(void *arg) {
-  (void)arg;
-
-  i2c_task_ctx_t *self = &s_i2c_task_ctx;
-  // Because we are at interrupt level, set state directly rather than calling
-  // set_state() to avoid extra I/O while in interrupt level.
-  if (self->state == I2C_TASK_STATE_READING_TEMPERATURE) {
-    self->state = I2C_TASK_STATE_DID_READ_TEMPERATURE;
-  } else if (self->state == I2C_TASK_STATE_WRITING_EEPROM) {
-    self->state = I2C_TASK_STATE_DID_WRITE_EEPROM;
-  } else if (self->state == I2C_TASK_STATE_READING_EEPROM) {
-    self->state = I2C_TASK_STATE_DID_READ_EEPROM;
-  }
-  // Run the i2c task at the next call to sched_step()
-  mu_sched_from_isr(i2c_task());
-
-  return I2C0_STOP;
 }

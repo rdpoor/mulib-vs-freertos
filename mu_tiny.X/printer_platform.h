@@ -1,7 +1,10 @@
 /**
+ * @file printer_platform.h
+ * @brief platform-specific support for printer_task
+ *
  * MIT License
  *
- * Copyright (c) 2021 R. D. Poor <rdpoor@gmail.com>
+ * Copyright (c) 2022 R. Dunbar Poor
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,25 +23,20 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- */
-
-/**
- * @file ui_task.h
  *
- * @brief When a character is received on the serial port, fetch and print the
- *        temperature history from eeprom.
  */
 
-#ifndef _UI_TASK_H_
-#define _UI_TASK_H_
+#ifndef _PRINTER_PLATFORM_H_
+#define _PRINTER_PLATFORM_H_
 
 // *****************************************************************************
 // Includes
 
-#include "mu_task.h"
+#include <stdint.h>
+#include <stdbool.h>
 
-// *****************************************************************************
-// C++ Compatibility
+// =============================================================================
+// C++ compatibility
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,30 +45,24 @@ extern "C" {
 // *****************************************************************************
 // Public types and definitions
 
-typedef enum {
-    UI_TASK_ERR_NONE,
-} ui_task_err_t;
+// ==========
+// platform-specific declarations
+
+/**
+ * @brief Perform platform-specific initialization.  Called once at startup.
+ */
+void printer_platform_init(void);
+
+/**
+ * @brief Initiate serial transmit.  Return true on any error.
+ */
+bool printer_platform_tx(const uint8_t *buf, size_t n_bytes);
 
 // *****************************************************************************
 // Public declarations
-
-/**
- * @brief One-time initialization of the ui_task module.
- */
-void ui_task_init(void);
-
-/**
- * @brief Return a pointer to the ui_task.
- */
-mu_task_t *ui_task(void);
-
-/**
- * @brief Called from interrupt level when a serial characater is received.
- */
-void ui_task_handle_irq(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _UI_TASK_H_ */
+#endif /* #ifndef _PRINTER_PLATFORM_H_ */
