@@ -1,17 +1,22 @@
 /*******************************************************************************
-  System Initialization File
+  System Configuration Header
 
   File Name:
-    initialization.c
+    configuration.h
 
   Summary:
-    This file contains source code necessary to initialize the system.
+    Build-time configuration header for the system defined by this project.
 
   Description:
-    This file contains source code necessary to initialize the system.  It
-    implements the "SYS_Initialize" function, defines the configuration bits,
-    and allocates any necessary global system resources,
- *******************************************************************************/
+    An MPLAB Project may have multiple configurations.  This file defines the
+    build-time options for a single configuration.
+
+  Remarks:
+    This configuration header must not define any prototypes or data
+    definitions (or include any files that do).  It only provides macro
+    definitions for build-time configuration options
+
+*******************************************************************************/
 
 // DOM-IGNORE-BEGIN
 /*******************************************************************************
@@ -35,69 +40,35 @@
 * FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN
 * ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
 * THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
- *******************************************************************************/
+*******************************************************************************/
 // DOM-IGNORE-END
+
+#ifndef CONFIGURATION_H
+#define CONFIGURATION_H
 
 // *****************************************************************************
 // *****************************************************************************
 // Section: Included Files
 // *****************************************************************************
 // *****************************************************************************
-#include "configuration.h"
-#include "definitions.h"
+/*  This section Includes other configuration headers necessary to completely
+    define this configuration.
+*/
+
+#include "user.h"
 #include "device.h"
 
+// DOM-IGNORE-BEGIN
+#ifdef __cplusplus  // Provide C++ Compatibility
 
+extern "C" {
 
-// ****************************************************************************
-// ****************************************************************************
-// Section: Configuration Bits
-// ****************************************************************************
-// ****************************************************************************
-#pragma config NVMCTRL_BOOTPROT = SIZE_0BYTES
-#pragma config NVMCTRL_EEPROM_SIZE = SIZE_0BYTES
-#pragma config BOD33USERLEVEL = 0x7 // Enter Hexadecimal value
-#pragma config BOD33_EN = ENABLED
-#pragma config BOD33_ACTION = RESET
-
-#pragma config BOD33_HYST = DISABLED
-#pragma config NVMCTRL_REGION_LOCKS = 0xffff // Enter Hexadecimal value
-
-#pragma config WDT_ENABLE = DISABLED
-#pragma config WDT_ALWAYSON = DISABLED
-#pragma config WDT_PER = CYC16384
-
-#pragma config WDT_WINDOW_0 = SET
-#pragma config WDT_WINDOW_1 = 0x4 // Enter Hexadecimal value
-#pragma config WDT_EWOFFSET = CYC16384
-#pragma config WDT_WEN = DISABLED
-
-
-
+#endif
+// DOM-IGNORE-END
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: Driver Initialization Data
-// *****************************************************************************
-// *****************************************************************************
-
-
-// *****************************************************************************
-// *****************************************************************************
-// Section: System Data
-// *****************************************************************************
-// *****************************************************************************
-
-// *****************************************************************************
-// *****************************************************************************
-// Section: Library/Stack Initialization Data
-// *****************************************************************************
-// *****************************************************************************
-
-
-// *****************************************************************************
-// *****************************************************************************
-// Section: System Initialization
+// Section: System Configuration
 // *****************************************************************************
 // *****************************************************************************
 
@@ -105,58 +76,39 @@
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: Local initialization functions
+// Section: System Service Configuration
 // *****************************************************************************
 // *****************************************************************************
 
 
-
-/*******************************************************************************
-  Function:
-    void SYS_Initialize ( void *data )
-
-  Summary:
-    Initializes the board, services, drivers, application and other modules.
-
-  Remarks:
- */
-
-void SYS_Initialize ( void* data )
-{
-
-    NVMCTRL_REGS->NVMCTRL_CTRLB = NVMCTRL_CTRLB_RWS(3UL);
-
-  
-    PORT_Initialize();
-
-    CLOCK_Initialize();
+// *****************************************************************************
+// *****************************************************************************
+// Section: Driver Configuration
+// *****************************************************************************
+// *****************************************************************************
 
 
+// *****************************************************************************
+// *****************************************************************************
+// Section: Middleware & Other Library Configuration
+// *****************************************************************************
+// *****************************************************************************
 
 
-    NVMCTRL_Initialize( );
-
-    SERCOM2_USART_Initialize();
-
-    SERCOM1_I2C_Initialize();
-
-    EVSYS_Initialize();
-
-    RTC_Initialize();
-
-	BSP_Initialize();
+// *****************************************************************************
+// *****************************************************************************
+// Section: Application Configuration
+// *****************************************************************************
+// *****************************************************************************
 
 
-
-
-    APP_Initialize();
-
-
-    NVIC_Initialize();
-
+//DOM-IGNORE-BEGIN
+#ifdef __cplusplus
 }
+#endif
+//DOM-IGNORE-END
 
-
+#endif // CONFIGURATION_H
 /*******************************************************************************
  End of File
 */

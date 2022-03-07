@@ -1,17 +1,22 @@
 /*******************************************************************************
-  System Exceptions File
+ System Tasks File
 
   File Name:
-    exceptions.c
+    tasks.c
 
   Summary:
-    This file contains a function which overrides the default _weak_ exception
-    handlers provided by the interrupt.c file.
+    This file contains source code necessary to maintain system's polled tasks.
 
   Description:
-    This file redefines the default _weak_  exception handler with a more debug
-    friendly one. If an unexpected exception occurs the code will stop in a
-    while(1) loop.
+    This file contains source code necessary to maintain system's polled tasks.
+    It implements the "SYS_Tasks" function that calls the individual "Tasks"
+    functions for all polled MPLAB Harmony modules in the system.
+
+  Remarks:
+    This file requires access to the systemObjects global data structure that
+    contains the object handles to all MPLAB Harmony module objects executing
+    polled in the system.  These handles are passed into the individual module
+    "Tasks" functions to identify the instance of the module to maintain.
  *******************************************************************************/
 
 // DOM-IGNORE-BEGIN
@@ -36,7 +41,7 @@
 * FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN
 * ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
 * THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
-*******************************************************************************/
+ *******************************************************************************/
 // DOM-IGNORE-END
 
 // *****************************************************************************
@@ -44,36 +49,44 @@
 // Section: Included Files
 // *****************************************************************************
 // *****************************************************************************
+
 #include "configuration.h"
-#include "interrupts.h"
 #include "definitions.h"
 
+
+
+
 // *****************************************************************************
 // *****************************************************************************
-// Section: Exception Handling Routine
+// Section: System "Tasks" Routine
 // *****************************************************************************
 // *****************************************************************************
 
-/* Brief default interrupt handlers for core IRQs.*/
+/*******************************************************************************
+  Function:
+    void SYS_Tasks ( void )
 
-void __attribute__((noreturn)) NonMaskableInt_Handler(void)
+  Remarks:
+    See prototype in system/common/sys_module.h.
+*/
+void SYS_Tasks ( void )
 {
-#if defined(__DEBUG) || defined(__DEBUG_D) && defined(__XC32)
-    __builtin_software_breakpoint();
-#endif
-    while (true)
-    {
-    }
-}
+    /* Maintain system services */
+    
 
-void __attribute__((noreturn)) HardFault_Handler(void)
-{
-#if defined(__DEBUG) || defined(__DEBUG_D) && defined(__XC32)
-   __builtin_software_breakpoint();
-#endif
-   while (true)
-   {
-   }
+    /* Maintain Device Drivers */
+    
+
+    /* Maintain Middleware & Other Libraries */
+    
+
+    /* Maintain the application's state machine. */
+        /* Call Application task APP. */
+    APP_Tasks();
+
+
+
+
 }
 
 /*******************************************************************************
