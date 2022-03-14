@@ -50,6 +50,8 @@ extern "C" {
 typedef uint16_t mu_time_abs_t;
 typedef int16_t mu_time_rel_t;
 
+#define MU_TIME_MAX_DT 0x8000
+
 // *****************************************************************************
 // Public declarations
 

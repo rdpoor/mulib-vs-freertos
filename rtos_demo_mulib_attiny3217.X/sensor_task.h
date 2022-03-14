@@ -35,6 +35,7 @@
 // Includes
 
 #include "mu_task.h"
+#include <stdbool.h>
 
 // *****************************************************************************
 // C++ Compatibility
@@ -46,6 +47,13 @@ extern "C" {
 // *****************************************************************************
 // Public types and definitions
 
+#define SENSOR_TASK_TEMPERATURE_SLAVE_ADDR 0x004F
+#define SENSOR_TASK_TEMPERATURE_REG_ADDR 0x00
+
+#define SENSOR_TASK_EEPROM_SLAVE_ADDR 0x0057
+#define SENSOR_TASK_EEPROM_LOG_MEMORY_ADDR 0x00
+#define SENSOR_TASK_EEPROM_MAX_LOG_VALUES 5
+
 typedef enum {
     SENSOR_TASK_ERR_NONE,
 } sensor_task_err_t;
@@ -56,6 +64,13 @@ typedef enum {
 void sensor_task_init(void);
 
 mu_task_t *sensor_task(void);
+
+/**
+ * @brief Return true if the sensor_task is in-between taking readings.
+ * 
+ * @return true if the sensor task is idle.
+ */
+bool sensor_task_is_idle(void);
 
 #ifdef __cplusplus
 }

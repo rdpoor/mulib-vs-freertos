@@ -33,179 +33,32 @@
 
 #include "../include/usart0.h"
 
+#if defined(__GNUC__)
 
-/* Static Variables holding the ringbuffer used in IRQ mode */
-static uint8_t          USART0_rxbuf[USART0_RX_BUFFER_SIZE];
-static volatile uint8_t USART0_rx_head;
-static volatile uint8_t USART0_rx_tail;
-static volatile uint8_t USART0_rx_elements;
-static uint8_t          USART0_txbuf[USART0_TX_BUFFER_SIZE];
-static volatile uint8_t USART0_tx_head;
-static volatile uint8_t USART0_tx_tail;
-static volatile uint8_t USART0_tx_elements;
-
-void (*USART0_rx_isr_cb)(void) = &USART0_DefaultRxIsrCb;
-
-void (*USART0_tx_isr_cb)(void) = &USART0_DefaultTxIsrCb;
-
-void USART0_DefaultRxIsrCb(void)
+int USART0_printCHAR(char character, FILE *stream)
 {
-    uint8_t data;
-    uint8_t tmphead;
-
-    /* Read the received data */
-    data = USART0.RXDATAL;
-    /* Calculate buffer index */
-    tmphead = (USART0_rx_head + 1) & USART0_RX_BUFFER_MASK;
-        
-    if (tmphead == USART0_rx_tail) {
-            /* ERROR! Receive buffer overflow */
-    }else {
-    /*Store new index*/
-    USART0_rx_head = tmphead;
-    
-    /* Store received data in buffer */
-    USART0_rxbuf[tmphead] = data;
-    USART0_rx_elements++;
-    }
+    USART0_Write(character);
+    return 0;
 }
 
-void USART0_DefaultTxIsrCb(void)
+FILE USART0_stream = FDEV_SETUP_STREAM(USART0_printCHAR, NULL, _FDEV_SETUP_WRITE);
+
+#elif defined(__ICCAVR__)
+
+int putchar(int outChar)
 {
-    uint8_t tmptail;
-
-    /* Check if all data is transmitted */
-    if (USART0_tx_elements != 0) {
-        /* Calculate buffer index */
-        tmptail = (USART0_tx_tail + 1) & USART0_TX_BUFFER_MASK;
-        /* Store new index */
-        USART0_tx_tail = tmptail;
-        /* Start transmission */
-        USART0.TXDATAL = USART0_txbuf[tmptail];
-        
-        USART0_tx_elements--;
-    }
-
-    if (USART0_tx_elements == 0) {
-            /* Disable Tx interrupt */
-            USART0.CTRLA &= ~(1 << USART_DREIE_bp);
-    }
+    USART0_Write(outChar);
+    return outChar;
 }
-
-void USART0_SetISRCb(usart_callback cb, usart0_cb_t type)
-{
-    switch (type) {
-        case USART0_RX_CB:
-                USART0_rx_isr_cb = cb;
-                break;
-        case USART0_TX_CB:
-                USART0_tx_isr_cb = cb;
-                break;
-        default:
-                // do nothing
-                break;
-    }
-}
-
-void USART0_SetRXISRCb(usart_callback cb)
-{
-    USART0_SetISRCb(cb,USART0_RX_CB);
-}
-
-void USART0_SetTXISRCb(usart_callback cb)
-{
-    USART0_SetISRCb(cb,USART0_TX_CB);
-}
-
-/* Interrupt service routine for RX complete */
-ISR(USART0_RXC_vect)
-{
-    if (USART0_rx_isr_cb != NULL)
-    {
-        (*USART0_rx_isr_cb)();
-    }
-}
-
-/* Interrupt service routine for Data Register Empty */
-ISR(USART0_DRE_vect)
-{
-    if (USART0_tx_isr_cb != NULL)
-    {
-        (*USART0_tx_isr_cb)();
-    }
-}
-
-ISR(USART0_TXC_vect)
-{
-    USART0.STATUS |= USART_TXCIF_bm;
-}
-
-bool USART0_IsTxReady()
-{
-    return (USART0_tx_elements != USART0_TX_BUFFER_SIZE);
-}
-
-bool USART0_IsRxReady()
-{
-    return (USART0_rx_elements != 0);
-}
-
-bool USART0_IsTxBusy()
-{
-    return (!(USART0.STATUS & USART_TXCIF_bm));
-}
-
-bool USART0_IsTxDone()
-{
-    return (USART0.STATUS & USART_TXCIF_bm);
-}
-
-uint8_t USART0_Read(void)
-{
-    uint8_t tmptail;
-
-    /* Wait for incoming data */
-    while (USART0_rx_elements == 0)
-            ;
-    /* Calculate buffer index */
-    tmptail = (USART0_rx_tail + 1) & USART0_RX_BUFFER_MASK;
-    /* Store new index */
-    USART0_rx_tail = tmptail;
-    ENTER_CRITICAL(R);
-    USART0_rx_elements--;
-    EXIT_CRITICAL(R);
-
-    /* Return data */
-    return USART0_rxbuf[tmptail];
-}
-
-void USART0_Write(const uint8_t data)
-{
-    uint8_t tmphead;
-
-    /* Calculate buffer index */
-    tmphead = (USART0_tx_head + 1) & USART0_TX_BUFFER_MASK;
-    /* Wait for free space in buffer */
-    while (USART0_tx_elements == USART0_TX_BUFFER_SIZE)
-            ;
-    /* Store data in buffer */
-    USART0_txbuf[tmphead] = data;
-    /* Store new index */
-    USART0_tx_head = tmphead;
-    ENTER_CRITICAL(W);
-    USART0_tx_elements++;
-    EXIT_CRITICAL(W);
-    /* Enable Tx interrupt */
-    USART0.CTRLA |= (1 << USART_DREIE_bp);
-}
+#endif
 
 void USART0_Initialize()
 {
     //set baud rate register
     USART0.BAUD = (uint16_t)USART0_BAUD_RATE(115200);
 	
-    //RXCIE enabled; TXCIE enabled; DREIE disabled; RXSIE enabled; LBME disabled; ABEIE disabled; RS485 OFF; 
-    USART0.CTRLA = 0xD0;
+    //RXCIE disabled; TXCIE disabled; DREIE disabled; RXSIE disabled; LBME disabled; ABEIE disabled; RS485 OFF; 
+    USART0.CTRLA = 0x00;
 	
     //RXEN enabled; TXEN enabled; SFDEN disabled; ODME disabled; RXMODE NORMAL; MPCM disabled; 
     USART0.CTRLB = 0xC0;
@@ -226,17 +79,9 @@ void USART0_Initialize()
     USART0.TXPLCTRL = 0x00;
 	
 
-    uint8_t x;
-
-    /* Initialize ringbuffers */
-    x = 0;
-
-    USART0_rx_tail     = x;
-    USART0_rx_head     = x;
-    USART0_rx_elements = x;
-    USART0_tx_tail     = x;
-    USART0_tx_head     = x;
-    USART0_tx_elements = x;
+#if defined(__GNUC__)
+    stdout = &USART0_stream;
+#endif
 
 }
 
@@ -263,4 +108,38 @@ void USART0_Disable()
 uint8_t USART0_GetData()
 {
     return USART0.RXDATAL;
+}
+
+bool USART0_IsTxReady()
+{
+    return (USART0.STATUS & USART_DREIF_bm);
+}
+
+bool USART0_IsRxReady()
+{
+    return (USART0.STATUS & USART_RXCIF_bm);
+}
+
+bool USART0_IsTxBusy()
+{
+    return (!(USART0.STATUS & USART_TXCIF_bm));
+}
+
+bool USART0_IsTxDone()
+{
+    return (USART0.STATUS & USART_TXCIF_bm);
+}
+
+uint8_t USART0_Read()
+{
+    while (!(USART0.STATUS & USART_RXCIF_bm))
+            ;
+    return USART0.RXDATAL;
+}
+
+void USART0_Write(const uint8_t data)
+{
+    while (!(USART0.STATUS & USART_DREIF_bm))
+            ;
+    USART0.TXDATAL = data;
 }

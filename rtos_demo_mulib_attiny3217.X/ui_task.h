@@ -65,9 +65,9 @@ void ui_task_init(void);
 mu_task_t *ui_task(void);
 
 /**
- * @brief Called from interrupt level when a serial characater is received.
+ * @brief Return true if the ui_task is idle.
  */
-void ui_task_handle_irq(void);
+bool ui_task_is_idle(void);
 
 #ifdef __cplusplus
 }

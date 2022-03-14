@@ -48,7 +48,7 @@ void mu_rtc_init(void) {
 }
 
 mu_time_abs_t mu_rtc_now(void) {
-    return RTC_ReadPeriod();
+    return RTC_ReadCounter();
 }
 
 // *****************************************************************************

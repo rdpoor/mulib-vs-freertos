@@ -45,16 +45,16 @@ int8_t RTC_Initialize()
     while (RTC.STATUS > 0) { /* Wait for all register to be synchronized */
     }
     //Compare 
-    RTC.CMP = 0x01;
+    RTC.CMP = 0x10;
 
     //Count
     RTC.CNT = 0x00;
 
     //Period
-    RTC.PER = 0x01;
+    RTC.PER = 0xFFFF;
 
-    //CMP disabled; OVF enabled; 
-    RTC.INTCTRL = 0x01;
+    //CMP disabled; OVF disabled; 
+    RTC.INTCTRL = 0x00;
 
     //Clock selection
     RTC.CLKSEL = 0x01;

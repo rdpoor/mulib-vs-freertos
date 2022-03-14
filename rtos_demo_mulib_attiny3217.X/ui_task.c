@@ -28,10 +28,11 @@
 #include "ui_task.h"
 
 #include "i2c_task.h"
+#include "mcc_generated_files/mcc.h"
+#include "mu_rtc.h"
 #include "mu_sched.h"
 #include "mu_task.h"
-#include "printer_task.h"
-#include "ui_platform.h"
+#include "sensor_task.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -42,8 +43,9 @@
 #define ui_STATES(M)                                                           \
   M(UI_TASK_STATE_INIT)                                                        \
   M(UI_TASK_STATE_IDLE)                                                        \
-  M(UI_TASK_AWAIT_EEPROM_AVAILABLE)                                            \
-  M(UI_TASK_STATE_AWAIT_PRINTER_AVAILABLE)                                     \
+  M(UI_TASK_START_EEPROM_READ)                                                 \
+  M(UI_TASK_STATE_READING_EEPROM)                                              \
+  M(UI_TASK_STATE_PRINTING)                                                    \
   M(UI_TASK_STATE_ERROR)
 
 #define EXPAND_TASK_STATES(_name) _name,
@@ -51,8 +53,8 @@ typedef enum { ui_STATES(EXPAND_TASK_STATES) } ui_task_state_t;
 
 typedef struct {
   ui_task_state_t state;
-  uint8_t ch;             // received serial byte.  Not currently used.
-  uint8_t rx_buf[I2C_TASK_EEPROM_MAX_LOG_VALUES]; // read from eeprom
+  uint8_t ch; // received serial byte.  Not currently used.
+  uint8_t buf[SENSOR_TASK_EEPROM_MAX_LOG_VALUES]; // read from eeprom
 } ui_task_ctx_t;
 
 // *****************************************************************************
@@ -84,27 +86,23 @@ static void set_state(ui_task_state_t state);
  */
 static const char *state_name(ui_task_state_t state);
 
+/**
+ * @brief Clear the receive buffer.
+ */
+static void flush_rx(void);
+
 // *****************************************************************************
 // Public code
 
 void ui_task_init(void) {
-  ui_platform_init();
   mu_task_init(&s_ui_task, ui_task_fn, &s_ui_task_ctx);
   s_ui_task_ctx.state = UI_TASK_STATE_INIT;
-  mu_sched_now(ui_task());  // schedule initial call when scheduler starts.
+  mu_sched_now(ui_task()); // schedule initial call when scheduler starts.
 }
 
 mu_task_t *ui_task(void) { return &s_ui_task; }
 
-// Called from interrupt level when a character is received by the UART.
-void ui_task_handle_irq(void) {
-  ui_task_ctx_t *self = &s_ui_task_ctx;
-
-  if (self->state == UI_TASK_STATE_IDLE) {
-    self->state = UI_TASK_AWAIT_EEPROM_AVAILABLE;
-    mu_sched_from_isr(ui_task());
-  }
-}
+bool ui_task_is_idle(void) { return s_ui_task_ctx.state == UI_TASK_STATE_IDLE; }
 
 // *****************************************************************************
 // Private (static) code
@@ -115,56 +113,62 @@ static void ui_task_fn(void *ctx, void *arg) {
 
   switch (self->state) {
   case UI_TASK_STATE_INIT: {
-    // Perform any one-time initializatoin that requires that xxx_task_init()
-    // has been called and the scheduler is running.
-    ui_platform_rx(); // start waiting for a character
+    flush_rx(); // flush any stray input
+
     set_state(UI_TASK_STATE_IDLE);
     mu_sched_now(ui_task());
   } break;
 
   case UI_TASK_STATE_IDLE: {
-    // Wait here for ui_platform_rx_cb() to advance the state
+    if (sensor_task_is_idle() && USART0_IsRxReady()) {
+      // A character was typed - consume and ignore it and advance state.
+      flush_rx(); // flush any stray input
+      set_state(UI_TASK_START_EEPROM_READ);
+    } else {
+      // remain in this state until a char is typed...
+    }
+    // This polls the serial line.  A better implementation would wait for an
+    // interrupt on the serial port.
+    mu_sched_in(ui_task(), mu_time_ms_to_rel(1));
   } break;
 
-  case UI_TASK_AWAIT_EEPROM_AVAILABLE: {
-    // Here to wait for EEPROM and then initiate a read operation
-    i2c_task_err_t err;
-    if (i2c_task_is_idle()) {
-      // Initiate a read from the eeprom
-      ui_platform_rx(); // discard current char, prepare for another...
-      err = i2c_task_read_eeprom_bytes(
-          self->rx_buf, I2C_TASK_EEPROM_MAX_LOG_VALUES, ui_task());
-      if (err != I2C_TASK_ERR_NONE) {
-        set_state(UI_TASK_STATE_ERROR);
-      } else {
-        set_state(UI_TASK_STATE_AWAIT_PRINTER_AVAILABLE);
-        // i2c_task_read_eeprom() callback will trigger next step
-      }
+  case UI_TASK_START_EEPROM_READ: {
+    // ASSERT(sensor_task_is_idle())
+    // ASSERT(i2c_task_is_idle())
+    // To read bytes from EEPROM, first set the read address...
+    s_ui_task_ctx.buf[0] = SENSOR_TASK_EEPROM_LOG_MEMORY_ADDR;
+    i2c_task_err_t err = i2c_task_write(
+        SENSOR_TASK_EEPROM_SLAVE_ADDR, s_ui_task_ctx.buf, 1, ui_task());
+    if (err != I2C_TASK_ERR_NONE) {
+      set_state(UI_TASK_STATE_ERROR);
     } else {
-      // I2C is busy -- check again after a short delay.
-      mu_sched_in(ui_task(), mu_time_ms_to_rel(1));
+      set_state(UI_TASK_STATE_READING_EEPROM);
+      // i2c_task_read_eeprom() callback will trigger next step
     }
   } break;
 
-  case UI_TASK_STATE_AWAIT_PRINTER_AVAILABLE: {
+  case UI_TASK_STATE_READING_EEPROM: {
+    // ASSERT(sensor_task_is_idle())
+    // ASSERT(i2c_task_is_idle())
+    i2c_task_err_t err = i2c_task_read(
+        SENSOR_TASK_EEPROM_SLAVE_ADDR, s_ui_task_ctx.buf, 5, ui_task());
+    if (err != I2C_TASK_ERR_NONE) {
+      set_state(UI_TASK_STATE_ERROR);
+    } else {
+      set_state(UI_TASK_STATE_PRINTING);
+      // wait for i2c_task_read() callback to resume task
+    }
+  } break;
+
+  case UI_TASK_STATE_PRINTING: {
     // Arrive here when EEPROM data has been read
-    if (printer_task_is_idle()) {
-      static char print_buf[25];
-      snprintf(print_buf,
-               sizeof(print_buf),
-               "\nEEPROM:%02d|%02d|%02d|%02d|%02d|",
-               self->rx_buf[0],
-               self->rx_buf[1],
-               self->rx_buf[2],
-               self->rx_buf[3],
-               self->rx_buf[4]);
-      printer_task_print((uint8_t *)print_buf, strlen(print_buf), ui_task());
-      set_state(UI_TASK_STATE_IDLE);
-      // printer_task_print() callback will trigger next step
-    } else {
-      // Printer is busy -- check again after a short delay
-      mu_sched_in(ui_task(), mu_time_ms_to_rel(1));
-    }
+    printf("\nEEPROM:%02d|%02d|%02d|%02d|%02d|",
+           self->buf[0],
+           self->buf[1],
+           self->buf[2],
+           self->buf[3],
+           self->buf[4]);
+    set_state(UI_TASK_STATE_IDLE);
   } break;
 
   case UI_TASK_STATE_ERROR: {
@@ -177,8 +181,7 @@ static void set_state(ui_task_state_t state) {
   if (state != s_ui_task_ctx.state) {
     const char *s1 = state_name(s_ui_task_ctx.state);
     const char *s2 = state_name(state);
-    (void)s1;
-    (void)s2;
+    printf("\n%8d %s => %s", mu_rtc_now(), s1, s2);
     // TODO: Use logger to record state transitions.
     s_ui_task_ctx.state = state;
   }
@@ -186,4 +189,11 @@ static void set_state(ui_task_state_t state) {
 
 static const char *state_name(ui_task_state_t state) {
   return s_ui_task_state_names[state];
+}
+
+static void flush_rx(void) {
+  while (USART0_IsRxReady()) {
+    uint8_t ch = USART0_GetData();
+    (void)ch;
+  }
 }

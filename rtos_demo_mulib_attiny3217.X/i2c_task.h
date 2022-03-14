@@ -25,8 +25,8 @@
 /**
  * @file i2c_task.h
  *
- * @brief In this app, eeprom and temperature sensor share the I2C bus.  The
- * i2c_task provides asynchronous access to both.
+ * @brief i2c_task implements a task for performing read and write operations on
+ * the I2C bus.
  */
 
 #ifndef _I2C_TASK_H_
@@ -35,6 +35,7 @@
 // *****************************************************************************
 // Includes
 
+#include "mcc_generated_files/mcc.h"
 #include "mu_task.h"
 #include <stdint.h>
 
@@ -47,8 +48,6 @@ extern "C" {
 
 // *****************************************************************************
 // Public types and definitions
-
-#define I2C_TASK_EEPROM_MAX_LOG_VALUES 5
 
 typedef enum {
   I2C_TASK_ERR_NONE,
@@ -70,64 +69,42 @@ void i2c_task_init(void);
 mu_task_t *i2c_task(void);
 
 /**
- * @brief Return true if the i2c is available for printing.
+ * @brief Return true if the i2c is available for reads or writes.
  */
 bool i2c_task_is_idle(void);
 
 /**
- * @brief Request to start asynchronous reading of the temperature.
+ * @brief Request to start an asynchronous read operation.
  *
  * Note: it is an error to call this function unless i2c_task_is_idle()
  * returns true.
  *
  * Note: If on_completion is non-NULL, it will be triggered when the read
  * operation completes.  In addition, i2c_task_is_idle() will return true.
- *
- * @param fahrenheit Pointer to location to receive the result.
- * @param on_completion The task to call upon completion.  May be NULL.
- * @return I2C_TASK_ERR_NONE on success.
  */
-i2c_task_err_t i2c_task_read_temperature(int8_t *fahrenheit,
-                                         mu_task_t *on_completion);
+i2c_task_err_t i2c_task_read(uint8_t addr,
+                             uint8_t *buf,
+                             size_t n_bytes,
+                             mu_task_t *on_completion);
 
 /**
- * @brief Request to start asynchronous write to eeprom.
- *
- * Note: it is an error to call this function unless i2c_task_is_idle()
- * returns true.
- *
- * Note: If on_completion is non-NULL, it will be triggered when the write
- * operation completes.  In addition, i2c_task_is_idle() will return true.
- *
- * @param byte The byt e to be written.
- * @param on_completion The task to call upon completion.  May be NULL.
- * @return I2C_TASK_ERR_NONE on success.
- */
-i2c_task_err_t i2c_task_write_eeprom_byte(uint8_t byte,
-                                          mu_task_t *on_completion);
-
-/**
- * @brief Request to start asynchronous read from eeprom.
+ * @brief Request to start an asynchronous write operation.
  *
  * Note: it is an error to call this function unless i2c_task_is_idle()
  * returns true.
  *
  * Note: If on_completion is non-NULL, it will be triggered when the read
  * operation completes.  In addition, i2c_task_is_idle() will return true.
- *
- * @param buf The location in which to write the read data.
- * @param n_bytes The number of bytes to be read.
- * @param on_completion The task to call upon completion.  May be NULL.
- * @return I2C_TASK_ERR_NONE on success.
  */
-i2c_task_err_t i2c_task_read_eeprom_bytes(uint8_t *buffer,
-                                          size_t n_bytes,
-                                          mu_task_t *on_completion);
+i2c_task_err_t i2c_task_write(uint8_t addr,
+                              uint8_t *buf,
+                              size_t n_bytes,
+                              mu_task_t *on_completion);
 
 /**
- * @brief Handle I2C transfer complete interrrupt (at interrupt level).
+ * @brief Handle I2C operation complete (at interrupt level).
  */
-void i2c_task_handle_irq(void);
+twi0_operations_t i2c_task_handle_irq(void *arg);
 
 #ifdef __cplusplus
 }

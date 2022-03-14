@@ -55,11 +55,15 @@ mu_time_rel_t mu_time_difference(mu_time_abs_t t1, mu_time_abs_t t2) {
   return t1 - t2;
 }
 
-bool mu_time_precedes(mu_time_abs_t t1, mu_time_abs_t t2) { return t1 < t2; }
+bool mu_time_precedes(mu_time_abs_t t1, mu_time_abs_t t2) { 
+    return (t1 - t2) > MU_TIME_MAX_DT;
+}
 
 bool mu_time_equals(mu_time_abs_t t1, mu_time_abs_t t2) { return t1 == t2; }
 
-bool mu_time_follows(mu_time_abs_t t1, mu_time_abs_t t2) { return t1 > t2; }
+bool mu_time_follows(mu_time_abs_t t1, mu_time_abs_t t2) { 
+    return (t1 - t2) < MU_TIME_MAX_DT;
+}
 
 uint32_t mu_time_rel_to_ms(mu_time_rel_t dt) {
     // RTC runs with at 1KHz
