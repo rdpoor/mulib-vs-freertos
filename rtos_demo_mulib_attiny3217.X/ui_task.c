@@ -32,6 +32,7 @@
 #include "mu_rtc.h"
 #include "mu_sched.h"
 #include "mu_task.h"
+#include "mu_usart0.h"
 #include "sensor_task.h"
 #include <stdint.h>
 #include <stdio.h>
@@ -119,6 +120,9 @@ static void ui_task_fn(void *ctx, void *arg) {
     mu_sched_now(ui_task());
   } break;
 
+  case UI_TASK_STATE_PRINTING: {
+    set_state(UI_TASK_STATE_IDLE);
+  }
   case UI_TASK_STATE_IDLE: {
     if (sensor_task_is_idle() && USART0_IsRxReady()) {
       // A character was typed - consume and ignore it and advance state.
@@ -155,22 +159,30 @@ static void ui_task_fn(void *ctx, void *arg) {
     if (err != I2C_TASK_ERR_NONE) {
       set_state(UI_TASK_STATE_ERROR);
     } else {
-      set_state(UI_TASK_STATE_PRINTING);
+      set_state(UI_TASK_STATE_START_PRINTING);
       // wait for i2c_task_read() callback to resume task
     }
   } break;
 
-  case UI_TASK_STATE_PRINTING: {
+  case UI_TASK_STATE_START_PRINTING: {
     // Arrive here when EEPROM data has been read
-    printf("\nEEPROM:%02d|%02d|%02d|%02d|%02d|",
-           self->buf[0],
-           self->buf[1],
-           self->buf[2],
-           self->buf[3],
-           self->buf[4]);
-    set_state(UI_TASK_STATE_IDLE);
+    static uint8_t buf[40];
+    snprintf(buf,
+             sizeof(buf),
+             "\nEEPROM:%02d|%02d|%02d|%02d|%02d|",
+             self->buf[0],
+             self->buf[1],
+             self->buf[2],
+             self->buf[3],
+             self->buf[4]);
+    // initiate printing, trigger idle state on completion
+    set_state(UI_TASK_STATE_PRINTING);
+    mu_usart0_tx(buf, strlen(buf), ui_task());
   } break;
 
+  cast UI_TASK_STATE_PRINTING: {
+
+  } break;
   case UI_TASK_STATE_ERROR: {
 
   } break;

@@ -37,6 +37,7 @@
           <itemPath>mcc_generated_files/utils/atomic.h</itemPath>
         </logicalFolder>
         <itemPath>mcc_generated_files/mcc.h</itemPath>
+        <itemPath>mcc_generated_files/explorer1632demo.h</itemPath>
       </logicalFolder>
       <logicalFolder name="mu_platform" displayName="mu_platform" projectFiles="true">
         <logicalFolder name="inc" displayName="inc" projectFiles="true">
@@ -128,6 +129,7 @@
         </logicalFolder>
         <itemPath>mcc_generated_files/mcc.c</itemPath>
         <itemPath>mcc_generated_files/device_config.c</itemPath>
+        <itemPath>mcc_generated_files/explorer1632demo.c</itemPath>
       </logicalFolder>
       <logicalFolder name="mu_platform" displayName="mu_platform" projectFiles="true">
         <logicalFolder name="inc" displayName="inc" projectFiles="true">
@@ -897,6 +899,8 @@
         <property key="periphComp5.gte" value="gt"/>
         <property key="periphComp6.gte" value="gt"/>
         <property key="poweroptions.powerenable" value="false"/>
+        <property key="programmerToGoFilePath"
+                  value="C:/Users/r/Projects/rtos-demo/rtos_demo_mulib_attiny3217.X/debug/default/rtos_demo_mulib_attiny3217_ptg"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"

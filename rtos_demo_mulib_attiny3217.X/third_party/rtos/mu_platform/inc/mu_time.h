@@ -23,7 +23,7 @@
  */
 
 /**
- * @file template.h
+ * @file mu_time.h
  *
  * @brief Platform-specific support for absolute and relative time.
  */
