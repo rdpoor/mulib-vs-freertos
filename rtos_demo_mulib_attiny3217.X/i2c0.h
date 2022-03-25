@@ -23,13 +23,13 @@
  */
 
 /**
- * @file app.h
+ * @file i2c0.h
  *
- * @brief Main file for rtos demo application.
+ * @brief mulib-aware I2C driver
  */
 
-#ifndef _APP_H_
-#define _APP_H_
+#ifndef _I2C0_H_
+#define _I2C0_H_
 
 // *****************************************************************************
 // Includes
@@ -47,58 +47,45 @@ extern "C" {
 // *****************************************************************************
 // Public types and definitions
 
-#define APP_TASK_EEPROM_MAX_LOG_VALUES 5
+typedef enum {
+  I2C0_TASK_ERR_NONE,
+  I2C0_TASK_ERR_BUSY,
+  I2C0_TASK_ERR_BAD_PARAM,
+} i2c0_task_err_t;
 
 // *****************************************************************************
 // Public declarations
 
 /**
- * @brief Prepare the required resources for the app and queue initial tasks.
+ * @brief One-time initialization of the i2c0, to be called at startup.
+ */
+void i2c0_init(void);
+
+/**
+ * @brief Request to start an asynchronous read operation.
  *
- * @note Called once at startup.
- */
-void APP_Initialize (void);
-
-/**
- * @brief Run the scheduler.
+ * Note: it is an error to call this function if I2C0 is busy.
  *
- * @note Called repeatedly from main()
+ * Note: If on_completion is non-NULL, it will be triggered when the read
+ * operation completes.
  */
-void APP_Tasks(void);
+i2c0_task_err_t i2c0_task_read(uint8_t addr,
+                               uint8_t *buf,
+                               size_t n_bytes,
+                               mu_task_t *on_completion);
 
 /**
- * @brief Request exclusive ownership of the I2C bus.
+ * @brief Request to start an asynchronous write operation.
  *
- * @note The given task will be invoked when exclusive access is granted.
- */
-void APP_ReserveI2C(mu_task_t *task);
-
-/**
- * @brief Relinquish exclusive ownership of the I2C bus.
- */
-void APP_ReleaseI2C(mu_task_t *task);
-
-/**
- * @brief Return true if the given task has exclusive ownership of the I2C bus.
- */
-bool APP_OwnsI2C(mu_task_t *task);
-
-/**
- * @brief Request exclusive ownership of the USART transmitter.
+ * Note: it is an error to call this function if I2C0 is busy.
  *
- * @note The given task will be invoked when exclusive access is granted.
+ * Note: If on_completion is non-NULL, it will be triggered when the read
+ * operation completes.
  */
-void APP_ReserveSerialTx(mu_task_t *task);
-
-/**
- * @brief Relinquish exclusive ownership of the USART transmitter.
- */
-void APP_ReleaseSerialTx(mu_task_t *task);
-
-/**
- * @brief Return true if the given task has ownership of the USART transmitter.
- */
-bool APP_OwnsSerialTx(mu_task_t *task);
+i2c0_task_err_t i2c0_task_write(uint8_t addr,
+                                uint8_t *buf,
+                                size_t n_bytes,
+                                mu_task_t *on_completion);
 
 // *****************************************************************************
 // End of file
@@ -107,4 +94,4 @@ bool APP_OwnsSerialTx(mu_task_t *task);
 }
 #endif
 
-#endif /* #ifndef _APP_H_ */
+#endif /* #ifndef _I2C0_H_ */

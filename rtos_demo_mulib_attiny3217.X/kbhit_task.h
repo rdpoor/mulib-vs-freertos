@@ -23,13 +23,13 @@
  */
 
 /**
- * @file app.h
+ * @file kbhit_task.h
  *
- * @brief Main file for rtos demo application.
+ * @brief Wait for keystroke, then print 5 stored eeprom values.
  */
 
-#ifndef _APP_H_
-#define _APP_H_
+#ifndef _KBHIT_TASK_H_
+#define _KBHIT_TASK_H_
 
 // *****************************************************************************
 // Includes
@@ -47,58 +47,22 @@ extern "C" {
 // *****************************************************************************
 // Public types and definitions
 
-#define APP_TASK_EEPROM_MAX_LOG_VALUES 5
-
 // *****************************************************************************
 // Public declarations
 
 /**
- * @brief Prepare the required resources for the app and queue initial tasks.
+ * @brief Initalize the kbhit_task.
  *
- * @note Called once at startup.
+ * All subsequent actions are handled by the scheduler and usart0 interrupts.
  */
-void APP_Initialize (void);
+void kbhit_task_init(void);
 
 /**
- * @brief Run the scheduler.
+ * @brief Set up to invoke kbhit_task() upon any keystroke.
  *
- * @note Called repeatedly from main()
+ * @note: Call this once after system is initialized and scheduler is running.
  */
-void APP_Tasks(void);
-
-/**
- * @brief Request exclusive ownership of the I2C bus.
- *
- * @note The given task will be invoked when exclusive access is granted.
- */
-void APP_ReserveI2C(mu_task_t *task);
-
-/**
- * @brief Relinquish exclusive ownership of the I2C bus.
- */
-void APP_ReleaseI2C(mu_task_t *task);
-
-/**
- * @brief Return true if the given task has exclusive ownership of the I2C bus.
- */
-bool APP_OwnsI2C(mu_task_t *task);
-
-/**
- * @brief Request exclusive ownership of the USART transmitter.
- *
- * @note The given task will be invoked when exclusive access is granted.
- */
-void APP_ReserveSerialTx(mu_task_t *task);
-
-/**
- * @brief Relinquish exclusive ownership of the USART transmitter.
- */
-void APP_ReleaseSerialTx(mu_task_t *task);
-
-/**
- * @brief Return true if the given task has ownership of the USART transmitter.
- */
-bool APP_OwnsSerialTx(mu_task_t *task);
+void kbhit_task_start(void);
 
 // *****************************************************************************
 // End of file
@@ -107,4 +71,4 @@ bool APP_OwnsSerialTx(mu_task_t *task);
 }
 #endif
 
-#endif /* #ifndef _APP_H_ */
+#endif /* #ifndef _KBHIT_TASK_H_ */

@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2021 R. D. Poor <rdpoor@gmail.com>
+ * Copyright (c) 2021-2022 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,55 +27,88 @@
 
 #include "app.h"
 
-#include "i2c_task.h"
+#include "i2c0.h"
+#include "kbhit_task.h"
+#include "periodic_task.h"
+#include "usart0.h"
+#include "mu_access_mgr.h"
 #include "mu_rtc.h"
 #include "mu_sched.h"
-#include "mu_time.h"
-#include "sensor_task.h"
-#include "ui_task.h"
-#include <stdio.h>
+#include "mu_task.h"
+#include <stdbool.h>
 
 // *****************************************************************************
 // Private types and definitions
 
-#define APP_STATES(M)                                                          \
-  M(APP_STATE_INIT)                                                            \
-  M(APP_STATE_SAMPLING)                                                        \
-  M(APP_STATE_CHEKCING_FOR_KEYSTROKE)                                          \
-  M(APP_STATE_PRINTING_HISTORY)                                                \
-  M(APP_STATE_SLEEPING)                                                        \
-  M(APP_STATE_ERROR)
+// *****************************************************************************
+// Private (static) storage
+
+static mu_access_mgr_t s_i2c_access;
+static mu_access_mgr_t s_serial_tx_access;
+
+static bool s_is_first_time;
+
+// *****************************************************************************
+// Private (forward) declarations
+
+// *****************************************************************************
+// Public code
 
 void APP_Initialize(void) {
   mu_rtc_init();
   mu_sched_init();
   mu_time_init();
-  mu_usart0_init();
 
-  app_task_init();
-  i2c_task_init();
-  sensor_task_init();
-  ui_task_init();
+  // Initialize app-specific resources.
+  i2c_init();
+  usart0_init();
+  mu_access_mgr_init(&s_i2c_access);
+  mu_access_mgr_init(&s_serial_tx_access);
+
+  // Schedule initial tasks.
+  periodic_task_init();
+  kbhit_task_init();
+  s_is_first_time = true;
 }
 
 void APP_Tasks(void) {
+  if (s_is_first_time) {
+    s_is_first_time = false;
+    // things requiring one-time initialzation after system initialization
+    kbhit_task_start();
+    periodic_task_start();
+  }
   // run the scheduler
   mu_sched_step();
 }
 
-void app_task_init(void) {
-  mu_task_init(&s_app_task, app_task_fn, &s_app_task_ctx);
-  s_app_task.state = APP_STATE_INIT;
-  s_app_task.wake_at = mu_rtc_now();
-  mu_sched_now(app_task());            // schedule initial call
+void APP_ReserveI2C(mu_task_t *task) {
+  mu_access_mgr_request_ownership(&s_i2c_access, task);
 }
 
-mu_task_t *app_task(void) { return &s_app_task; }
+void APP_ReleaseI2C(mu_task_t *task) {
+  mu_access_mgr_release_ownership(&s_i2c_access, task);
+}
 
+bool APP_OwnsI2C(mu_task_t *task) {
+  return mu_access_mgr_has_ownership(&s_i2c_access, task);
+}
+
+void APP_ReserveSerialTx(mu_task_t *task) {
+  mu_access_mgr_request_ownership(&s_serial_tx_access, task);
+}
+
+void APP_ReleaseSerialTx(mu_task_t *task) {
+  mu_access_mgr_release_ownership(&s_serial_tx_access, task);
+}
+
+bool APP_OwnsSerialTx(mu_task_t *task) {
+  return mu_access_mgr_has_ownership(&s_serial_tx_access, task);
+}
 
 // For reasons I don't understand yet, if the following is omitted, the linker
-// includes a LARGE body of code related to printing floating point values.  But
-// by defining _printf_float() here, none of that code is included.  (And as far
+// includes a LARGE body of code related to printing floating point values.
+// By defining _printf_float() here, none of that code is included.  (And as far
 // as I can tell, this app never prints floating point values, so this appears
 // to be safe.)
 void _printf_float(void) {
@@ -84,41 +117,3 @@ void _printf_float(void) {
 
 // *****************************************************************************
 // Private (static) code
-
-static void app_task_fn(void *ctx, void *arg) {
-  (void)arg;
-  app_task_ctx_t *self = (app_task_ctx_t *)ctx;
-
-  switch(self->state) {
-    case APP_STATE_INIT: {
-
-    } break;
-    case APP_STATE_SAMPLING: {
-      set_state(APP_STATE_CHEKCING_FOR_KEYSTROKE);
-      sensor_task_sample(app_task());
-    } break;
-
-    case APP_STATE_CHEKCING_FOR_KEYSTROKE: {
-
-    } break;
-    case APP_STATE_PRINTING_HISTORY: {
-
-    } break;
-
-    case APP_STATE_SLEEPING: {
-      LED_Toggle();
-      set_state(APP_STATE_SAMPLING);
-      self->wake_at = mu_time_offset(self->wake_at, , mu_time_ms_to_rel(1000));
-      mu_sched_at(app_task(), self->wake_at);
-    } break;
-
-    case APP_STATE_ERROR: {
-
-    } break;
-
-  }  // switch()
-}
-
-/*******************************************************************************
- End of File
- */

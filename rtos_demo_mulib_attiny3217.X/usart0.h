@@ -23,13 +23,13 @@
  */
 
 /**
- * @file mu_usart0.h
+ * @file usart0.h
  *
- * @brief Support for reading and writing serial data via usart
+ * @brief mulib-aware driver for reading and writing serial data via usart0
  */
 
-#ifndef _MU_USART0_H_
-#define _MU_USART0_H_
+#ifndef _USART0_H_
+#define _USART0_H_
 
 // *****************************************************************************
 // Includes
@@ -49,10 +49,10 @@ extern "C" {
 // Public types and definitions
 
 typedef enum {
-  MU_USART0_ERR_NONE,
-  MU_USART0_ERR_BUSY,
-  MU_USART0_ERR_BAD_PARAM,
-} mu_usart0_err_t;
+  USART0_ERR_NONE,
+  USART0_ERR_BUSY,
+  USART0_ERR_BAD_PARAM,
+} usart0_err_t;
 
 // *****************************************************************************
 // Public declarations
@@ -60,7 +60,7 @@ typedef enum {
 /**
  * @brief Initialize USART0, called once at startup.
  */
-void mu_usart0_init(void);
+void usart0_init(void);
 
 /**
  * @brief Initiate a transmit operation to send n_chars from buf over the USART,
@@ -74,23 +74,22 @@ void mu_usart0_init(void);
  *        has been transmitted.
  * @return MU_UART_ERR_BUSY if the uart is busy, MU_UART_ERR_NONE on success.
  */
-mu_usart0_err_t mu_usart0_tx(const uint8_t *buf,
-                             size_t n_bytes,
-                             mu_task_t *on_completion);
+usart0_err_t
+usart0_tx(const uint8_t *buf, size_t n_bytes, mu_task_t *on_completion);
 
 /**
  * @brief Initiate a receive operation to receive one byte from the USART,
  * triggering on_completion when a byte is received.
  *
- * @param c Pointer to the uint8_t to receive the character.  Pass NULL if you
+ * @param ch Pointer to the uint8_t to receive the character.  Pass NULL if you
  *        only want to detect a keystroke.
  * @param on_completion If non-NULL, task to be invoked when a byte is received.
  * @return MU_UART_ERR_BUSY if the uart is busy, MU_UART_ERR_NONE on success.
  */
-mu_usart0_err_t mu_usart0_rx(uint8_t *ch, mu_task_t *on_reception);
+usart0_err_t usart0_rx(uint8_t *ch, mu_task_t *on_reception);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _MU_USART0_H_ */
+#endif /* #ifndef _USART0_H_ */
