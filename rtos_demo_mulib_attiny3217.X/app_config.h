@@ -23,19 +23,16 @@
  */
 
 /**
- * @file i2c0.h
+ * @file app_config.h
  *
- * @brief mulib-aware I2C driver
+ * @brief application-specific configuration settings.
  */
 
-#ifndef _I2C0_H_
-#define _I2C0_H_
+#ifndef _APP_CONFIG_H_
+#define _APP_CONFIG_H_
 
 // *****************************************************************************
 // Includes
-
-#include <stdint.h>
-#include <stdbool.h>
 
 // *****************************************************************************
 // C++ Compatibility
@@ -47,45 +44,12 @@ extern "C" {
 // *****************************************************************************
 // Public types and definitions
 
-typedef enum {
-  I2C0_TASK_ERR_NONE,
-  I2C0_TASK_ERR_BUSY,
-  I2C0_TASK_ERR_BAD_PARAM,
-} i2c0_task_err_t;
+// un-comment to enable printing of state transitions.  Useful for debugging,
+// but uses up more ROM and some RAM
+// #define PRINT_STATE_TRANSITIONS
 
 // *****************************************************************************
 // Public declarations
-
-/**
- * @brief One-time initialization of the i2c0, to be called at startup.
- */
-void i2c0_init(void);
-
-/**
- * @brief Request to start an asynchronous read operation.
- *
- * Note: it is an error to call this function if I2C0 is busy.
- *
- * Note: If on_completion is non-NULL, it will be triggered when the read
- * operation completes.
- */
-i2c0_task_err_t i2c0_task_read(uint8_t addr,
-                               uint8_t *buf,
-                               size_t n_bytes,
-                               mu_task_t *on_completion);
-
-/**
- * @brief Request to start an asynchronous write operation.
- *
- * Note: it is an error to call this function if I2C0 is busy.
- *
- * Note: If on_completion is non-NULL, it will be triggered when the read
- * operation completes.
- */
-i2c0_task_err_t i2c0_task_write(uint8_t addr,
-                                uint8_t *buf,
-                                size_t n_bytes,
-                                mu_task_t *on_completion);
 
 // *****************************************************************************
 // End of file
@@ -94,4 +58,4 @@ i2c0_task_err_t i2c0_task_write(uint8_t addr,
 }
 #endif
 
-#endif /* #ifndef _I2C0_H_ */
+#endif /* #ifndef _APP_H_ */

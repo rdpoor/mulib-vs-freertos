@@ -36,7 +36,7 @@ int main(void)
 
     /* Replace with your application code */
     while (1) {
-      mu_sched_step();
+      APP_Tasks();
     }
 }
 /**

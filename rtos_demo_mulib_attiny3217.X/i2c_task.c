@@ -27,6 +27,7 @@
 
 #include "i2c_task.h"
 
+#include "app_config.h"
 #include "mcc_generated_files/mcc.h"
 #include "mu_rtc.h"
 #include "mu_sched.h"
@@ -62,9 +63,11 @@ typedef struct {
 // *****************************************************************************
 // Private (static) storage
 
+#ifdef PRINT_STATE_TRANSITIONS
 #define EXPAND_TASK_STATE_NAMES(_name) #_name,
 static const char *s_i2c_task_state_names[] = {
     I2C_STATES(EXPAND_TASK_STATE_NAMES)};
+#endif
 
 static i2c_task_ctx_t s_i2c_task_ctx;
 
@@ -83,10 +86,12 @@ static void i2c_task_fn(void *ctx, void *arg);
  */
 static void set_state(i2c_task_state_t state);
 
+#ifdef PRINT_STATE_TRANSITIONS
 /**
  * @brief Return a printable name for the state.
  */
 static const char *state_name(i2c_task_state_t state);
+#endif
 
 /**
  * @brief Initialize the task state for a read or write operation.
@@ -210,17 +215,20 @@ static void i2c_task_fn(void *ctx, void *arg) {
 
 static void set_state(i2c_task_state_t state) {
   if (state != s_i2c_task_ctx.state) {
+#ifdef PRINT_STATE_TRANSITIONS
     const char *s1 = state_name(s_i2c_task_ctx.state);
     const char *s2 = state_name(state);
     printf("\n%8d %s => %s", mu_rtc_now(), s1, s2);
-    // TODO: Use logger to record & report state transitions.
+#endif
     s_i2c_task_ctx.state = state;
   }
 }
 
+#ifdef PRINT_STATE_TRANSITIONS
 static const char *state_name(i2c_task_state_t state) {
   return s_i2c_task_state_names[state];
 }
+#endif
 
 static i2c_task_err_t setup(uint8_t addr,
                             uint8_t *buf,

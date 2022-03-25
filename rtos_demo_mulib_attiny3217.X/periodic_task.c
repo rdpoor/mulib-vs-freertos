@@ -26,10 +26,18 @@
 // Includes
 
 #include "periodic_task.h"
+
+#include "app_config.h"
+#include "app.h"
+#include "i2c0_task.h"
 #include "mu_periodic.h"
+#include "mu_rtc.h"
 #include "mu_sched.h"
 #include "mu_task.h"
+#include "usart0.h"
 #include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 
 // *****************************************************************************
 // Private types and definitions
@@ -40,14 +48,12 @@
 // The states of the periodic task
 #define PERIODIC_STATES(M)                                                     \
   M(PERIODIC_TASK_STATE_ACQUIRE_TEMP_SENSOR)                                   \
+  M(PERIODIC_TASK_STATE_START_TEMP_SENSOR_WRITE)                                \
   M(PERIODIC_TASK_STATE_START_TEMP_SENSOR_READ)                                \
-  M(PERIODIC_TASK_STATE_AWAIT_TEMP_SENSOR_READ)                                \
   M(PERIODIC_TASK_STATE_ACQUIRE_EEPROM)                                        \
   M(PERIODIC_TASK_STATE_START_EEPROM_WRITE)                                    \
-  M(PERIODIC_TASK_STATE_AWAIT_EEPROM_WRITE)                                    \
   M(PERIODIC_TASK_STATE_ACQUIRE_SERIAL_TX)                                     \
   M(PERIODIC_TASK_STATE_START_SERIAL_TX)                                       \
-  M(PERIODIC_TASK_STATE_AWAIT_SERIAL_TX)                                       \
   M(PERIODIC_TASK_STATE_ENDGAME)                                               \
   M(PERIODIC_TASK_STATE_ERROR)
 
@@ -64,9 +70,11 @@ typedef struct {
 // *****************************************************************************
 // Private (static) storage
 
+#ifdef PRINT_STATE_TRANSITIONS
 #define EXPAND_TASK_STATE_NAMES(_name) #_name,
 static const char *s_periodic_task_state_names[] = {
     PERIODIC_STATES(EXPAND_TASK_STATE_NAMES)};
+#endif
 
 static periodic_task_ctx_t s_periodic_task_ctx;
 
@@ -87,10 +95,12 @@ static void periodic_task_fn(void *ctx, void *arg);
  */
 static void set_state(periodic_task_state_t state);
 
+#ifdef PRINT_STATE_TRANSITIONS
 /**
  * @brief Return a printable name for the state.
  */
 static const char *state_name(periodic_task_state_t state);
+#endif
 
 /**
  * @brief Convert array of two uint8_t to fahrenheit.
@@ -123,40 +133,38 @@ static void periodic_task_fn(void *ctx, void *arg) {
   switch (self->state) {
   case PERIODIC_TASK_STATE_ACQUIRE_TEMP_SENSOR: {
     // Arrive here when the periodic task first runs
-    set_state(PERIODIC_TASK_STATE_START_TEMP_SENSOR_READ);
+    set_state(PERIODIC_TASK_STATE_START_TEMP_SENSOR_WRITE);
     APP_ReserveI2C(&s_periodic_task);
     // APP_ReserveI2C() will invoke s_periodic_task when access is granted.
   } break;
 
-  case PERIODIC_TASK_STATE_START_TEMP_SENSOR_READ: {
+  case PERIODIC_TASK_STATE_START_TEMP_SENSOR_WRITE: {
     // Arrive here when the periodic task has exclusive access to the I2C0 bus.
     // Initiate a write on the I2C bus set up the read register address.
-    // Advance state before calling i2c0_write(), since it may callback almost
-    // immediately.
-    s_periodic_task_ctx.buf[0] = PERIODIC_TASK_TEMPERATURE_REG_ADDR;
-    set_state(PERIODIC_TASK_STATE_ACQUIRE_EEPROM);
+    s_periodic_task_ctx.buf[0] = I2C0_TASK_TEMPERATURE_REG_ADDR;
     // write temperature register address to device
-    i2c_task_err_t err = i2c0_write(PERIODIC_TASK_TEMPERATURE_SLAVE_ADDR,
+    i2c0_task_err_t err = i2c0_task_write(I2C0_TASK_TEMPERATURE_SLAVE_ADDR,
                                     s_periodic_task_ctx.buf,
                                     1,
                                     &s_periodic_task);
     if (err != I2C0_TASK_ERR_NONE) {
       set_state(PERIODIC_TASK_STATE_ERROR);
+    } else {
+      set_state(PERIODIC_TASK_STATE_START_TEMP_SENSOR_READ);
     }
     // s_periodic_task will be invoked when i2c operation completes.
   } break;
 
-  case PERIODIC_TASK_STATE_AWAIT_TEMP_SENSOR_READ: {
+  case PERIODIC_TASK_STATE_START_TEMP_SENSOR_READ: {
     // Initiate a read on the i2C bus to get the raw temperature from device
-    // Advance state before calling i2c0_write() since it may callback almost
-    // immediately.
-    set_state(PERIODIC_TASK_STATE_ACQUIRE_EEPROM);
-    i2c_task_err_t err = i2c_task_read(PERIODIC_TASK_TEMPERATURE_SLAVE_ADDR,
+    i2c0_task_err_t err = i2c0_task_read(I2C0_TASK_TEMPERATURE_SLAVE_ADDR,
                                        s_periodic_task_ctx.buf,
                                        2,
                                        &s_periodic_task);
-    if (err != I2C_TASK_ERR_NONE) {
+    if (err != I2C0_TASK_ERR_NONE) {
       set_state(PERIODIC_TASK_STATE_ERROR);
+    } else {
+      set_state(PERIODIC_TASK_STATE_ACQUIRE_EEPROM);
     }
     // i2c_task_read() will invoke s_periodic_task on completion
   } break;
@@ -183,13 +191,14 @@ static void periodic_task_fn(void *ctx, void *arg) {
     s_periodic_task_ctx.buf[0] =
         PERIODIC_TASK_EEPROM_LOG_MEMORY_ADDR + s_periodic_task_ctx.write_idx++;
     s_periodic_task_ctx.buf[1] = s_periodic_task_ctx.fahrenheit;
-    set_state(PERIODIC_TASK_STATE_ACQUIRE_SERIAL_TX);
-    i2c_task_err_t err = i2c_task_write(PERIODIC_TASK_EEPROM_SLAVE_ADDR,
+    i2c0_task_err_t err = i2c0_task_write(I2C0_TASK_EEPROM_SLAVE_ADDR,
                                         s_periodic_task_ctx.buf,
                                         2,
                                         &s_periodic_task);
-    if (err != I2C_TASK_ERR_NONE) {
+    if (err != I2C0_TASK_ERR_NONE) {
       set_state(PERIODIC_TASK_STATE_ERROR);
+    } else {
+      set_state(PERIODIC_TASK_STATE_ACQUIRE_SERIAL_TX);
     }
     // i2c_task_write() will invoke s_periodic_task on completion
   } break;
@@ -205,15 +214,16 @@ static void periodic_task_fn(void *ctx, void *arg) {
   case PERIODIC_TASK_STATE_START_SERIAL_TX: {
     // Arrive here with temperature in s_periodic_task_ctx.fahrenheit
     static uint8_t buf[24];
-    snprintf(buf,
+    snprintf((char *)buf,
              sizeof(buf),
              "\nTemperature = %d F",
              s_periodic_task_ctx.fahrenheit);
-    set_state(PERIODIC_TASK_STATE_ENDGAME);
     usart0_err_t err =
-        usart0_tx((const uint8_t *)buf, strlen(buf), &s_periodic_task);
+        usart0_tx((const uint8_t *)buf, strlen((const char *)buf), &s_periodic_task);
     if (err != USART0_ERR_NONE) {
       set_state(PERIODIC_TASK_STATE_ERROR);
+    } else {
+      set_state(PERIODIC_TASK_STATE_ENDGAME);
     }
     // usart0_tx() will invoke s_periodic_task on completion.
   } break;
@@ -231,17 +241,20 @@ static void periodic_task_fn(void *ctx, void *arg) {
 
 static void set_state(periodic_task_state_t state) {
   if (state != s_periodic_task_ctx.state) {
+#ifdef PRINT_STATE_TRANSITIONS
     const char *s1 = state_name(s_periodic_task_ctx.state);
     const char *s2 = state_name(state);
     printf("\n%8d %s => %s", mu_rtc_now(), s1, s2);
-    // TODO: Use logger to record state transitions.
+#endif
     s_periodic_task_ctx.state = state;
   }
 }
 
+#ifdef PRINT_STATE_TRANSITIONS
 static const char *state_name(periodic_task_state_t state) {
   return s_periodic_task_state_names[state];
 }
+#endif
 
 static int8_t convert_to_fahrenheit(uint8_t *pRawValue) {
   int16_t t1 = (pRawValue[0] << 8) | pRawValue[1];

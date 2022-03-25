@@ -27,15 +27,15 @@
 
 #include "app.h"
 
-#include "i2c0.h"
+#include "i2c0_task.h"
 #include "kbhit_task.h"
-#include "periodic_task.h"
-#include "usart0.h"
 #include "mu_access_mgr.h"
 #include "mu_rtc.h"
 #include "mu_sched.h"
 #include "mu_task.h"
-#include <stdbool.h>
+#include "mu_time.h"
+#include "periodic_task.h"
+#include "usart0.h"
 
 // *****************************************************************************
 // Private types and definitions
@@ -60,7 +60,7 @@ void APP_Initialize(void) {
   mu_time_init();
 
   // Initialize app-specific resources.
-  i2c_init();
+  i2c0_task_init();
   usart0_init();
   mu_access_mgr_init(&s_i2c_access);
   mu_access_mgr_init(&s_serial_tx_access);
@@ -111,9 +111,7 @@ bool APP_OwnsSerialTx(mu_task_t *task) {
 // By defining _printf_float() here, none of that code is included.  (And as far
 // as I can tell, this app never prints floating point values, so this appears
 // to be safe.)
-void _printf_float(void) {
-  asm("nop");
-}
+void _printf_float(void) { asm("nop"); }
 
 // *****************************************************************************
 // Private (static) code

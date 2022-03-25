@@ -27,22 +27,27 @@
 
 #include "kbhit_task.h"
 
-#include <stdbool.h>
+#include "app_config.h"
+#include "app.h"
+#include "i2c0_task.h"
+#include "mu_rtc.h"
+#include "mu_task.h"
+#include "usart0.h"
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 
 // *****************************************************************************
 // Private types and definitions
 
 // The states of the periodic task
 #define KBHIT_STATES(M)                                                        \
-  M(KBHIT_TASK_STATE_AWAIT_KBHIT)                                              \
   M(KBHIT_TASK_STATE_ACQUIRE_EEPROM)                                           \
+  M(KBHIT_TASK_STATE_START_EEPROM_WRITE)                                       \
   M(KBHIT_TASK_STATE_START_EEPROM_READ)                                        \
-  M(KBHIT_TASK_STATE_AWAIT_EEPROM_READ)                                        \
   M(KBHIT_TASK_STATE_ACQUIRE_SERIAL_TX)                                        \
   M(KBHIT_TASK_STATE_START_SERIAL_TX)                                          \
-  M(KBHIT_TASK_STATE_AWAIT_SERIAL_TX)                                          \
   M(KBHIT_TASK_STATE_ENDGAME)                                                  \
   M(KBHIT_TASK_STATE_ERROR)
 
@@ -57,6 +62,12 @@ typedef struct {
 // *****************************************************************************
 // Private (static) storage
 
+#ifdef PRINT_STATE_TRANSITIONS
+#define EXPAND_TASK_STATE_NAMES(_name) #_name,
+static const char *s_kbhit_task_state_names[] = {
+    KBHIT_STATES(EXPAND_TASK_STATE_NAMES)};
+#endif
+
 static mu_task_t s_kbhit_task;
 static kbhit_task_ctx_t s_kbhit_task_ctx;
 
@@ -64,6 +75,18 @@ static kbhit_task_ctx_t s_kbhit_task_ctx;
 // Private (forward) declarations
 
 static void kbhit_task_fn(void *ctx, void *arg);
+
+/**
+ * @brief Set the state for the task.  Provided for debugging.
+ */
+static void set_state(kbhit_task_state_t state);
+
+#ifdef PRINT_STATE_TRANSITIONS
+/**
+ * @brief Return a printable name for the state.
+ */
+static const char *state_name(kbhit_task_state_t state);
+#endif
 
 static void start_listening(void);
 
@@ -73,7 +96,7 @@ static void start_listening(void);
 void kbhit_task_init(void) {
   // Initialize the kbhit_task and context.
   mu_task_init(&s_kbhit_task, kbhit_task_fn, &s_kbhit_task_ctx);
-  s_kbhit_task_ctx.state = KBHIT_TASK_STATE_AWAIT_KBHIT;
+  s_kbhit_task_ctx.state = KBHIT_TASK_STATE_ACQUIRE_EEPROM;
 }
 
 void kbhit_task_start(void) { start_listening(); }
@@ -96,29 +119,28 @@ static void kbhit_task_fn(void *ctx, void *arg) {
   case KBHIT_TASK_STATE_START_EEPROM_WRITE: {
     // Arrive here when kbhit_task has exclusive access to I2C0 bus
     // To read bytes from the EEPROM, first set the read address.
-    // Also set state before calling i2c_task_write(), since the callback may
-    // come almost instantly.
-    s_kbhit_task_ctx.buf[0] = APP_TASK_EEPROM_LOG_MEMORY_ADDR;
-    set_state(KBHIT_TASK_STATE_START_EEPROM_READ);
-    i2c0_err_t err = i2c0_task_write(
-        I2C0_EEPROM_SLAVE_ADDR, s_kbhit_task_ctx.buf, 1, ui_task());
+    s_kbhit_task_ctx.buf[0] = I2C0_TASK_EEPROM_LOG_MEMORY_ADDR;
+    i2c0_task_err_t err = i2c0_task_write(
+        I2C0_TASK_EEPROM_SLAVE_ADDR, s_kbhit_task_ctx.buf, 1, &s_kbhit_task);
     if (err != I2C0_TASK_ERR_NONE) {
       set_state(KBHIT_TASK_STATE_ERROR);
+    } else {
+      set_state(KBHIT_TASK_STATE_START_EEPROM_READ);
     }
     // i2c0_task_write() will invoke kbhit_task on completion.
   } break;
 
   case KBHIT_TASK_STATE_START_EEPROM_READ: {
     // Arrive here when the read address is set in the EEPROM.  Initiate a
-    // read operation.  Set next state before calling i2c0_task_read(), since
-    // the callback may come almost instantly.
-    set_state(KBHIT_TASK_STATE_ACQUIRE_SERIAL_TX);
-    i2c0_task_err_t err = i2c0_task_read(SENSOR_TASK_EEPROM_SLAVE_ADDR,
-                                         s_ui_task_ctx.buf,
+    // read operation.
+    i2c0_task_err_t err = i2c0_task_read(I2C0_TASK_EEPROM_SLAVE_ADDR,
+                                         s_kbhit_task_ctx.buf,
                                          I2C0_TASK_EEPROM_MAX_LOG_VALUES,
-                                         ui_task());
+                                         &s_kbhit_task);
     if (err != I2C0_TASK_ERR_NONE) {
       set_state(KBHIT_TASK_STATE_ERROR);
+    } else {
+      set_state(KBHIT_TASK_STATE_ACQUIRE_SERIAL_TX);
     }
     // i2c0_task_read() will invoke kbhit_task on completion.
   } break;
@@ -127,7 +149,7 @@ static void kbhit_task_fn(void *ctx, void *arg) {
     // Arrive here with I2C0_TASK_EEPROM_MAX_LOG_VALUES bytes of data in
     // s_kbhit_task_ctx.buf[].  Acquire exclusive rights to the serial
     // printer before printing...
-    set_state(PERIODIC_TASK_STATE_START_SERIAL_TX);
+    set_state(KBHIT_TASK_STATE_START_SERIAL_TX);
     APP_ReserveSerialTx(&s_kbhit_task);
     // APP_ReserveSerialTx() will invoke kbhit_task when access is granted.
   } break;
@@ -135,19 +157,20 @@ static void kbhit_task_fn(void *ctx, void *arg) {
   case KBHIT_TASK_STATE_START_SERIAL_TX: {
     // Arrive here with exclusive access to the serial tx.
     static uint8_t buf[40];
-    snprintf(buf,
+    snprintf((char *)buf,
              sizeof(buf),
              "\nEEPROM:%02d|%02d|%02d|%02d|%02d|",
-             s_kbhit_task.buf[0],
-             s_kbhit_task.buf[1],
-             s_kbhit_task.buf[2],
-             s_kbhit_task.buf[3],
-             s_kbhit_task.buf[4]);
-    set_state(KBHIT_TASK_STATE_ENDGAME);
-    usart0_err_t err =
-        usart0_tx((const uint8_t *)buf, strlen(buf), &s_kbhit_task);
+             s_kbhit_task_ctx.buf[0],
+             s_kbhit_task_ctx.buf[1],
+             s_kbhit_task_ctx.buf[2],
+             s_kbhit_task_ctx.buf[3],
+             s_kbhit_task_ctx.buf[4]);
+    usart0_err_t err = usart0_tx(
+        (const uint8_t *)buf, strlen((const char *)buf), &s_kbhit_task);
     if (err != USART0_ERR_NONE) {
       set_state(KBHIT_TASK_STATE_ERROR);
+    } else {
+      set_state(KBHIT_TASK_STATE_ENDGAME);
     }
     // usart0_tx() will invoke kbhit_task on completion.
   } break;
@@ -156,11 +179,29 @@ static void kbhit_task_fn(void *ctx, void *arg) {
   case KBHIT_TASK_STATE_ERROR: {
     // Set up to receive notification of another keystroke.
     APP_ReleaseSerialTx(&s_kbhit_task);
+    APP_ReleaseI2C(&s_kbhit_task);
     start_listening();
   } break;
 
   } // switch()
 }
+
+static void set_state(kbhit_task_state_t state) {
+  if (state != s_kbhit_task_ctx.state) {
+#ifdef PRINT_STATE_TRANSITIONS
+    const char *s1 = state_name(s_kbhit_task_ctx.state);
+    const char *s2 = state_name(state);
+    printf("\n%8d %s => %s", mu_rtc_now(), s1, s2);
+#endif
+    s_kbhit_task_ctx.state = state;
+  }
+}
+
+#ifdef PRINT_STATE_TRANSITIONS
+static const char *state_name(kbhit_task_state_t state) {
+  return s_kbhit_task_state_names[state];
+}
+#endif
 
 static void start_listening(void) {
   // Arrive here when ready to listen for a keystroke

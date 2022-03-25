@@ -76,6 +76,9 @@
             <itemPath>third_party/rtos/mulib/sched/inc/mu_sched.h</itemPath>
             <itemPath>third_party/rtos/mulib/sched/inc/mu_spsc.h</itemPath>
             <itemPath>third_party/rtos/mulib/sched/inc/mu_task.h</itemPath>
+            <itemPath>third_party/rtos/mulib/sched/inc/mu_access_mgr.h</itemPath>
+            <itemPath>third_party/rtos/mulib/sched/inc/mu_periodic.h</itemPath>
+            <itemPath>third_party/rtos/mulib/sched/inc/mu_task_list.h</itemPath>
           </logicalFolder>
           <logicalFolder name="src" displayName="src" projectFiles="true">
           </logicalFolder>
@@ -102,9 +105,10 @@
         </logicalFolder>
       </logicalFolder>
       <itemPath>app.h</itemPath>
-      <itemPath>i2c_task.h</itemPath>
-      <itemPath>sensor_task.h</itemPath>
-      <itemPath>ui_task.h</itemPath>
+      <itemPath>kbhit_task.h</itemPath>
+      <itemPath>periodic_task.h</itemPath>
+      <itemPath>usart0.h</itemPath>
+      <itemPath>i2c0_task.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -169,6 +173,9 @@
             <itemPath>third_party/rtos/mulib/sched/src/mu_sched.c</itemPath>
             <itemPath>third_party/rtos/mulib/sched/src/mu_spsc.c</itemPath>
             <itemPath>third_party/rtos/mulib/sched/src/mu_task.c</itemPath>
+            <itemPath>third_party/rtos/mulib/sched/src/mu_access_mgr.c</itemPath>
+            <itemPath>third_party/rtos/mulib/sched/src/mu_periodic.c</itemPath>
+            <itemPath>third_party/rtos/mulib/sched/src/mu_task_list.c</itemPath>
           </logicalFolder>
         </logicalFolder>
         <logicalFolder name="string" displayName="string" projectFiles="true">
@@ -193,9 +200,10 @@
       </logicalFolder>
       <itemPath>main.c</itemPath>
       <itemPath>app.c</itemPath>
-      <itemPath>i2c_task.c</itemPath>
-      <itemPath>sensor_task.c</itemPath>
-      <itemPath>ui_task.c</itemPath>
+      <itemPath>kbhit_task.c</itemPath>
+      <itemPath>periodic_task.c</itemPath>
+      <itemPath>usart0.c</itemPath>
+      <itemPath>i2c0_task.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -303,7 +311,7 @@
         <property key="default-bitfield-type" value="true"/>
         <property key="default-char-type" value="true"/>
         <property key="define-macros" value=""/>
-        <property key="disable-optimizations" value="false"/>
+        <property key="disable-optimizations" value="true"/>
         <property key="extra-include-directories"
                   value="third_party\rtos\mu_platform\inc;third_party\rtos\mulib\collections\inc;third_party\rtos\mulib\log\inc;third_party\rtos\mulib\sched\inc;third_party\rtos\mulib\string\inc;third_party\rtos\mulib\utils\inc"/>
         <property key="favor-optimization-for" value="-speed,+space"/>
@@ -311,14 +319,14 @@
         <property key="garbage-collect-functions" value="true"/>
         <property key="identifier-length" value="255"/>
         <property key="local-generation" value="false"/>
-        <property key="operation-mode" value="free"/>
+        <property key="operation-mode" value="pro"/>
         <property key="opt-xc8-compiler-strict_ansi" value="false"/>
         <property key="optimization-assembler" value="true"/>
         <property key="optimization-assembler-files" value="true"/>
         <property key="optimization-debug" value="true"/>
         <property key="optimization-invariant-enable" value="false"/>
         <property key="optimization-invariant-value" value="16"/>
-        <property key="optimization-level" value="-O1"/>
+        <property key="optimization-level" value="-O0"/>
         <property key="optimization-speed" value="false"/>
         <property key="optimization-stable-enable" value="false"/>
         <property key="preprocess-assembler" value="true"/>
@@ -1378,6 +1386,10 @@
         <property key="user-pack-device-support" value=""/>
         <property key="wpo-lto" value="false"/>
       </XC8-config-global>
+      <item path="mcc_generated_files/explorer1632demo.c"
+            ex="true"
+            overriding="false">
+      </item>
     </conf>
   </confs>
 </configurationDescriptor>
