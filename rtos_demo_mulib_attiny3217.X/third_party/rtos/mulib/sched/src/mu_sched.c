@@ -86,15 +86,6 @@ static void process_current_event(void);
  */
 static mu_sched_err_t sched_aux(mu_task_t *task, mu_time_abs_t at);
 
-
-/**
- * @brief Find an event at the specified time.
- *
- * It will return a pointer to the event, or NULL if the event could not be
- * found.
- */
-static mu_event_t *find_event(mu_time_abs_t at);
-
 /**
  * @brief Find or create an event at the specified time.
  *
@@ -103,6 +94,12 @@ static mu_event_t *find_event(mu_time_abs_t at);
  * created (i.e. if the events[] array is full).
  */
 static mu_event_t *find_or_create_event(mu_time_abs_t at);
+
+/**
+ * @brief Return the event to which the task belongs to, or NULL if the task
+ * does not belong to any event.
+ */
+ static mu_event_t *find_task_event(mu_task_t *task);
 
 // *****************************************************************************
 // Local (private, static) storage
@@ -194,23 +191,16 @@ mu_event_t *mu_sched_peek_next_event(void) {
   return event;
 }
 
-// IMPLEMENTATION NOTE: If you remove the last task from an event, the event
-// remains in the schedule as an empty event (no tasks).  Since this is a rare
-// situation, it doesn't seem worth removing empty events.  But that might
-// change...
 mu_task_t *mu_sched_remove_task(mu_task_t *task) {
-  // Find the event containing this task
-  mu_event_t *event = mu_task_get_event(task);
-  if (event && find_event(mu_event_get_time(event))) {
-    // There exists an event in the schedule that contains this task
-    mu_task_t *removed = mu_event_remove_task(event, task);
-    (void)removed;
-    // TODO: include ASSERT support for code besides unit tests.
-    // ASSERT(removed == task);
-    return task;
-  } else {
-    // task does not appear to be scheduled.
+  mu_event_t *event = find_task_event(task);
+  if (event == NULL) {
+    // task does not appear on any event...
     return NULL;
+  } else {
+    // NOTE: if this removes the last task of the event, the schedule will have
+    // an empty event.  It's probably not worth checking for that case here,
+    // since the empty even will get removed when its time arrives.
+    return mu_event_remove_task(event, task);
   }
 }
 
@@ -228,7 +218,7 @@ mu_sched_err_t mu_sched_in(mu_task_t *task, mu_time_rel_t in) {
 }
 
 mu_sched_err_t mu_sched_from_isr(mu_task_t *task) {
-  if (mu_task_get_event(task)) {
+  if (mu_task_get_task_list(task) != NULL) {
     // task is part of another event -- it may only participate in one.
     return MU_SCHED_ERR_ALREADY_SCHEDULED;
   }
@@ -239,10 +229,12 @@ mu_sched_err_t mu_sched_from_isr(mu_task_t *task) {
 }
 
 mu_sched_task_status_t mu_sched_get_task_status(mu_task_t *task) {
+  // TODO: stub.  Will this ever be used?
   return MU_SCHED_TASK_STATUS_IDLE;
 }
 
 mu_task_t *mu_sched_traverse(mu_sched_traverse_fn user_fn, void *arg) {
+  // TODO: stub.  Will this ever be used?
   return NULL;
 }
 
@@ -288,7 +280,7 @@ static void process_current_event(void) {
 static mu_sched_err_t sched_aux(mu_task_t *task, mu_time_abs_t at) {
   mu_sched_err_t err = MU_SCHED_ERR_NONE;
   do {
-    if (mu_task_get_event(task)) {
+    if (mu_task_get_task_list(task) != NULL) {
       // task is part of another event -- it may only participate in one.
       err = MU_SCHED_ERR_ALREADY_SCHEDULED;
       break;
@@ -303,28 +295,6 @@ static mu_sched_err_t sched_aux(mu_task_t *task, mu_time_abs_t at) {
   } while(false);
 
   return err;
-}
-
-static mu_event_t *find_event(mu_time_abs_t at) {
-  int i = s_sched.event_idx;
-
-  while (i > 0) {
-    mu_event_t *candidate_event = &s_sched.events[--i];
-    mu_time_abs_t candidate_time = mu_event_get_time(candidate_event);
-
-    if (mu_time_equals(at, candidate_time)) {
-      // exact match!
-      return candidate_event;
-
-    } else if (mu_time_precedes(at, candidate_time)) {
-      // overshot...
-      return NULL;
-
-    } else {
-      // at follows candidate_time -- keep searching
-    }
-  }
-  return NULL;   // not found
 }
 
 static mu_event_t *find_or_create_event(mu_time_abs_t at) {
@@ -371,4 +341,27 @@ static mu_event_t *find_or_create_event(mu_time_abs_t at) {
   s_sched.event_idx += 1;
 
   return candidate_event;
+}
+
+static mu_event_t *find_task_event(mu_task_t *task) {
+  mu_task_list_t *tasks;
+
+  if (task == NULL) {
+    return NULL;
+  } else if ((tasks = (mu_task_list_t *)mu_task_get_task_list(task)) == NULL) {
+    // task is not on any task list...
+    return NULL;
+  } else {
+    // perform a linear search of scheduled events
+    mu_event_t *event;
+    int i = s_sched.event_idx;
+
+    while (i > 0) {
+      event = &s_sched.events[--i];
+      if (&event->tasks == tasks) {
+        return event;
+      }
+    }
+    return NULL;
+  }
 }

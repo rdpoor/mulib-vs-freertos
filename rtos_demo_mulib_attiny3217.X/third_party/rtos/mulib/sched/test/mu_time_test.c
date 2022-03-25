@@ -26,7 +26,7 @@
 // includes
 
 #include "mu_test_utils.h"
-#include "mu_rtc.h"
+#include "mu_time.h"
 #include <unistd.h>
 
 #include <stdio.h>
@@ -42,52 +42,30 @@
 // =============================================================================
 // public code
 
-void mu_rtc_test() {
+void mu_time_test() {
   mu_time_abs_t t1;
   mu_time_abs_t t2;
 
-  mu_time_rel_t dt1;
-  mu_duration_ms_t dm1;
-
-  t1 = mu_rtc_now();   // an arbitrary time
-  dm1 = mu_time_ms_to_duration(1000);
-  t2 = mu_time_offset(t1, dm1);
-
-  ASSERT(mu_time_precedes(t1, t2) == true);
-  ASSERT(mu_time_precedes(t1, t1) == false);
-  ASSERT(mu_time_precedes(t2, t1) == false);
-
-  ASSERT(mu_time_equals(t1, t1) == true);
-  ASSERT(mu_time_equals(t1, t2) == false);
-
+  t1 = 1;
+  t2 = mu_time_offset(t1, 0);
+  ASSERT(mu_time_difference(t1, t2) == 0);
+  ASSERT(mu_time_precedes(t1, t2) == false);
+  ASSERT(mu_time_equals(t1, t2) == true);
   ASSERT(mu_time_follows(t1, t2) == false);
-  ASSERT(mu_time_follows(t1, t1) == false);
-  ASSERT(mu_time_follows(t2, t1) == true);
 
-  dt1 = mu_time_difference(t2, t1);
-  ASSERT(mu_time_duration_to_ms(dt1) == 1000);
-
-#if (MU_VM_HAS_FLOAT)
-  mu_time_s_dt ds1;
-
-  t1 = mu_rtc_now();   // an arbitrary time
-  ds1 = mu_time_s_to_duration(1.0);
-  t2 = mu_time_offset(t1, dm1);
-
+  t1 = 1;
+  t2 = mu_time_offset(t1, 2);
+  ASSERT(mu_time_difference(t1, t2) == -2);
   ASSERT(mu_time_precedes(t1, t2) == true);
-  ASSERT(mu_time_precedes(t1, t1) == false);
-  ASSERT(mu_time_precedes(t2, t1) == false);
-
-  ASSERT(mu_time_equals(t1, t1) == true);
   ASSERT(mu_time_equals(t1, t2) == false);
-
   ASSERT(mu_time_follows(t1, t2) == false);
-  ASSERT(mu_time_follows(t1, t1) == false);
-  ASSERT(mu_time_follows(t2, t1) == true);
 
-  dt1 = mu_time_difference(t2, t1);
-  ASSERT(mu_time_duration_to_s(dt1) == 1.0);
-#endif
+  t1 = 1;
+  t2 = mu_time_offset(t1, -2);
+  ASSERT(mu_time_difference(t1, t2) == 2);
+  ASSERT(mu_time_precedes(t1, t2) == false);
+  ASSERT(mu_time_equals(t1, t2) == false);
+  ASSERT(mu_time_follows(t1, t2) == true);
 }
 
 // =============================================================================

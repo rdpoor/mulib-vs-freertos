@@ -141,18 +141,18 @@ static bool url_find_hostaddr(mu_str_t *slice) {
 
 static uint32_t parse_ipv4_address(mu_str_t *slice) {
   int octet;
-  uint32_t octets[4];
+  uint8_t octets[4];
   uint8_t ch;
   mu_str_t temp;
 
-  mu_str_copy(&temp, slice); // we don't want to modify slice
+  mu_str_copy(&temp, slice); // we dont' want to modify slice
 
   for (int i = 0; i < 4; i++) {
     if ((octet = parse_octet(&temp)) == -1) {
       return 0;
     }
     octets[i] = (uint8_t)octet;
-    // make sure a '.' follows each string of digits, except for last
+    // make sure a '.' followes each string of digits, except for last
     if (i < 3) {
       mu_str_read_byte(&temp, &ch); // consume first byte
       if (ch != '.') {
@@ -199,7 +199,7 @@ static uint16_t url_find_portspec(mu_str_t *slice) {
     return 0; // shouldn't happen.
   }
   mu_str_increment_start(slice, index + 3); // skip past '://'
-  // find the next occurrence of ':' (presumably at the end of the string)
+  // find the next occurance of ':' (presumably at the end of the string)
   index = mu_str_find(slice, ":");
   if (index == -1) {
     return 0; // no port specified
@@ -217,7 +217,7 @@ static uint16_t url_find_portspec(mu_str_t *slice) {
     }
   }
   // arrive here at end of string or on a non-digit.
-  if (total < 1UL << 16) {
+  if (total < 1 << 16) {
     return (uint16_t)total;
   } else {
     return 0;
