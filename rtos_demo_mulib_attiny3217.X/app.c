@@ -111,7 +111,7 @@ bool APP_OwnsSerialTx(mu_task_t *task) {
 // By defining _printf_float() here, none of that code is included.  (And as far
 // as I can tell, this app never prints floating point values, so this appears
 // to be safe.)
-void _printf_float(void) { asm("nop"); }
+// void _printf_float(void) { asm("nop"); }
 
 // *****************************************************************************
 // Private (static) code
