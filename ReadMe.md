@@ -37,8 +37,8 @@ The results:
 
 |   | FreeRTOS | mulib | size reduction |
 |---|---|---|---|
-| Data (RAM) | 42,316 | 845 | 98.0% |
-| Program (Flash) | 19,979 | 8605 | 56.9% |
+| Data (RAM) | 42,316 | 857 | 98.0% |
+| Program (Flash) | 19,979 | 8633 | 56.8% |
 
 ## Future Directions
 
