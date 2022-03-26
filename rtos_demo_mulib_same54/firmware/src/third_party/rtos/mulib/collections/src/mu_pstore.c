@@ -35,15 +35,20 @@
 // local (forward) declarations
 
 static void delete_at(mu_pstore_t *pstore, size_t index);
-static size_t find_insertion_index(mu_pstore_t *pstore, mu_pstore_item_t item, mu_pstore_compare_fn cmp);
+static size_t find_insertion_index(mu_pstore_t *pstore,
+                                   mu_pstore_item_t item,
+                                   mu_pstore_compare_fn cmp);
 static void heapsort(mu_pstore_t *pstore, mu_pstore_compare_fn cmp);
-static void heapify(mu_pstore_item_t *items, size_t count, mu_pstore_compare_fn cmp);
-static void sift_down(mu_pstore_item_t *items, mu_pstore_compare_fn cmp, int start, int end);
+static void
+heapify(mu_pstore_item_t *items, size_t count, mu_pstore_compare_fn cmp);
+static void sift_down(mu_pstore_item_t *items,
+                      mu_pstore_compare_fn cmp,
+                      int start,
+                      int end);
 static void swap(mu_pstore_item_t *items, int a, int b);
 
 // =============================================================================
 // local storage
-
 
 // =============================================================================
 // public code
@@ -51,7 +56,8 @@ static void swap(mu_pstore_item_t *items, int a, int b);
 /**
  * \brief initialize the pstore module.
  */
-mu_pstore_t *mu_pstore_init(mu_pstore_t *pstore, mu_pstore_item_t *items, size_t capacity) {
+mu_pstore_t *
+mu_pstore_init(mu_pstore_t *pstore, mu_pstore_item_t *items, size_t capacity) {
   pstore->items = items;
   pstore->capacity = capacity;
   return mu_pstore_reset(pstore);
@@ -65,21 +71,13 @@ mu_pstore_t *mu_pstore_reset(mu_pstore_t *pstore) {
   return pstore;
 }
 
-mu_pstore_item_t *mu_pstore_items(mu_pstore_t *pstore) {
-  return pstore->items;
-}
+mu_pstore_item_t *mu_pstore_items(mu_pstore_t *pstore) { return pstore->items; }
 
-size_t mu_pstore_capacity(mu_pstore_t *pstore) {
-  return pstore->capacity;
-}
+size_t mu_pstore_capacity(mu_pstore_t *pstore) { return pstore->capacity; }
 
-size_t mu_pstore_count(mu_pstore_t *pstore) {
-  return pstore->count;
-}
+size_t mu_pstore_count(mu_pstore_t *pstore) { return pstore->count; }
 
-bool mu_pstore_is_empty(mu_pstore_t *pstore) {
-  return pstore->count == 0;
-}
+bool mu_pstore_is_empty(mu_pstore_t *pstore) { return pstore->count == 0; }
 
 bool mu_pstore_is_full(mu_pstore_t *pstore) {
   return pstore->count == pstore->capacity;
@@ -90,7 +88,7 @@ bool mu_pstore_contains(mu_pstore_t *pstore, mu_pstore_item_t item) {
 }
 
 int mu_pstore_index_of(mu_pstore_t *pstore, mu_pstore_item_t item) {
-  for (size_t i=0; i<pstore->count; i++) {
+  for (size_t i = 0; i < pstore->count; i++) {
     if (pstore->items[i] == item) {
       return i;
     }
@@ -120,11 +118,12 @@ mu_pstore_err_t mu_pstore_peek(mu_pstore_t *pstore, mu_pstore_item_t *item) {
     *item = NULL;
     return MU_PSTORE_ERR_EMPTY;
   }
-  *item = pstore->items[pstore->count-1];
+  *item = pstore->items[pstore->count - 1];
   return MU_PSTORE_ERR_NONE;
 }
 
-mu_pstore_err_t mu_pstore_insert_at(mu_pstore_t *pstore, mu_pstore_item_t item, size_t index) {
+mu_pstore_err_t
+mu_pstore_insert_at(mu_pstore_t *pstore, mu_pstore_item_t item, size_t index) {
   int to_move = pstore->count - index;
 
   if (pstore->count == pstore->capacity) {
@@ -137,7 +136,7 @@ mu_pstore_err_t mu_pstore_insert_at(mu_pstore_t *pstore, mu_pstore_item_t item, 
 
   // move existing items to make room for the new one
   mu_pstore_item_t *src = &pstore->items[index];
-  mu_pstore_item_t *dst = &pstore->items[index+1];
+  mu_pstore_item_t *dst = &pstore->items[index + 1];
   memmove(dst, src, sizeof(mu_pstore_item_t) * to_move);
 
   // insert the new item
@@ -146,7 +145,8 @@ mu_pstore_err_t mu_pstore_insert_at(mu_pstore_t *pstore, mu_pstore_item_t item, 
   return MU_PSTORE_ERR_NONE;
 }
 
-mu_pstore_err_t mu_pstore_delete_at(mu_pstore_t *pstore, mu_pstore_item_t *item, size_t index) {
+mu_pstore_err_t
+mu_pstore_delete_at(mu_pstore_t *pstore, mu_pstore_item_t *item, size_t index) {
   int to_move = pstore->count - index - 1;
 
   if (pstore->count == 0) {
@@ -173,14 +173,17 @@ mu_pstore_item_t mu_pstore_delete(mu_pstore_t *pstore, mu_pstore_item_t item) {
   }
 }
 
-mu_pstore_err_t mu_pstore_filter(mu_pstore_t *pstore, mu_pstore_filter_fn match) {
+mu_pstore_err_t mu_pstore_filter(mu_pstore_t *pstore,
+                                 mu_pstore_filter_fn match) {
   (void)(pstore);
   (void)(match);
   // TODO: NOT YET IMPLEMENTED
   return MU_PSTORE_ERR_NONE;
 }
 
-mu_pstore_err_t mu_pstore_insert_sorted(mu_pstore_t *pstore, mu_pstore_item_t item, mu_pstore_compare_fn cmp) {
+mu_pstore_err_t mu_pstore_insert_sorted(mu_pstore_t *pstore,
+                                        mu_pstore_item_t item,
+                                        mu_pstore_compare_fn cmp) {
   if (mu_pstore_count(pstore) == 0) {
     return mu_pstore_push(pstore, item);
   } else {
@@ -205,7 +208,7 @@ static void delete_at(mu_pstore_t *pstore, size_t index) {
 
   // move existing items down
   mu_pstore_item_t *dst = &pstore->items[index];
-  mu_pstore_item_t *src = &pstore->items[index+1];
+  mu_pstore_item_t *src = &pstore->items[index + 1];
   memmove(dst, src, sizeof(mu_pstore_item_t) * to_move);
   pstore->count -= 1;
 }
@@ -213,7 +216,9 @@ static void delete_at(mu_pstore_t *pstore, size_t index) {
 // Find "leftmost" insertion point, as described in
 // http://rosettacode.org/wiki/Binary_search
 
-static size_t find_insertion_index(mu_pstore_t *pstore, mu_pstore_item_t item, mu_pstore_compare_fn cmp) {
+static size_t find_insertion_index(mu_pstore_t *pstore,
+                                   mu_pstore_item_t item,
+                                   mu_pstore_compare_fn cmp) {
   mu_pstore_item_t *items = mu_pstore_items(pstore);
   int low = 0;
   int high = mu_pstore_count(pstore) - 1;
@@ -242,7 +247,8 @@ static void heapsort(mu_pstore_t *pstore, mu_pstore_compare_fn cmp) {
   }
 }
 
-static void heapify(mu_pstore_item_t *items, size_t count, mu_pstore_compare_fn cmp) {
+static void
+heapify(mu_pstore_item_t *items, size_t count, mu_pstore_compare_fn cmp) {
   int start = (count - 2) / 2; // index of last parent node
 
   while (start >= 0) {
@@ -251,13 +257,15 @@ static void heapify(mu_pstore_item_t *items, size_t count, mu_pstore_compare_fn 
   }
 }
 
-static void sift_down(mu_pstore_item_t *items, mu_pstore_compare_fn cmp, int start, int end) {
+static void sift_down(mu_pstore_item_t *items,
+                      mu_pstore_compare_fn cmp,
+                      int start,
+                      int end) {
   int root = start;
   while (root * 2 + 1 <= end) {
     // root has at least one child...
-    int child = root * 2 + 1;      // left child
-    if ((child + 1 <= end) &&
-        cmp(items[child], items[child + 1]) < 0) {
+    int child = root * 2 + 1; // left child
+    if ((child + 1 <= end) && cmp(items[child], items[child + 1]) < 0) {
       // child has a sibling and its value is less than the sibling's...
       child += 1; // then act on right child instead
     }

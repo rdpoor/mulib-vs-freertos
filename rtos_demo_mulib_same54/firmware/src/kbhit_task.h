@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2021 R. D. Poor <rdpoor@gmail.com>
+ * Copyright (c) 2021-2022 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,18 +23,19 @@
  */
 
 /**
- * @file template_task.h
+ * @file kbhit_task.h
  *
- * @brief Support for the template task
+ * @brief Wait for keystroke, then print 5 stored eeprom values.
  */
 
-#ifndef _TEMPLATE_TASK_H_
-#define _TEMPLATE_TASK_H_
+#ifndef _KBHIT_TASK_H_
+#define _KBHIT_TASK_H_
 
 // *****************************************************************************
 // Includes
 
-#include "mu_task.h"
+#include <stdbool.h>
+#include <stdint.h>
 
 // *****************************************************************************
 // C++ Compatibility
@@ -46,22 +47,28 @@ extern "C" {
 // *****************************************************************************
 // Public types and definitions
 
-typedef enum {
-    TEMPLATE_TASK_ERR_NONE,
-} template_task_err_t;
-
 // *****************************************************************************
 // Public declarations
 
-void template_task_init(void);
+/**
+ * @brief Initalize the kbhit_task.
+ *
+ * All subsequent actions are handled by the scheduler and usart0 interrupts.
+ */
+void kbhit_task_init(void);
 
 /**
- * @brief Return a pointer to the template_task.
+ * @brief Set up to invoke kbhit_task() upon any keystroke.
+ *
+ * @note: Call this once after system is initialized and scheduler is running.
  */
-mu_task_t *template_task(void);
+void kbhit_task_start(void);
+
+// *****************************************************************************
+// End of file
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _TEMPLATE_TASK_H_ */
+#endif /* #ifndef _KBHIT_TASK_H_ */

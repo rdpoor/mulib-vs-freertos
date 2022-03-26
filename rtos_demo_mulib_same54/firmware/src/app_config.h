@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2021 R. D. Poor <rdpoor@gmail.com>
+ * Copyright (c) 2021-2022 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,19 +23,16 @@
  */
 
 /**
- * @file ui_task.h
+ * @file app_config.h
  *
- * @brief When a character is received on the serial port, fetch and print the
- *        temperature history from eeprom.
+ * @brief application-specific configuration settings.
  */
 
-#ifndef _UI_TASK_H_
-#define _UI_TASK_H_
+#ifndef _APP_CONFIG_H_
+#define _APP_CONFIG_H_
 
 // *****************************************************************************
 // Includes
-
-#include "mu_task.h"
 
 // *****************************************************************************
 // C++ Compatibility
@@ -47,22 +44,18 @@ extern "C" {
 // *****************************************************************************
 // Public types and definitions
 
-typedef enum {
-    UI_TASK_ERR_NONE,
-} ui_task_err_t;
+// un-comment to enable printing of state transitions.  Useful for debugging,
+// but uses up more ROM and some RAM
+// #define PRINT_STATE_TRANSITIONS
 
 // *****************************************************************************
 // Public declarations
 
-void ui_task_init(void);
-
-/**
- * @brief Return a pointer to the ui_task.
- */
-mu_task_t *ui_task(void);
+// *****************************************************************************
+// End of file
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _UI_TASK_H_ */
+#endif /* #ifndef _APP_H_ */

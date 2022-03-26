@@ -136,17 +136,11 @@ mu_dlist_t *mu_dlist_init(mu_dlist_t *e) {
   return e;
 }
 
-bool mu_dlist_is_empty(mu_dlist_t *e) {
-  return mu_dlist_next(e) == e;
-}
+bool mu_dlist_is_empty(mu_dlist_t *e) { return mu_dlist_next(e) == e; }
 
-mu_dlist_t *mu_dlist_next(mu_dlist_t *element) {
-  return element->next;
-}
+mu_dlist_t *mu_dlist_next(mu_dlist_t *element) { return element->next; }
 
-mu_dlist_t *mu_dlist_prev(mu_dlist_t *element) {
-  return element->prev;
-}
+mu_dlist_t *mu_dlist_prev(mu_dlist_t *element) { return element->prev; }
 
 mu_dlist_t *mu_dlist_insert_next(mu_dlist_t *list, mu_dlist_t *e) {
   e->prev = list;
@@ -164,9 +158,7 @@ mu_dlist_t *mu_dlist_insert_prev(mu_dlist_t *list, mu_dlist_t *e) {
   return e;
 }
 
-bool mu_dlist_is_linked(mu_dlist_t *e) {
-  return !mu_dlist_is_empty(e);
-}
+bool mu_dlist_is_linked(mu_dlist_t *e) { return !mu_dlist_is_empty(e); }
 
 mu_dlist_t *mu_dlist_unlink(mu_dlist_t *e) {
   if (mu_dlist_is_linked(e)) {
@@ -252,7 +244,8 @@ void *mu_dlist_traverse(mu_dlist_t *head, mu_dlist_traverse_fn fn, void *arg) {
   return result;
 }
 
-void *mu_dlist_traverse_prev(mu_dlist_t *head, mu_dlist_traverse_fn fn, void *arg) {
+void *
+mu_dlist_traverse_prev(mu_dlist_t *head, mu_dlist_traverse_fn fn, void *arg) {
   void *result = NULL;
   mu_dlist_t *list = mu_dlist_prev(head);
   while (list != head && result == NULL) {
@@ -261,7 +254,6 @@ void *mu_dlist_traverse_prev(mu_dlist_t *head, mu_dlist_traverse_fn fn, void *ar
   }
   return result;
 }
-
 
 mu_dlist_t *mu_dlist_reverse(mu_dlist_t *head) {
   if (mu_dlist_length(head) > 1) {

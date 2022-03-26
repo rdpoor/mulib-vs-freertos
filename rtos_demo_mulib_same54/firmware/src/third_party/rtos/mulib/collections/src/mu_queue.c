@@ -50,9 +50,7 @@ mu_queue_t *mu_queue_init(mu_queue_t *q) {
   return q;
 }
 
-mu_list_t *mu_queue_list(mu_queue_t *q) {
-  return mu_list_rest(&q->head);
-}
+mu_list_t *mu_queue_list(mu_queue_t *q) { return mu_list_rest(&q->head); }
 
 mu_queue_t *mu_queue_append(mu_queue_t *q, mu_list_t *item) {
   item->next = NULL;
@@ -76,7 +74,7 @@ mu_queue_t *mu_queue_prepend(mu_queue_t *q, mu_list_t *item) {
 mu_list_t *mu_queue_remove(mu_queue_t *q) {
   mu_list_t *item = mu_list_pop(&q->head);
   if (mu_list_is_empty(&q->head)) {
-    q->tail.next = NULL;       // removing last item;
+    q->tail.next = NULL; // removing last item;
   }
   return item;
 }
@@ -85,9 +83,7 @@ mu_list_t *mu_queue_delete(mu_queue_t *q, mu_list_t *item) {
   return mu_list_delete(&q->head, item);
 }
 
-bool mu_queue_is_empty(mu_queue_t *q) {
-  return mu_list_is_empty(&q->head);
-}
+bool mu_queue_is_empty(mu_queue_t *q) { return mu_list_is_empty(&q->head); }
 
 mu_queue_t *mu_queue_reset(mu_queue_t *q) {
   while (!mu_queue_is_empty(q)) {
@@ -100,9 +96,7 @@ bool mu_queue_contains(mu_queue_t *q, mu_list_t *item) {
   return mu_list_contains(&q->head, item);
 }
 
-int mu_queue_length(mu_queue_t *q) {
-  return mu_list_length(&q->head);
-}
+int mu_queue_length(mu_queue_t *q) { return mu_list_length(&q->head); }
 
 // =============================================================================
 // local (static) code

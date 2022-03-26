@@ -23,19 +23,18 @@
  */
 
 /**
- * @file printer_task.h
+ * @file usart.h
  *
- * @brief Support for the printer task
+ * @brief mulib-aware driver for reading and writing serial data via usart
  */
 
-#ifndef _PRINTER_TASK_H_
-#define _PRINTER_TASK_H_
+#ifndef _USART_H_
+#define _USART_H_
 
 // *****************************************************************************
 // Includes
 
 #include "mu_task.h"
-#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -50,45 +49,46 @@ extern "C" {
 // Public types and definitions
 
 typedef enum {
-  PRINTER_TASK_ERR_NONE,
-  PRINTER_TASK_ERR_BAD_PARAM,
-  PRINTER_TASK_ERR_BUSY
-} printer_task_err_t;
+  USART_ERR_NONE,
+  USART_ERR_BUSY,
+  USART_ERR_BAD_PARAM,
+} usart_err_t;
 
 // *****************************************************************************
 // Public declarations
 
 /**
- * @brief Initialize the printer module.  Called once at initialization.
+ * @brief Initialize USART0, called once at startup.
  */
-void printer_task_init(void);
+void usart_init(void);
 
 /**
- * @brief Return a pointer to the printer task.
- */
-mu_task_t *printer_task(void);
-
-/**
- * @brief Return true if the printer is available for printing.
- */
-bool printer_task_is_idle(void);
-
-/**
- * @brief Request to start asynchronous printing.
+ * @brief Initiate a transmit operation to send n_chars from buf over the USART,
+ * triggering on_completion when the last byte has been transmitted (or error).
  *
- * Note: it is an error to call this function unless printer_task_is_idle()
- * returns true.
+ * Note: Do not modify buf until the transmit operation has completed.
  *
- * @param buf The data to be printed.
- * @param n_bytes The number of bytes to be printed.
- * @param on_completion The task to call upon completion.  May be NULL.
- * @return PRINTER_TASK_ERR_NONE on success.
+ * @param buf The data bytes to be transmitted.
+ * @param n_bytes The number of data bytes to be transmitted.
+ * @param on_tx_complete If non-NULL, a task to be invoked after the last byte
+ *        has been transmitted.
+ * @return MU_UART_ERR_BUSY if the uart is busy, MU_UART_ERR_NONE on success.
  */
-printer_task_err_t printer_task_print(uint8_t *buffer, size_t n_bytes,
-                                      mu_task_t *on_completion);
+usart_err_t
+usart_tx(const uint8_t *buf, size_t n_bytes, mu_task_t *on_tx_complete);
+
+/**
+ * @brief Initiate a receive operation to receive one byte from the USART,
+ * triggering on_completion when a byte is received.
+ *
+ * @param ch Pointer to the uint8_t to receive the character.  
+ * @param on_rx_complete task to be invoked when a byte is received (or NULL).
+ * @return MU_UART_ERR_BUSY if the uart is busy, MU_UART_ERR_NONE on success.
+ */
+usart_err_t usart_rx(uint8_t *ch, mu_task_t *on_rx_complete);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _PRINTER_TASK_H_ */
+#endif /* #ifndef _USART_H_ */

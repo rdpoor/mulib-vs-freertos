@@ -43,16 +43,6 @@ typedef struct {
   int call_count;
 } counting_ctx_t;
 
-typedef enum {
-  RESCHEDULE_NOW,
-  RESCHEDULE_IN,
-  DONT_RESCHEDULE
-} resched_state_t;
-
-typedef struct {
-  resched_state_t state;
-} resched_ctx_t;
-
 // *****************************************************************************
 // Local (private, static) forward declarations
 
@@ -81,9 +71,6 @@ static mu_task_t s_counting_task2;
 static mu_task_t s_counting_task3;
 static mu_task_t s_counting_task4;
 static mu_task_t s_counting_task5;
-
-static resched_ctx_t s_resched_ctx;
-static mu_task_t s_resched_task;
 
 static mu_task_t s_idle_task;
 
@@ -118,7 +105,7 @@ void mu_sched_test(void) {
   ASSERT(mu_sched_remove_task(&s_counting_task1) == &s_counting_task1);
   // Removing a task not in the schedule returns null
   ASSERT(mu_sched_remove_task(&s_counting_task1) == NULL);
-  // After being removed, the task can be swcheduled
+  // After being removed, the task can be scheduled
   ASSERT(mu_sched_at(&s_counting_task1, 110) == MU_SCHED_ERR_NONE);
   // mu_sched_step() where the time has not yet arrived...
   ASSERT(mu_sched_step() == MU_SCHED_ERR_NONE);
@@ -212,7 +199,6 @@ static void reset(void) {
   s_counting_ctx3.call_count = 0;
   s_counting_ctx4.call_count = 0;
   s_counting_ctx5.call_count = 0;
-  s_resched_ctx.state = RESCHEDULE_NOW;
   mu_task_init(&s_counting_task1, counting_fn, &s_counting_ctx1);
   mu_task_init(&s_counting_task2, counting_fn, &s_counting_ctx2);
   mu_task_init(&s_counting_task3, counting_fn, &s_counting_ctx3);

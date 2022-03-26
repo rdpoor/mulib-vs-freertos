@@ -45,7 +45,8 @@ static void *ref(mu_vect_t *vect, size_t index);
  *
  * See http://rosettacode.org/wiki/Binary_search
  */
-static size_t find_insertion_index(mu_vect_t *vect, void *e, mu_vect_cmp_fn cmp);
+static size_t
+find_insertion_index(mu_vect_t *vect, void *e, mu_vect_cmp_fn cmp);
 
 static void heapify(mu_vect_t *vect, mu_vect_cmp_fn cmp);
 
@@ -59,7 +60,10 @@ static void swap(mu_vect_t *vect, int a, int b);
 // =============================================================================
 // public code
 
-mu_vect_t *mu_vect_init(mu_vect_t *vect, void *elements, size_t capacity, size_t element_size) {
+mu_vect_t *mu_vect_init(mu_vect_t *vect,
+                        void *elements,
+                        size_t capacity,
+                        size_t element_size) {
   vect->elements = elements;
   vect->capacity = capacity;
   vect->element_size = element_size;
@@ -72,29 +76,17 @@ mu_vect_t *mu_vect_reset(mu_vect_t *vect) {
   return vect;
 }
 
-void *mu_vect_elements(mu_vect_t *vect) {
-  return vect->elements;
-}
+void *mu_vect_elements(mu_vect_t *vect) { return vect->elements; }
 
-size_t mu_vect_capacity(mu_vect_t *vect) {
-  return vect->capacity;
-}
+size_t mu_vect_capacity(mu_vect_t *vect) { return vect->capacity; }
 
-size_t mu_vect_count(mu_vect_t *vect) {
-  return vect->count;
-}
+size_t mu_vect_count(mu_vect_t *vect) { return vect->count; }
 
-size_t mu_vect_element_size(mu_vect_t *vect) {
-  return vect->element_size;
-}
+size_t mu_vect_element_size(mu_vect_t *vect) { return vect->element_size; }
 
-bool mu_vect_is_empty(mu_vect_t *vect) {
-  return vect->count == 0;
-}
+bool mu_vect_is_empty(mu_vect_t *vect) { return vect->count == 0; }
 
-bool mu_vect_is_full(mu_vect_t *vect) {
-  return vect->count == vect->capacity;
-}
+bool mu_vect_is_full(mu_vect_t *vect) { return vect->count == vect->capacity; }
 
 void *mu_vect_ref(mu_vect_t *vect, size_t index) {
   if (index >= mu_vect_count(vect)) {
@@ -125,7 +117,7 @@ mu_vect_err_t mu_vect_insert_at(mu_vect_t *vect, size_t index, void *e) {
   void *at = ref(vect, index);
   // carve a hole if needed
   if (to_move > 0) {
-    void *dst = ref(vect, index + 1);  // TODO: can optimize
+    void *dst = ref(vect, index + 1); // TODO: can optimize
     memmove(dst, at, mu_vect_element_size(vect) * to_move);
   }
   // copy e into elements
@@ -164,7 +156,8 @@ mu_vect_err_t mu_vect_pop(mu_vect_t *vect, void *e) {
   return mu_vect_delete_at(vect, mu_vect_count(vect) - 1, e);
 }
 
-mu_vect_err_t mu_vect_insert_sorted(mu_vect_t *vect, void *e, mu_vect_cmp_fn cmp) {
+mu_vect_err_t
+mu_vect_insert_sorted(mu_vect_t *vect, void *e, mu_vect_cmp_fn cmp) {
   if (mu_vect_is_full(vect)) {
     return MU_VECT_ERR_FULL;
   }
@@ -184,17 +177,19 @@ mu_vect_err_t mu_vect_sort(mu_vect_t *vect, mu_vect_cmp_fn cmp) {
 }
 
 void *mu_vect_traverse(mu_vect_t *vect, mu_vect_find_fn find_fn, void *arg) {
-  for (size_t i = 0; i<mu_vect_count(vect); i++) {
+  for (size_t i = 0; i < mu_vect_count(vect); i++) {
     void *result = find_fn(ref(vect, i), arg);
-    if (result != NULL) return result;
+    if (result != NULL)
+      return result;
   }
   return NULL;
 }
 
 int mu_vect_find_index(mu_vect_t *vect, mu_vect_find_fn find_fn, void *arg) {
-  for (size_t i = 0; i<mu_vect_count(vect); i++) {
+  for (size_t i = 0; i < mu_vect_count(vect); i++) {
     void *result = find_fn(ref(vect, i), arg);
-    if (result != NULL) return i;
+    if (result != NULL)
+      return i;
   }
   return -1;
 }
@@ -214,7 +209,8 @@ static void *ref(mu_vect_t *vect, size_t index) {
 // Find "leftmost" insertion point, as described in
 // http://rosettacode.org/wiki/Binary_search
 
-static size_t find_insertion_index(mu_vect_t *vect, void *e, mu_vect_cmp_fn cmp) {
+static size_t
+find_insertion_index(mu_vect_t *vect, void *e, mu_vect_cmp_fn cmp) {
   int low = 0;
   int high = mu_vect_count(vect) - 1;
   while (low <= high) {
@@ -242,8 +238,8 @@ static void sift_down(mu_vect_t *vect, mu_vect_cmp_fn cmp, int start, int end) {
   int root = start;
   while (root * 2 + 1 <= end) {
     // root has at least one child...
-    int child = root * 2 + 1;      // left child
-    if ((child + 1 <= end) && cmp(ref(vect, child), ref(vect, child+1)) < 0) {
+    int child = root * 2 + 1; // left child
+    if ((child + 1 <= end) && cmp(ref(vect, child), ref(vect, child + 1)) < 0) {
       // child has a sibling and its value is less than the sibling's...
       child += 1; // then act on right child instead
     }
@@ -255,7 +251,6 @@ static void sift_down(mu_vect_t *vect, mu_vect_cmp_fn cmp, int start, int end) {
       return;
     }
   }
-
 }
 
 static void swap(mu_vect_t *vect, int a, int b) {
@@ -263,7 +258,7 @@ static void swap(mu_vect_t *vect, int a, int b) {
   char *pa = (char *)ref(vect, a);
   char *pb = (char *)ref(vect, b);
 
-  for (size_t i=0; i<mu_vect_element_size(vect); i++) {
+  for (size_t i = 0; i < mu_vect_element_size(vect); i++) {
     temp = pa[i];
     pa[i] = pb[i];
     pb[i] = temp;

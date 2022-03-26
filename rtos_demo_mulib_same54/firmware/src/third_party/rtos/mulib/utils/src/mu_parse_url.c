@@ -3,7 +3,7 @@
  *
  * MIT License
  *
- * Copyright (c) 2022 R. Dunbar Poor
+ * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -162,7 +162,8 @@ static uint32_t parse_ipv4_address(mu_str_t *slice) {
   }
   // If we got this far, octets[] contains the 4 octets.  Assemble into an
   // int and return.
-  return (octets[0] << 24) | (octets[1] << 16) | (octets[2] << 8) | octets[3];
+  return ((uint32_t)octets[0] << 24) | ((uint32_t)octets[1] << 16) |
+         ((uint32_t)octets[2] << 8) | (uint32_t)octets[3];
 }
 
 static int parse_octet(mu_str_t *slice) {
@@ -206,7 +207,7 @@ static uint16_t url_find_portspec(mu_str_t *slice) {
   }
   mu_str_increment_start(slice, index + 1); // skip past ':'
 
-  int total = 0;
+  unsigned int total = 0;
   uint8_t ch;
   while (mu_str_read_byte(slice, &ch)) {
     if ((ch >= '0') && (ch <= '9')) {
@@ -217,7 +218,7 @@ static uint16_t url_find_portspec(mu_str_t *slice) {
     }
   }
   // arrive here at end of string or on a non-digit.
-  if (total < 1 << 16) {
+  if (total < (1UL << 16)) {
     return (uint16_t)total;
   } else {
     return 0;

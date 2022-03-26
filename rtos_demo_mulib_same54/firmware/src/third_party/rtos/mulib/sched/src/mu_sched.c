@@ -47,14 +47,14 @@
 #endif
 
 #ifndef MU_SCHED_MAX_IRQ_TASKS
-#define MU_SCHED_MAX_IRQ_TASKS 8  // must be a power of two!
+#define MU_SCHED_MAX_IRQ_TASKS 8 // must be a power of two!
 #endif
 
 typedef struct {
   mu_event_t current_event; // the event currently being processed.
   mu_task_t *current_task;  // the task currently being processed.
   mu_clock_fn clock_fn;     // the function to call to get the current time.
-  mu_task_t  *idle_task;    // the task to run when nothing else is runnable.
+  mu_task_t *idle_task;     // the task to run when nothing else is runnable.
   mu_event_t events[MU_SCHED_MAX_EVENTS]; // the actual schedule...
   int event_idx;                          // index of next available event
   mu_spsc_item_t irq_tasks[MU_SCHED_MAX_IRQ_TASKS];
@@ -86,15 +86,6 @@ static void process_current_event(void);
  */
 static mu_sched_err_t sched_aux(mu_task_t *task, mu_time_abs_t at);
 
-
-/**
- * @brief Find an event at the specified time.
- *
- * It will return a pointer to the event, or NULL if the event could not be
- * found.
- */
-static mu_event_t *find_event(mu_time_abs_t at);
-
 /**
  * @brief Find or create an event at the specified time.
  *
@@ -103,6 +94,12 @@ static mu_event_t *find_event(mu_time_abs_t at);
  * created (i.e. if the events[] array is full).
  */
 static mu_event_t *find_or_create_event(mu_time_abs_t at);
+
+/**
+ * @brief Return the event to which the task belongs to, or NULL if the task
+ * does not belong to any event.
+ */
+static mu_event_t *find_task_event(mu_task_t *task);
 
 // *****************************************************************************
 // Local (private, static) storage
@@ -113,7 +110,7 @@ static mu_sched_t s_sched;
 // Public code
 
 void mu_sched_init(void) {
-  memset(&s_sched, 0, sizeof(s_sched));  //
+  memset(&s_sched, 0, sizeof(s_sched)); //
   mu_event_init(&s_sched.current_event);
   s_sched.clock_fn = mu_rtc_now;
   mu_spsc_init(&s_sched.irq_spsc, s_sched.irq_tasks, MU_SCHED_MAX_IRQ_TASKS);
@@ -146,34 +143,25 @@ mu_sched_err_t mu_sched_step(void) {
   return MU_SCHED_ERR_NONE;
 }
 
-mu_clock_fn mu_sched_get_clock_source(void) {
-  return s_sched.clock_fn;
-}
+mu_clock_fn mu_sched_get_clock_source(void) { return s_sched.clock_fn; }
 
 void mu_sched_set_clock_source(mu_clock_fn clock_fn) {
   s_sched.clock_fn = clock_fn;
 }
 
-mu_task_t *mu_sched_get_idle_task(void) {
-  return s_sched.idle_task;
-}
+mu_task_t *mu_sched_get_idle_task(void) { return s_sched.idle_task; }
 
-void mu_sched_set_idle_task(mu_task_t *task) {
-  s_sched.idle_task = task;
-}
+void mu_sched_set_idle_task(mu_task_t *task) { s_sched.idle_task = task; }
 
 bool mu_sched_is_empty(void) {
   // TODO: is there a safe way to take spsc into account?
-  return (s_sched.event_idx == 0) && (mu_event_is_empty(&s_sched.current_event));
+  return (s_sched.event_idx == 0) &&
+         (mu_event_is_empty(&s_sched.current_event));
 }
 
-mu_time_abs_t mu_sched_get_current_time(void) {
-  return s_sched.clock_fn();
-}
+mu_time_abs_t mu_sched_get_current_time(void) { return s_sched.clock_fn(); }
 
-mu_task_t *mu_sched_get_current_task(void) {
-  return s_sched.current_task;
-}
+mu_task_t *mu_sched_get_current_task(void) { return s_sched.current_task; }
 
 mu_event_t *mu_sched_get_current_event(void) {
   if (s_sched.current_task) {
@@ -194,23 +182,16 @@ mu_event_t *mu_sched_peek_next_event(void) {
   return event;
 }
 
-// IMPLEMENTATION NOTE: If you remove the last task from an event, the event
-// remains in the schedule as an empty event (no tasks).  Since this is a rare
-// situation, it doesn't seem worth removing empty events.  But that might
-// change...
 mu_task_t *mu_sched_remove_task(mu_task_t *task) {
-  // Find the event containing this task
-  mu_event_t *event = mu_task_get_event(task);
-  if (event && find_event(mu_event_get_time(event))) {
-    // There exists an event in the schedule that contains this task
-    mu_task_t *removed = mu_event_remove_task(event, task);
-    (void)removed;
-    // TODO: include ASSERT support for code besides unit tests.
-    // ASSERT(removed == task);
-    return task;
-  } else {
-    // task does not appear to be scheduled.
+  mu_event_t *event = find_task_event(task);
+  if (event == NULL) {
+    // task does not appear on any event...
     return NULL;
+  } else {
+    // NOTE: if this removes the last task of the event, the schedule will have
+    // an empty event.  It's probably not worth checking for that case here,
+    // since the empty even will get removed when its time arrives.
+    return mu_event_remove_task(event, task);
   }
 }
 
@@ -228,7 +209,7 @@ mu_sched_err_t mu_sched_in(mu_task_t *task, mu_time_rel_t in) {
 }
 
 mu_sched_err_t mu_sched_from_isr(mu_task_t *task) {
-  if (mu_task_get_event(task)) {
+  if (mu_task_get_task_list(task) != NULL) {
     // task is part of another event -- it may only participate in one.
     return MU_SCHED_ERR_ALREADY_SCHEDULED;
   }
@@ -239,10 +220,12 @@ mu_sched_err_t mu_sched_from_isr(mu_task_t *task) {
 }
 
 mu_sched_task_status_t mu_sched_get_task_status(mu_task_t *task) {
+  // TODO: stub.  Will this ever be used?
   return MU_SCHED_TASK_STATUS_IDLE;
 }
 
 mu_task_t *mu_sched_traverse(mu_sched_traverse_fn user_fn, void *arg) {
+  // TODO: stub.  Will this ever be used?
   return NULL;
 }
 
@@ -288,7 +271,7 @@ static void process_current_event(void) {
 static mu_sched_err_t sched_aux(mu_task_t *task, mu_time_abs_t at) {
   mu_sched_err_t err = MU_SCHED_ERR_NONE;
   do {
-    if (mu_task_get_event(task)) {
+    if (mu_task_get_task_list(task) != NULL) {
       // task is part of another event -- it may only participate in one.
       err = MU_SCHED_ERR_ALREADY_SCHEDULED;
       break;
@@ -300,31 +283,9 @@ static mu_sched_err_t sched_aux(mu_task_t *task, mu_time_abs_t at) {
       break;
     }
     mu_event_append_task(event, task);
-  } while(false);
+  } while (false);
 
   return err;
-}
-
-static mu_event_t *find_event(mu_time_abs_t at) {
-  int i = s_sched.event_idx;
-
-  while (i > 0) {
-    mu_event_t *candidate_event = &s_sched.events[--i];
-    mu_time_abs_t candidate_time = mu_event_get_time(candidate_event);
-
-    if (mu_time_equals(at, candidate_time)) {
-      // exact match!
-      return candidate_event;
-
-    } else if (mu_time_precedes(at, candidate_time)) {
-      // overshot...
-      return NULL;
-
-    } else {
-      // at follows candidate_time -- keep searching
-    }
-  }
-  return NULL;   // not found
 }
 
 static mu_event_t *find_or_create_event(mu_time_abs_t at) {
@@ -340,7 +301,7 @@ static mu_event_t *find_or_create_event(mu_time_abs_t at) {
       return candidate_event;
 
     } else if (mu_time_precedes(at, candidate_time)) {
-      i += 1;  // back up by one to claim our insertion point
+      i += 1; // back up by one to claim our insertion point
       break;
 
     } else {
@@ -359,7 +320,7 @@ static mu_event_t *find_or_create_event(mu_time_abs_t at) {
   if (to_move > 0) {
     // use memmove to open a slot at i
     mu_event_t *src = &s_sched.events[i];
-    mu_event_t *dst = &s_sched.events[i+1];
+    mu_event_t *dst = &s_sched.events[i + 1];
     memmove(dst, src, to_move * sizeof(mu_event_t));
   }
 
@@ -371,4 +332,27 @@ static mu_event_t *find_or_create_event(mu_time_abs_t at) {
   s_sched.event_idx += 1;
 
   return candidate_event;
+}
+
+static mu_event_t *find_task_event(mu_task_t *task) {
+  mu_task_list_t *tasks;
+
+  if (task == NULL) {
+    return NULL;
+  } else if ((tasks = (mu_task_list_t *)mu_task_get_task_list(task)) == NULL) {
+    // task is not on any task list...
+    return NULL;
+  } else {
+    // perform a linear search of scheduled events
+    mu_event_t *event;
+    int i = s_sched.event_idx;
+
+    while (i > 0) {
+      event = &s_sched.events[--i];
+      if (&event->tasks == tasks) {
+        return event;
+      }
+    }
+    return NULL;
+  }
 }

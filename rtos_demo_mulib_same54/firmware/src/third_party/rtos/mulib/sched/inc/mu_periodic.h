@@ -23,18 +23,27 @@
  */
 
 /**
- * @file app.h
+ * @file mu_periodic.h
  *
- * @brief Main file for rtos demo application.
+ * @brief Invoke a task periodically (without accumulated time error)
+ *
+ * Example usage:
+ *
+ *  // To invoke my_task once every 1000 milliseconds:
+ *  mu_periodic_t timer;
+ *  mu_periodic_init(&timer);
+ *  mu_periodic_start(&timer, mu_time_ms_to_rel(1000), my_task);
  */
 
-#ifndef _APP_H_
-#define _APP_H_
+#ifndef _MU_PERIODIC_H_
+#define _MU_PERIODIC_H_
 
 // *****************************************************************************
 // Includes
 
 #include "mu_task.h"
+#include "mu_time.h"
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -48,62 +57,57 @@ extern "C" {
 // *****************************************************************************
 // Public types and definitions
 
-#define APP_TASK_EEPROM_MAX_LOG_VALUES 5
-
-// un-comment to enable printing of state transitions.  Useful for debugging,
-// but uses up more ROM and some RAM
-// #define PRINT_STATE_TRANSITIONS
+typedef struct {
+  mu_task_t _task;
+  mu_task_t *_target_task;
+  mu_time_rel_t _period;
+  mu_time_abs_t _trigger_at;
+} mu_periodic_t;
 
 // *****************************************************************************
 // Public declarations
 
 /**
- * @brief Prepare the required resources for the app and queue initial tasks.
+ * @brief Initialize the periodic timer.
+ */
+mu_periodic_t *mu_periodic_init(mu_periodic_t *timer);
+
+/**
+ * @brief Start the periodic timer.
  *
- * @note Called once at startup.
- */
-void APP_Initialize(void);
-
-/**
- * @brief Run the scheduler.
+ * The target task is triggered immediately, and thereafter once every
+ * interval units of time.
  *
- * @note Called repeatedly from main()
- */
-void APP_Tasks(void);
-
-/**
- * @brief Request exclusive ownership of the I2C bus.
+ * @note If the timer is already running, this has no effect and returns false.
  *
- * @note The given task will be invoked when exclusive access is granted.
+ * @param timer The periodic timer object.
+ * @param period The repetition interval.  Must be strictly positive.
+ * @param target_task The task to be triggered.
+ * @return true if the timer started, false if it was already running.
  */
-void APP_ReserveI2C(mu_task_t *task);
+bool mu_periodic_start(mu_periodic_t *timer,
+                       mu_time_rel_t period,
+                       mu_task_t *target_task);
 
 /**
- * @brief Relinquish exclusive ownership of the I2C bus.
- */
-void APP_ReleaseI2C(mu_task_t *task);
-
-/**
- * @brief Return true if the given task has exclusive ownership of the I2C bus.
- */
-bool APP_OwnsI2C(mu_task_t *task);
-
-/**
- * @brief Request exclusive ownership of the USART transmitter.
+ * @brief Stop the periodic timer.
  *
- * @note The given task will be invoked when exclusive access is granted.
+ * The timer stops invoking the target task.
+ *
+ * @note If the timer is already stopped, this returns false and has no effect.
+ *
+ * @param timer The periodic timer object.
+ * @return true if the timer stopped, false if it was already stopped.
  */
-void APP_ReserveSerialTx(mu_task_t *task);
+bool mu_periodic_stop(mu_periodic_t *timer);
 
 /**
- * @brief Relinquish exclusive ownership of the USART transmitter.
+ * @brief Return true if the timer is running.
+ *
+ * @param timer The periodic timer object.
+ * @return true if the timer is running, false otherwise.
  */
-void APP_ReleaseSerialTx(mu_task_t *task);
-
-/**
- * @brief Return true if the given task has ownership of the USART transmitter.
- */
-bool APP_OwnsSerialTx(mu_task_t *task);
+bool mu_periodic_is_running(mu_periodic_t *timer);
 
 // *****************************************************************************
 // End of file
@@ -112,4 +116,4 @@ bool APP_OwnsSerialTx(mu_task_t *task);
 }
 #endif
 
-#endif /* #ifndef _APP_H_ */
+#endif /* #ifndef _MU_PERIODIC_H_ */

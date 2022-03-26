@@ -25,17 +25,16 @@
 // *****************************************************************************
 // Includes
 
-#include "app.h"
+#include "mu_periodic.h"
 
-#include "i2c_task.h"
-#include "kbhit_task.h"
-#include "mu_access_mgr.h"
-#include "mu_rtc.h"
 #include "mu_sched.h"
 #include "mu_task.h"
 #include "mu_time.h"
-#include "periodic_task.h"
-#include "usart.h"
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+
+#include <stdio.h>
 
 // *****************************************************************************
 // Private types and definitions
@@ -43,75 +42,64 @@
 // *****************************************************************************
 // Private (static) storage
 
-static mu_access_mgr_t s_i2c_access;
-static mu_access_mgr_t s_serial_tx_access;
-
-static bool s_is_first_time;
-
 // *****************************************************************************
 // Private (forward) declarations
+
+static void timer_fn(void *ctx, void *arg);
 
 // *****************************************************************************
 // Public code
 
-void APP_Initialize(void) {
-  mu_rtc_init();
-  mu_sched_init();
-  mu_time_init();
+mu_periodic_t *mu_periodic_init(mu_periodic_t *timer) {
+  mu_task_init(&timer->_task, timer_fn, timer);
+  timer->_target_task = 0;
+  timer->_period = 0;
 
-  // Initialize app-specific resources.
-  i2c_task_init();
-  usart_init();
-  mu_access_mgr_init(&s_i2c_access);
-  mu_access_mgr_init(&s_serial_tx_access);
-
-  // Schedule initial tasks.
-  periodic_task_init();
-  kbhit_task_init();
-  s_is_first_time = true;
+  return timer;
 }
 
-void APP_Tasks(void) {
-  if (s_is_first_time) {
-    s_is_first_time = false;
-    // things requiring one-time initialzation after system initialization
-    kbhit_task_start();
-    periodic_task_start();
+bool mu_periodic_start(mu_periodic_t *timer,
+                       mu_time_rel_t period,
+                       mu_task_t *target_task) {
+  if (mu_periodic_is_running(timer)) {
+    return false;
   }
-  // run the scheduler
-  mu_sched_step();
+  mu_time_abs_t now = mu_sched_get_clock_source()(); // whoo!
+  timer->_target_task = target_task;
+  timer->_period = period;
+  timer->_trigger_at = mu_time_offset(now, period);
+  // invoke the target task now, and reschedule after period elapses
+  mu_task_call(target_task, NULL);
+  mu_sched_at(&timer->_task, timer->_trigger_at);
+
+  return true;
 }
 
-void APP_ReserveI2C(mu_task_t *task) {
-  mu_access_mgr_request_ownership(&s_i2c_access, task);
+bool mu_periodic_stop(mu_periodic_t *timer) {
+  if (!mu_periodic_is_running(timer)) {
+    return false;
+  }
+  mu_sched_remove_task(&timer->_task);
+  timer->_period = 0; // signifies that the timer is stopped.
+  return true;
 }
 
-void APP_ReleaseI2C(mu_task_t *task) {
-  mu_access_mgr_release_ownership(&s_i2c_access, task);
+bool mu_periodic_is_running(mu_periodic_t *timer) {
+  return timer->_period != 0;
 }
-
-bool APP_OwnsI2C(mu_task_t *task) {
-  return mu_access_mgr_has_ownership(&s_i2c_access, task);
-}
-
-void APP_ReserveSerialTx(mu_task_t *task) {
-  mu_access_mgr_request_ownership(&s_serial_tx_access, task);
-}
-
-void APP_ReleaseSerialTx(mu_task_t *task) {
-  mu_access_mgr_release_ownership(&s_serial_tx_access, task);
-}
-
-bool APP_OwnsSerialTx(mu_task_t *task) {
-  return mu_access_mgr_has_ownership(&s_serial_tx_access, task);
-}
-
-// For reasons I don't understand yet, if the following is omitted, the linker
-// includes a LARGE body of code related to printing floating point values.
-// By defining _printf_float() here, none of that code is included.  (And as far
-// as I can tell, this app never prints floating point values, so this appears
-// to be safe.)
-void _printf_float(void) { asm("nop"); }
 
 // *****************************************************************************
 // Private (static) code
+
+static void timer_fn(void *ctx, void *arg) {
+  mu_periodic_t *timer = (mu_periodic_t *)ctx;
+  (void)arg;
+
+  // called periodically by the scheduler
+  if (mu_periodic_is_running(timer)) {
+    // invoke target task, update trigger time and reschedule...
+    mu_task_call(timer->_target_task, NULL);
+    timer->_trigger_at = mu_time_offset(timer->_trigger_at, timer->_period);
+    mu_sched_at(&timer->_task, timer->_trigger_at);
+  }
+}

@@ -23,18 +23,16 @@
  */
 
 /**
- * @file sensor_task.h
+ * @file periodic_task.h
  *
- * @brief Support for the sensor task
+ * @brief Periodically read temperature, write to EEPROM, print to serial port.
  */
 
-#ifndef _SENSOR_TASK_H_
-#define _SENSOR_TASK_H_
+#ifndef _PERIODIC_TASK_H_
+#define _PERIODIC_TASK_H_
 
 // *****************************************************************************
 // Includes
-
-#include "mu_task.h"
 
 // *****************************************************************************
 // C++ Compatibility
@@ -46,19 +44,34 @@ extern "C" {
 // *****************************************************************************
 // Public types and definitions
 
+#define PERIODIC_TASK_TEMPERATURE_SLAVE_ADDR 0x004F
+#define PERIODIC_TASK_TEMPERATURE_REG_ADDR 0x00
+
+#define PERIODIC_TASK_EEPROM_SLAVE_ADDR 0x0057
+#define PERIODIC_TASK_EEPROM_LOG_MEMORY_ADDR 0x00
+#define PERIODIC_TASK_EEPROM_MAX_LOG_VALUES 5
+
 typedef enum {
-    SENSOR_TASK_ERR_NONE,
-} sensor_task_err_t;
+  PERIODIC_TASK_ERR_NONE,
+} periodic_task_err_t;
 
 // *****************************************************************************
 // Public declarations
 
-void sensor_task_init(void);
+/**
+ * @brief Initialize the periodic task.  Will run when scheduler starts.
+ */
+void periodic_task_init(void);
 
-mu_task_t *sensor_task(void);
+/**
+ * @brief Start calling periodic_task regularly
+ *
+ * @note: Call this once after system is initialized and scheduler is running.
+ */
+void periodic_task_start(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _SENSOR_TASK_H_ */
+#endif /* #ifndef _PERIODIC_TASK_H_ */

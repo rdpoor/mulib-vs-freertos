@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2021-2022 R. D. Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,12 +32,12 @@ extern "C" {
 // =============================================================================
 // Includes
 
-#include <time.h>  // for struct tm
+#include <time.h> // for struct tm
 
 // =============================================================================
 // Types and definitions
 
-#define MU_RFC_1123_MAX_LEN 30  // includes null terminator
+#define MU_RFC_1123_MAX_LEN 30 // includes null terminator
 
 // =============================================================================
 // Declarations

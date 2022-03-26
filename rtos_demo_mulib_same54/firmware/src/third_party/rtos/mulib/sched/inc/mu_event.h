@@ -31,12 +31,12 @@
 // *****************************************************************************
 // Includes
 
-#include "mu_queue.h"
 #include "mu_task.h"
+#include "mu_task_list.h"
 #include "mu_time.h"
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 // =============================================================================
 // C++ compatibility
@@ -48,9 +48,13 @@ extern "C" {
 // *****************************************************************************
 // Public types and definitions
 
+/**
+ * A `mu_event` comprises a list of tasks and a time at which to invoke them.
+ */
+
 typedef struct _mu_event {
-  mu_queue_t tasks;  // a collection of tasks to be invoked sequentially
-  mu_time_abs_t at;      // (for the scheduler) the time at which to invoke them
+  mu_task_list_t tasks; // a collection of tasks to be invoked sequentially
+  mu_time_abs_t at;     // the time at which to invoke them
 } mu_event_t;
 
 // *****************************************************************************
@@ -74,23 +78,31 @@ mu_event_t *mu_event_set_time(mu_event_t *event, mu_time_abs_t at);
 mu_time_abs_t mu_event_get_time(mu_event_t *event);
 
 /**
- * @brief Return true if there are no events in the queue.
+ * @brief Return true if there are no events in the task_list.
  */
 bool mu_event_is_empty(mu_event_t *event);
 
 /**
- * @brief Add a task at the tail of the event queue.
+ * @brief Add a task at the tail of the event task_list.
  *
  * The task will be invoked after other tasks.
+ *
+ * @param event The event argument
+ * @param task The task to be added to the event
+ * @return task if successfully added, NULL if task is already on a task_list
  */
-mu_event_t *mu_event_append_task(mu_event_t *event, mu_task_t *task);
+mu_task_t *mu_event_append_task(mu_event_t *event, mu_task_t *task);
 
 /**
- * @brief Add a task at the head of the event queued.
+ * @brief Add a task at the head of the event task_listd.
  *
  * The task will be invoked before other tasks.
+ *
+ * @param event The event argument
+ * @param task The task to be added to the event
+ * @return task if successfully added, NULL if task is already on a task_list
  */
-mu_event_t *mu_event_prepend_task(mu_event_t *event, mu_task_t *task);
+mu_task_t *mu_event_prepend_task(mu_event_t *event, mu_task_t *task);
 
 /**
  * @brief Remove a task from an event.
@@ -104,7 +116,7 @@ mu_task_t *mu_event_remove_task(mu_event_t *event, mu_task_t *task);
 /**
  * @brief Remove the first task from the list of tasks.
  *
- * Returns NULL if the queue is empty.
+ * Returns NULL if the task_list is empty.
  */
 mu_task_t *mu_event_pop_task(mu_event_t *event);
 
@@ -117,7 +129,6 @@ mu_task_t *mu_event_pop_task(mu_event_t *event);
  *        from the event before being called.
  */
 void mu_event_call(mu_event_t *event, void *arg, bool retain);
-
 
 #ifdef __cplusplus
 }

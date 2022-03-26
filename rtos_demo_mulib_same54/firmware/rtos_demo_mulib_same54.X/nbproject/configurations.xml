@@ -94,6 +94,9 @@
             <itemPath>../src/third_party/rtos/mulib/sched/inc/mu_sched.h</itemPath>
             <itemPath>../src/third_party/rtos/mulib/sched/inc/mu_spsc.h</itemPath>
             <itemPath>../src/third_party/rtos/mulib/sched/inc/mu_event.h</itemPath>
+            <itemPath>../src/third_party/rtos/mulib/sched/inc/mu_access_mgr.h</itemPath>
+            <itemPath>../src/third_party/rtos/mulib/sched/inc/mu_periodic.h</itemPath>
+            <itemPath>../src/third_party/rtos/mulib/sched/inc/mu_task_list.h</itemPath>
           </logicalFolder>
         </logicalFolder>
         <logicalFolder name="string" displayName="string" projectFiles="true">
@@ -244,10 +247,11 @@
         </logicalFolder>
       </logicalFolder>
       <itemPath>../src/app.h</itemPath>
-      <itemPath>../src/printer_task.h</itemPath>
-      <itemPath>../src/sensor_task.h</itemPath>
+      <itemPath>../src/app_config.h</itemPath>
+      <itemPath>../src/kbhit_task.h</itemPath>
+      <itemPath>../src/periodic_task.h</itemPath>
+      <itemPath>../src/usart.h</itemPath>
       <itemPath>../src/i2c_task.h</itemPath>
-      <itemPath>../src/ui_task.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -364,6 +368,9 @@
             <itemPath>../src/third_party/rtos/mulib/sched/src/mu_event.c</itemPath>
             <itemPath>../src/third_party/rtos/mulib/sched/src/mu_task.c</itemPath>
             <itemPath>../src/third_party/rtos/mulib/sched/src/mu_sched.c</itemPath>
+            <itemPath>../src/third_party/rtos/mulib/sched/src/mu_access_mgr.c</itemPath>
+            <itemPath>../src/third_party/rtos/mulib/sched/src/mu_periodic.c</itemPath>
+            <itemPath>../src/third_party/rtos/mulib/sched/src/mu_task_list.c</itemPath>
           </logicalFolder>
         </logicalFolder>
         <logicalFolder name="string" displayName="string" projectFiles="true">
@@ -383,11 +390,11 @@
         </logicalFolder>
       </logicalFolder>
       <itemPath>../src/main_e54.c</itemPath>
+      <itemPath>../src/kbhit_task.c</itemPath>
+      <itemPath>../src/periodic_task.c</itemPath>
       <itemPath>../src/app.c</itemPath>
-      <itemPath>../src/printer_task.c</itemPath>
-      <itemPath>../src/sensor_task.c</itemPath>
+      <itemPath>../src/usart.c</itemPath>
       <itemPath>../src/i2c_task.c</itemPath>
-      <itemPath>../src/ui_task.c</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>

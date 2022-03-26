@@ -27,8 +27,8 @@
 
 #include "mu_task.h"
 
-#include "mu_event.h"
 #include "mu_list.h"
+#include "mu_task_list.h"
 #include <stddef.h>
 
 // *****************************************************************************
@@ -47,7 +47,7 @@ mu_task_t *mu_task_init(mu_task_t *task, mu_task_fn fn, void *ctx) {
   task->fn = fn;
   task->ctx = ctx;
   mu_list_init(&task->_link);
-  task->_event = NULL;
+  task->_task_list = NULL;
   return task;
 }
 
@@ -63,7 +63,9 @@ void mu_task_call(mu_task_t *task, void *arg) {
 
 mu_list_t *mu_task_get_link(mu_task_t *task) { return &task->_link; }
 
-mu_event_t *mu_task_get_event(mu_task_t *task) { return task->_event; }
+struct _mu_task_list *mu_task_get_task_list(mu_task_t *task) {
+  return task->_task_list;
+}
 
 // *****************************************************************************
 // Private functions

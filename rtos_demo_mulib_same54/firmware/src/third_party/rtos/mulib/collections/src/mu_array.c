@@ -75,7 +75,7 @@ static void enheap(void *elements,
   int start = (element_count - 2) / 2; // index of last parent node
 
   while (start >= 0) {
-    ensift(elements, comparison_fn, start, element_count-1, element_size);
+    ensift(elements, comparison_fn, start, element_count - 1, element_size);
     start -= 1;
   }
 }
@@ -88,10 +88,10 @@ static void ensift(void *elements,
   int root = start;
   while (root * 2 + 1 <= end) {
     // root has at least one child...
-    int child = root * 2 + 1;      // left child
+    int child = root * 2 + 1; // left child
     if ((child + 1 <= end) &&
         comparison_fn(aref(elements, child, element_size),
-                      aref(elements, child+1, element_size)) < 0) {
+                      aref(elements, child + 1, element_size)) < 0) {
       // child has a sibling and its value is less than the sibling's...
       child += 1; // then act on right child instead
     }
@@ -116,7 +116,7 @@ static void swap(void *elements, int i1, int i2, size_t element_size) {
   uint8_t *p1 = aref(elements, i1, element_size);
   uint8_t *p2 = aref(elements, i2, element_size);
 
-  for (size_t i=0; i<element_size; i++) {
+  for (size_t i = 0; i < element_size; i++) {
     temp = p1[i];
     p1[i] = p2[i];
     p2[i] = temp;

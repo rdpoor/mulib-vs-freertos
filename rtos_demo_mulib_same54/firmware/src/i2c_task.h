@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2021 R. D. Poor <rdpoor@gmail.com>
+ * Copyright (c) 2021-2022 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,7 @@
 /**
  * @file i2c_task.h
  *
- * @brief In this app, eeprom and temperature sensor share the I2C bus.  The
- * i2c_task provides asynchronous access to both.
+ * @brief mulib-aware I2C driver
  */
 
 #ifndef _I2C_TASK_H_
@@ -36,6 +35,7 @@
 // Includes
 
 #include "mu_task.h"
+#include <stdbool.h>
 #include <stdint.h>
 
 // *****************************************************************************
@@ -48,6 +48,11 @@ extern "C" {
 // *****************************************************************************
 // Public types and definitions
 
+#define I2C_TASK_TEMPERATURE_SLAVE_ADDR 0x004F
+#define I2C_TASK_TEMPERATURE_REG_ADDR 0x00
+
+#define I2C_TASK_EEPROM_SLAVE_ADDR 0x0057
+#define I2C_TASK_EEPROM_LOG_MEMORY_ADDR 0x00
 #define I2C_TASK_EEPROM_MAX_LOG_VALUES 5
 
 typedef enum {
@@ -60,72 +65,41 @@ typedef enum {
 // Public declarations
 
 /**
- * @brief One-time initialization of the i2c_task, to be called at startup.
+ * @brief One-time initialization of the i2c0, to be called at startup.
  */
 void i2c_task_init(void);
 
 /**
- * @brief Return a reference to the i2c_task.
- */
-mu_task_t *i2c_task(void);
-
-/**
- * @brief Return true if the i2c is available for printing.
- */
-bool i2c_task_is_idle(void);
-
-/**
- * @brief Request to start asynchronous reading of the temperature.
+ * @brief Request to start an asynchronous read operation.
  *
- * Note: it is an error to call this function unless i2c_task_is_idle()
- * returns true.
+ * Note: it is an error to call this function if I2C0 is busy.
  *
  * Note: If on_completion is non-NULL, it will be triggered when the read
- * operation completes.  In addition, i2c_task_is_idle() will return true.
- *
- * @param fahrenheit Pointer to location to receive the result.
- * @param on_completion The task to call upon completion.  May be NULL.
- * @return I2C_TASK_ERR_NONE on success.
+ * operation completes.
  */
-i2c_task_err_t i2c_task_read_temperature(int8_t *fahrenheit,
-                                         mu_task_t *on_completion);
+i2c_task_err_t i2c_task_read(uint8_t addr,
+                             uint8_t *buf,
+                             size_t n_bytes,
+                             mu_task_t *on_completion);
 
 /**
- * @brief Request to start asynchronous write to eeprom.
+ * @brief Request to start an asynchronous write operation.
  *
- * Note: it is an error to call this function unless i2c_task_is_idle()
- * returns true.
- *
- * Note: If on_completion is non-NULL, it will be triggered when the write
- * operation completes.  In addition, i2c_task_is_idle() will return true.
- *
- * @param byte The byt e to be written.
- * @param on_completion The task to call upon completion.  May be NULL.
- * @return I2C_TASK_ERR_NONE on success.
- */
-i2c_task_err_t i2c_task_write_eeprom_byte(uint8_t byte,
-                                          mu_task_t *on_completion);
-
-/**
- * @brief Request to start asynchronous read from eeprom.
- *
- * Note: it is an error to call this function unless i2c_task_is_idle()
- * returns true.
+ * Note: it is an error to call this function if I2C0 is busy.
  *
  * Note: If on_completion is non-NULL, it will be triggered when the read
- * operation completes.  In addition, i2c_task_is_idle() will return true.
- *
- * @param buf The location in which to write the read data.
- * @param n_bytes The number of bytes to be read.
- * @param on_completion The task to call upon completion.  May be NULL.
- * @return I2C_TASK_ERR_NONE on success.
+ * operation completes.
  */
-i2c_task_err_t i2c_task_read_eeprom_bytes(uint8_t *buffer,
-                                          size_t n_bytes,
-                                          mu_task_t *on_completion);
+i2c_task_err_t i2c_task_write(uint8_t addr,
+                              uint8_t *buf,
+                              size_t n_bytes,
+                              mu_task_t *on_completion);
+
+// *****************************************************************************
+// End of file
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _I2C_TASK_H_ */
+#endif /* #ifndef _I2C_H_ */

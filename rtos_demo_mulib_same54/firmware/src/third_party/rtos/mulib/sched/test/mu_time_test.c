@@ -25,26 +25,16 @@
 // =============================================================================
 // includes
 
-#include "mu_timer.h"
-#include "mu_task.h"
+#include "mu_test_utils.h"
 #include "mu_time.h"
-#include "mu_sched.h"
+#include <unistd.h>
 
+#include <stdio.h>
 // =============================================================================
 // private types and definitions
 
 // =============================================================================
 // private declarations
-
-/**
- * Implementation note: since we anticipate that timers will be frequently used,
- * we want to minimize the size of the timer context.  We do this by providing
- * two functions: one_shot_fn and periodic_fn in order to eliminate a boolean in
- * the context.
- */
-static void one_shot_fn(void *ctx, void *arg);
-static void periodic_fn(void *ctx, void *arg);
-static void trigger_aux(void *ctx, void *arg, bool repeat);
 
 // =============================================================================
 // local storage
@@ -52,51 +42,31 @@ static void trigger_aux(void *ctx, void *arg, bool repeat);
 // =============================================================================
 // public code
 
-mu_timer_t *mu_timer_one_shot(mu_timer_t *timer, mu_task_t *target_task) {
-  mu_task_init(&timer->timer_task, one_shot_fn, timer, "One Shot");
-  timer->target_task = target_task;
-  return timer;
-}
+void mu_time_test() {
+  mu_time_abs_t t1;
+  mu_time_abs_t t2;
 
-mu_timer_t *mu_timer_periodic(mu_timer_t *timer, mu_task_t *target_task) {
-  mu_task_init(&timer->timer_task, periodic_fn, timer, "Periodic");
-  timer->target_task = target_task;
-  return timer;
-}
+  t1 = 1;
+  t2 = mu_time_offset(t1, 0);
+  ASSERT(mu_time_difference(t1, t2) == 0);
+  ASSERT(mu_time_precedes(t1, t2) == false);
+  ASSERT(mu_time_equals(t1, t2) == true);
+  ASSERT(mu_time_follows(t1, t2) == false);
 
-mu_timer_t *mu_timer_start(mu_timer_t *timer, mu_time_rel_t interval) {
-  timer->interval = interval;
-  mu_sched_task_in(&timer->timer_task, interval);
-  return timer;
-}
+  t1 = 1;
+  t2 = mu_time_offset(t1, 2);
+  ASSERT(mu_time_difference(t1, t2) == -2);
+  ASSERT(mu_time_precedes(t1, t2) == true);
+  ASSERT(mu_time_equals(t1, t2) == false);
+  ASSERT(mu_time_follows(t1, t2) == false);
 
-mu_timer_t *mu_timer_stop(mu_timer_t *timer) {
-  mu_sched_remove_task(&timer->timer_task);
-  return timer;
-}
-
-bool mu_timer_is_running(mu_timer_t *timer) {
-  return mu_sched_get_task_status(&timer->timer_task) !=
-         MU_SCHED_TASK_STATUS_IDLE;
+  t1 = 1;
+  t2 = mu_time_offset(t1, -2);
+  ASSERT(mu_time_difference(t1, t2) == 2);
+  ASSERT(mu_time_precedes(t1, t2) == false);
+  ASSERT(mu_time_equals(t1, t2) == false);
+  ASSERT(mu_time_follows(t1, t2) == true);
 }
 
 // =============================================================================
-// static (local) code
-
-static void one_shot_fn(void *ctx, void *arg) {
-  trigger_aux(ctx, arg, false);
-}
-
-static void periodic_fn(void *ctx, void *arg) {
-  trigger_aux(ctx, arg, true);
-}
-
-static void trigger_aux(void *ctx, void *arg, bool repeat) {
-  mu_timer_t *timer = (mu_timer_t *)ctx;
-  (void)(arg);
-
-  if (repeat) {
-    mu_sched_reschedule_in(timer->interval);
-  }
-  mu_task_call(timer->target_task, timer);
-}
+// private code
