@@ -67,7 +67,7 @@ bool mu_task_list_is_empty(mu_task_list_t *task_list) {
 }
 
 mu_task_t *mu_task_list_append_task(mu_task_list_t *task_list,
-                                         mu_task_t *task) {
+                                    mu_task_t *task) {
   if (mu_task_get_task_list(task) != NULL) {
     // Task is already assigned to a task_list
     return NULL;
@@ -78,7 +78,7 @@ mu_task_t *mu_task_list_append_task(mu_task_list_t *task_list,
 }
 
 mu_task_t *mu_task_list_prepend_task(mu_task_list_t *task_list,
-                                          mu_task_t *task) {
+                                     mu_task_t *task) {
   if (mu_task_get_task_list(task) != NULL) {
     // Task is already assigned to an task_list
     return NULL;

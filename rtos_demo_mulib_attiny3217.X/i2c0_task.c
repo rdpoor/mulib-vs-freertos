@@ -28,10 +28,10 @@
 #include "i2c0_task.h"
 
 #include "app_config.h"
-#include "mu_task.h"
-#include "mu_sched.h"
-#include "mu_rtc.h"
 #include "mcc_generated_files/mcc.h"
+#include "mu_rtc.h"
+#include "mu_sched.h"
+#include "mu_task.h"
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -40,13 +40,13 @@
 // *****************************************************************************
 // Private types and definitions
 
-#define I2C0_STATES(M)                                                          \
-  M(I2C0_TASK_STATE_IDLE)                                                       \
-  M(I2C0_TASK_STATE_START_READ)                                                 \
-  M(I2C0_TASK_STATE_READING)                                                    \
-  M(I2C0_TASK_STATE_START_WRITE)                                                \
-  M(I2C0_TASK_STATE_WRITING)                                                    \
-  M(I2C0_TASK_STATE_ENDGAME)                                                    \
+#define I2C0_STATES(M)                                                         \
+  M(I2C0_TASK_STATE_IDLE)                                                      \
+  M(I2C0_TASK_STATE_START_READ)                                                \
+  M(I2C0_TASK_STATE_READING)                                                   \
+  M(I2C0_TASK_STATE_START_WRITE)                                               \
+  M(I2C0_TASK_STATE_WRITING)                                                   \
+  M(I2C0_TASK_STATE_ENDGAME)                                                   \
   M(I2C0_TASK_STATE_ERROR)
 
 #define EXPAND_TASK_STATES(_name) _name,
@@ -97,10 +97,10 @@ static const char *state_name(i2c0_task_state_t state);
  * @brief Initialize the task state for a read or write operation.
  */
 static i2c0_task_err_t setup(uint8_t addr,
-                            uint8_t *buf,
-                            size_t n_bytes,
-                            mu_task_t *on_completion,
-                            i2c0_task_state_t setup_state);
+                             uint8_t *buf,
+                             size_t n_bytes,
+                             mu_task_t *on_completion,
+                             i2c0_task_state_t setup_state);
 
 /**
  * @brief Trigger the callback function if non-NULL
@@ -128,16 +128,16 @@ bool i2c0_task_is_idle(void) {
 }
 
 i2c0_task_err_t i2c0_task_read(uint8_t addr,
-                             uint8_t *buf,
-                             size_t n_bytes,
-                             mu_task_t *on_completion) {
+                               uint8_t *buf,
+                               size_t n_bytes,
+                               mu_task_t *on_completion) {
   return setup(addr, buf, n_bytes, on_completion, I2C0_TASK_STATE_START_READ);
 }
 
 i2c0_task_err_t i2c0_task_write(uint8_t addr,
-                              uint8_t *buf,
-                              size_t n_bytes,
-                              mu_task_t *on_completion) {
+                                uint8_t *buf,
+                                size_t n_bytes,
+                                mu_task_t *on_completion) {
   return setup(addr, buf, n_bytes, on_completion, I2C0_TASK_STATE_START_WRITE);
 }
 
@@ -225,10 +225,10 @@ static const char *state_name(i2c0_task_state_t state) {
 #endif
 
 static i2c0_task_err_t setup(uint8_t addr,
-                            uint8_t *buf,
-                            size_t n_bytes,
-                            mu_task_t *on_completion,
-                            i2c0_task_state_t setup_state) {
+                             uint8_t *buf,
+                             size_t n_bytes,
+                             mu_task_t *on_completion,
+                             i2c0_task_state_t setup_state) {
   i2c0_task_err_t err = I2C0_TASK_ERR_NONE;
 
   if (!i2c0_task_is_idle()) {

@@ -102,12 +102,12 @@ mu_list_t *mu_list_delete(mu_list_t *list_ref, mu_list_t *element) {
 
 mu_list_t *mu_list_reverse(mu_list_t *list_ref) {
   if (list_ref != NULL) {
-      mu_list_t reversed;
+    mu_list_t reversed;
 
-      mu_list_init(&reversed);
+    mu_list_init(&reversed);
     while (!mu_list_is_empty(list_ref)) {
       mu_list_push(&reversed, mu_list_pop(list_ref));
-      }
+    }
     list_ref->next = reversed.next;
   }
   return list_ref;

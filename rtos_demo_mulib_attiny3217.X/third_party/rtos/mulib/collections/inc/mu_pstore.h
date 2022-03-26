@@ -46,14 +46,13 @@ typedef enum {
   MU_PSTORE_ERR_NOT_FOUND,
 } mu_pstore_err_t;
 
-typedef void * mu_pstore_item_t;
+typedef void *mu_pstore_item_t;
 
 typedef struct {
   mu_pstore_item_t *items;
   size_t capacity;
   size_t count;
 } mu_pstore_t;
-
 
 /**
  * @brief Signature for comparison function.
@@ -83,7 +82,8 @@ typedef bool (*mu_pstore_filter_fn)(void *item);
  * @param capacity The number of items in the backing store.
  * @return pstore itself.
  */
-mu_pstore_t *mu_pstore_init(mu_pstore_t *pstore, mu_pstore_item_t *items, size_t capacity);
+mu_pstore_t *
+mu_pstore_init(mu_pstore_t *pstore, mu_pstore_item_t *items, size_t capacity);
 
 /**
  * @brief Empty a pstore.
@@ -209,7 +209,8 @@ mu_pstore_err_t mu_pstore_peek(mu_pstore_t *pstore, mu_pstore_item_t *item);
  *         mu_pstore_insert_at(), MU_PSTORE_ERR_INDEX if the given index is
  *         greater than mu_pstore_count(), MU_PSTORE_ERR_NONE otherwise.
  */
-mu_pstore_err_t mu_pstore_insert_at(mu_pstore_t *pstore, mu_pstore_item_t item, size_t index);
+mu_pstore_err_t
+mu_pstore_insert_at(mu_pstore_t *pstore, mu_pstore_item_t item, size_t index);
 
 /**
  * @brief Delete an item.
@@ -235,7 +236,8 @@ mu_pstore_item_t mu_pstore_delete(mu_pstore_t *pstore, mu_pstore_item_t item);
  *         mu_pstore_delete_at(), MU_PSTORE_ERR_INDEX if the given index is
  *         greater than mu_pstore_count(), MU_PSTORE_ERR_NONE otherwise.
  */
-mu_pstore_err_t mu_pstore_delete_at(mu_pstore_t *pstore, mu_pstore_item_t *item, size_t index);
+mu_pstore_err_t
+mu_pstore_delete_at(mu_pstore_t *pstore, mu_pstore_item_t *item, size_t index);
 
 /**
  * @brief In-place filtering of a pstore, leaving only those that satisfy the
@@ -251,7 +253,8 @@ mu_pstore_err_t mu_pstore_delete_at(mu_pstore_t *pstore, mu_pstore_item_t *item,
  * @param match The user supplied filter function.
  * @return MU_PSTORE_ERR_NONE.
  */
-mu_pstore_err_t mu_pstore_filter(mu_pstore_t *pstore, mu_pstore_filter_fn match);
+mu_pstore_err_t mu_pstore_filter(mu_pstore_t *pstore,
+                                 mu_pstore_filter_fn match);
 
 /**
  * @brief Insert an item into a sorted list according to a user-supplied
@@ -272,7 +275,9 @@ mu_pstore_err_t mu_pstore_filter(mu_pstore_t *pstore, mu_pstore_filter_fn match)
  * @return MU_PSTORE_ERR_FULL if the pstore was full prior to the call to
  *         mu_pstore_insert_sorted, MU_PSTORE_ERR_NONE otherwise.
  */
-mu_pstore_err_t mu_pstore_insert_sorted(mu_pstore_t *pstore, mu_pstore_item_t item, mu_pstore_compare_fn cmp);
+mu_pstore_err_t mu_pstore_insert_sorted(mu_pstore_t *pstore,
+                                        mu_pstore_item_t item,
+                                        mu_pstore_compare_fn cmp);
 
 /**
  * @brief In-place sorting of a items in a pstore.

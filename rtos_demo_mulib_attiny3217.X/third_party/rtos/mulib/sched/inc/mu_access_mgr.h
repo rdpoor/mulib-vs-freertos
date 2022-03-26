@@ -34,8 +34,8 @@
 // *****************************************************************************
 // Includes
 
-#include "mu_task_list.h"
 #include "mu_task.h"
+#include "mu_task_list.h"
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -57,8 +57,8 @@ typedef enum {
 } mu_access_mgr_err_t;
 
 typedef struct {
-  mu_task_t *owner;         // task that owns the resource now
-  mu_task_list_t pending;   // tasks waiting to be granted ownership
+  mu_task_t *owner;       // task that owns the resource now
+  mu_task_list_t pending; // tasks waiting to be granted ownership
 } mu_access_mgr_t;
 
 // *****************************************************************************

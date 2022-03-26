@@ -99,21 +99,18 @@ bool mu_bvec_read_(mu_bvec_t *store, size_t byte_index, uint8_t byte_mask) {
 
 // Same, but take bit index instead
 void mu_bvec_set(mu_bvec_t *store, size_t bit_index) {
-  mu_bvec_set_(store,
-               mu_bvec_byte_index(bit_index),
-               mu_bvec_byte_mask(bit_index));
+  mu_bvec_set_(
+      store, mu_bvec_byte_index(bit_index), mu_bvec_byte_mask(bit_index));
 }
 
 void mu_bvec_clear(mu_bvec_t *store, size_t bit_index) {
-  mu_bvec_clear_(store,
-                 mu_bvec_byte_index(bit_index),
-                 mu_bvec_byte_mask(bit_index));
+  mu_bvec_clear_(
+      store, mu_bvec_byte_index(bit_index), mu_bvec_byte_mask(bit_index));
 }
 
 void mu_bvec_invert(mu_bvec_t *store, size_t bit_index) {
-  mu_bvec_invert_(store,
-                  mu_bvec_byte_index(bit_index),
-                  mu_bvec_byte_mask(bit_index));
+  mu_bvec_invert_(
+      store, mu_bvec_byte_index(bit_index), mu_bvec_byte_mask(bit_index));
 }
 
 void mu_bvec_write(mu_bvec_t *store, size_t bit_index, bool value) {
@@ -127,9 +124,8 @@ void mu_bvec_write(mu_bvec_t *store, size_t bit_index, bool value) {
 }
 
 bool mu_bvec_read(mu_bvec_t *store, size_t bit_index) {
-  return mu_bvec_read_(store,
-                       mu_bvec_byte_index(bit_index),
-                       mu_bvec_byte_mask(bit_index));
+  return mu_bvec_read_(
+      store, mu_bvec_byte_index(bit_index), mu_bvec_byte_mask(bit_index));
 }
 
 // Queries for bit vectors

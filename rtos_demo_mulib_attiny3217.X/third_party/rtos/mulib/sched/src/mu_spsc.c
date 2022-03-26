@@ -43,8 +43,8 @@
 // =============================================================================
 // public code
 
-mu_spsc_err_t mu_spsc_init(mu_spsc_t *q, mu_spsc_item_t *store,
-                           uint16_t capacity) {
+mu_spsc_err_t
+mu_spsc_init(mu_spsc_t *q, mu_spsc_item_t *store, uint16_t capacity) {
   if ((capacity == 0) || !IS_POWER_OF_TWO(capacity)) {
     return MU_SPSC_ERR_SIZE;
   }
@@ -59,9 +59,7 @@ mu_spsc_err_t mu_spsc_reset(mu_spsc_t *q) {
   return MU_SPSC_ERR_NONE;
 }
 
-uint16_t mu_spsc_capacity(mu_spsc_t *q) {
-  return q->mask;
-}
+uint16_t mu_spsc_capacity(mu_spsc_t *q) { return q->mask; }
 
 /**
  * @brief To be called by Producer only: update tail only after setting item.

@@ -52,7 +52,7 @@ extern "C" {
 #define PERIODIC_TASK_EEPROM_MAX_LOG_VALUES 5
 
 typedef enum {
-    PERIODIC_TASK_ERR_NONE,
+  PERIODIC_TASK_ERR_NONE,
 } periodic_task_err_t;
 
 // *****************************************************************************

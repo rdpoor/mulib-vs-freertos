@@ -27,8 +27,8 @@
 
 #include "kbhit_task.h"
 
-#include "app_config.h"
 #include "app.h"
+#include "app_config.h"
 #include "i2c0_task.h"
 #include "mu_rtc.h"
 #include "mu_task.h"

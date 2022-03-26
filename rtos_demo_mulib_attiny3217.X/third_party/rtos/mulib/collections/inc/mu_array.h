@@ -48,7 +48,6 @@ extern "C" {
  */
 typedef int (*mu_array_cmp_fn)(void *e1, void *e2);
 
-
 // =============================================================================
 // declarations
 

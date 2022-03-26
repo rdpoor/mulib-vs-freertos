@@ -118,7 +118,7 @@ typedef void *(*mu_list_traverse_fn)(mu_list_t *list_ref, void *arg);
  * @brief Given a pointer to a mu_list_t slot within a containing structure,
  * return a pointer to the containing structure.
  */
-#define MU_LIST_CONTAINER(_ptr, _type, _member) \
+#define MU_LIST_CONTAINER(_ptr, _type, _member)                                \
   ((_type *)((char *)(1 ? (_ptr) : &((_type *)0)->_member) -                   \
              offsetof(_type, _member)))
 
@@ -186,7 +186,7 @@ mu_list_t *mu_list_push(mu_list_t *list_ref, mu_list_t *element);
  *
  * @param list A pointer to the list head.
  * @return The element removed from the list head, or NULL if the list is empty.
-  */
+ */
 mu_list_t *mu_list_pop(mu_list_t *list_ref);
 
 /**

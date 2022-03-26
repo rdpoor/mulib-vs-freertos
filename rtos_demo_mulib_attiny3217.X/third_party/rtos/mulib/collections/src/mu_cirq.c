@@ -31,8 +31,8 @@
 
 #include "mu_cirq.h"
 #include <stdbool.h>
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <string.h>
 
 // =============================================================================
@@ -64,13 +64,9 @@ mu_cirq_t *mu_cirq_reset(mu_cirq_t *cirq) {
   return cirq;
 }
 
-uint8_t mu_cirq_capacity(mu_cirq_t *cirq) {
-  return cirq->mask;
-}
+uint8_t mu_cirq_capacity(mu_cirq_t *cirq) { return cirq->mask; }
 
-bool mu_cirq_is_empty(mu_cirq_t *cirq) {
-  return cirq->putr == cirq->takr;
-}
+bool mu_cirq_is_empty(mu_cirq_t *cirq) { return cirq->putr == cirq->takr; }
 
 bool mu_cirq_is_full(mu_cirq_t *cirq) {
   return ((cirq->putr + 1) & cirq->mask) == cirq->takr;
@@ -81,11 +77,12 @@ uint8_t mu_cirq_write_8(mu_cirq_t *cirq, const uint8_t *src, size_t count) {
   uint8_t *dst = (uint8_t *)cirq->store;
   while (count-- > 0) {
     // reserve space by incrementing putr before writing the item
-    uint8_t i1 = cirq->putr;              // where the item will be written
-    uint8_t i2 = (i1 + 1) & cirq->mask;   // post-write value of cirq->putr
-    if (i2 == cirq->takr) break;          // queue was full -- don't write
-    cirq->putr = i2;                      // increment putr
-    dst[i1] = *src++;                     // copy element
+    uint8_t i1 = cirq->putr;            // where the item will be written
+    uint8_t i2 = (i1 + 1) & cirq->mask; // post-write value of cirq->putr
+    if (i2 == cirq->takr)
+      break;          // queue was full -- don't write
+    cirq->putr = i2;  // increment putr
+    dst[i1] = *src++; // copy element
     written += 1;
   }
   return written;
@@ -108,11 +105,12 @@ uint8_t mu_cirq_write_16(mu_cirq_t *cirq, const uint16_t *src, size_t count) {
   uint16_t *dst = (uint16_t *)cirq->store;
   while (count-- > 0) {
     // reserve space by incrementing putr before writing the item
-    uint8_t i1 = cirq->putr;              // where the item will be written
-    uint8_t i2 = (i1 + 1) & cirq->mask;   // post-write value of cirq->putr
-    if (i2 == cirq->takr) break;          // queue was full -- don't write
-    cirq->putr = i2;                      // increment putr
-    dst[i1] = *src++;                     // copy element
+    uint8_t i1 = cirq->putr;            // where the item will be written
+    uint8_t i2 = (i1 + 1) & cirq->mask; // post-write value of cirq->putr
+    if (i2 == cirq->takr)
+      break;          // queue was full -- don't write
+    cirq->putr = i2;  // increment putr
+    dst[i1] = *src++; // copy element
     written += 1;
   }
   return written;
@@ -135,11 +133,12 @@ uint8_t mu_cirq_write_32(mu_cirq_t *cirq, const uint32_t *src, size_t count) {
   uint32_t *dst = (uint32_t *)cirq->store;
   while (count-- > 0) {
     // reserve space by incrementing putr before writing the item
-    uint8_t i1 = cirq->putr;              // where the item will be written
-    uint8_t i2 = (i1 + 1) & cirq->mask;   // post-write value of cirq->putr
-    if (i2 == cirq->takr) break;          // queue was full -- don't write
-    cirq->putr = i2;                      // increment putr
-    dst[i1] = *src++;                     // copy element
+    uint8_t i1 = cirq->putr;            // where the item will be written
+    uint8_t i2 = (i1 + 1) & cirq->mask; // post-write value of cirq->putr
+    if (i2 == cirq->takr)
+      break;          // queue was full -- don't write
+    cirq->putr = i2;  // increment putr
+    dst[i1] = *src++; // copy element
     written += 1;
   }
   return written;
@@ -157,31 +156,38 @@ uint8_t mu_cirq_read_32(mu_cirq_t *cirq, uint32_t *dst, size_t count) {
   return read;
 }
 
-uint8_t mu_cirq_write_n(mu_cirq_t *cirq, const void *src, size_t count, uint8_t element_size) {
+uint8_t mu_cirq_write_n(mu_cirq_t *cirq,
+                        const void *src,
+                        size_t count,
+                        uint8_t element_size) {
   const uint8_t *s2 = (const uint8_t *)src;
   uint8_t *dst = (uint8_t *)cirq->store;
 
   uint8_t written = 0;
   while (count-- > 0) {
     // reserve space by incrementing putr before writing the item
-    uint8_t i1 = cirq->putr;              // where the item will be written
-    uint8_t i2 = (i1 + 1) & cirq->mask;   // post-write value of cirq->putr
-    if (i2 == cirq->takr) break;          // queue was full -- don't write
-    cirq->putr = i2;                      // increment putr
+    uint8_t i1 = cirq->putr;            // where the item will be written
+    uint8_t i2 = (i1 + 1) & cirq->mask; // post-write value of cirq->putr
+    if (i2 == cirq->takr)
+      break;         // queue was full -- don't write
+    cirq->putr = i2; // increment putr
     memcpy(&dst[i1 * element_size], &s2[written * element_size], element_size);
     written += 1;
   }
   return written;
 }
 
-uint8_t mu_cirq_read_n(mu_cirq_t *cirq, void *dst, size_t count, uint8_t element_size) {
+uint8_t
+mu_cirq_read_n(mu_cirq_t *cirq, void *dst, size_t count, uint8_t element_size) {
   uint8_t *d2 = (uint8_t *)dst;
   const uint8_t *src = (const uint8_t *)cirq->store;
 
   uint8_t read = 0;
   while (count-- > 0 && !mu_cirq_is_empty(cirq)) {
     // read the item before incrementing takr so it is always protected
-    memcpy(&d2[read * element_size], &src[cirq->takr++ * element_size], element_size);
+    memcpy(&d2[read * element_size],
+           &src[cirq->takr++ * element_size],
+           element_size);
     cirq->takr &= cirq->mask;
     read += 1;
   }

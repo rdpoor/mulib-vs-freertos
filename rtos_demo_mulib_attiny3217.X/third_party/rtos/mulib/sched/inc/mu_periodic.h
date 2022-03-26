@@ -41,11 +41,11 @@
 // *****************************************************************************
 // Includes
 
-#include "mu_time.h"
 #include "mu_task.h"
+#include "mu_time.h"
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 // *****************************************************************************
 // C++ Compatibility
@@ -85,7 +85,9 @@ mu_periodic_t *mu_periodic_init(mu_periodic_t *timer);
  * @param target_task The task to be triggered.
  * @return true if the timer started, false if it was already running.
  */
-bool mu_periodic_start(mu_periodic_t *timer, mu_time_rel_t period, mu_task_t *target_task);
+bool mu_periodic_start(mu_periodic_t *timer,
+                       mu_time_rel_t period,
+                       mu_task_t *target_task);
 
 /**
  * @brief Stop the periodic timer.

@@ -36,8 +36,8 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include <stdbool.h>
 #include "mu_list.h"
+#include <stdbool.h>
 
 // =============================================================================
 // types and definitions
@@ -70,8 +70,8 @@ extern "C" {
 // +-------+
 
 typedef struct {
-  mu_list_t head;   // items are removed (popped) from the head
-  mu_list_t tail;   // items are added (pushed) after the tail
+  mu_list_t head; // items are removed (popped) from the head
+  mu_list_t tail; // items are added (pushed) after the tail
 } mu_queue_t;
 
 // =============================================================================

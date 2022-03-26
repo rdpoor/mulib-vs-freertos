@@ -22,23 +22,23 @@
  * SOFTWARE.
  */
 
- /**
+/**
 Implmeentation notes:
 
 mu_sched implements a discrete time, run-to-completion scheduler.  A
 mu_task can be scheduled to run at some point in the future through the
 following calls:
 
-    mu_sched_err_t mu_sched_now(mu_task_t *task);
-    mu_sched_err_t mu_sched_at(mu_task_t *task, mu_time_abs_t at);
-    mu_sched_err_t mu_sched_in(mu_task_t *task, mu_time_rel_t in);
+   mu_sched_err_t mu_sched_now(mu_task_t *task);
+   mu_sched_err_t mu_sched_at(mu_task_t *task, mu_time_abs_t at);
+   mu_sched_err_t mu_sched_in(mu_task_t *task, mu_time_rel_t in);
 
 Each of these functions add a task to the scheduler's queue.  Attempting to
 schedule a task that is already scheduled will return an error code.
 
 mu_sched supports safely scheduling a task from interrupt level:
 
-    mu_sched_err_t mu_sched_from_isr(mu_task_t *task);
+   mu_sched_err_t mu_sched_from_isr(mu_task_t *task);
 
 Any task scheduled from interrupt level is saved in an interrupt safe
 "single producer, single consumer" queue.  Upon returning from interrupt level,
@@ -47,7 +47,7 @@ to the regular schedule as if mu_sched_now() was called.
 
 The function
 
-    mu_sched_err_t mu_sched_step(void);
+   mu_sched_err_t mu_sched_step(void);
 
 is where all the magic happens.  The scheduler examines the first task in
 the queue, and if its start time has arrived, the task is removed from the
@@ -113,7 +113,7 @@ typedef void *(*mu_sched_traverse_fn)(mu_task_t *task, void *arg);
 /**
  * @brief initialize the schedule module.  Not interrupt safe.
  */
- void mu_sched_init(void);
+void mu_sched_init(void);
 
 /**
  * @brief  Remove all scheduled items from the schedule.  Not interrupt safe.

@@ -35,8 +35,8 @@
 // Includes
 
 #include "mu_task.h"
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 // *****************************************************************************
 // C++ Compatibility

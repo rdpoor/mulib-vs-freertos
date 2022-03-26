@@ -47,14 +47,14 @@
 #endif
 
 #ifndef MU_SCHED_MAX_IRQ_TASKS
-#define MU_SCHED_MAX_IRQ_TASKS 8  // must be a power of two!
+#define MU_SCHED_MAX_IRQ_TASKS 8 // must be a power of two!
 #endif
 
 typedef struct {
   mu_event_t current_event; // the event currently being processed.
   mu_task_t *current_task;  // the task currently being processed.
   mu_clock_fn clock_fn;     // the function to call to get the current time.
-  mu_task_t  *idle_task;    // the task to run when nothing else is runnable.
+  mu_task_t *idle_task;     // the task to run when nothing else is runnable.
   mu_event_t events[MU_SCHED_MAX_EVENTS]; // the actual schedule...
   int event_idx;                          // index of next available event
   mu_spsc_item_t irq_tasks[MU_SCHED_MAX_IRQ_TASKS];
@@ -99,7 +99,7 @@ static mu_event_t *find_or_create_event(mu_time_abs_t at);
  * @brief Return the event to which the task belongs to, or NULL if the task
  * does not belong to any event.
  */
- static mu_event_t *find_task_event(mu_task_t *task);
+static mu_event_t *find_task_event(mu_task_t *task);
 
 // *****************************************************************************
 // Local (private, static) storage
@@ -110,7 +110,7 @@ static mu_sched_t s_sched;
 // Public code
 
 void mu_sched_init(void) {
-  memset(&s_sched, 0, sizeof(s_sched));  //
+  memset(&s_sched, 0, sizeof(s_sched)); //
   mu_event_init(&s_sched.current_event);
   s_sched.clock_fn = mu_rtc_now;
   mu_spsc_init(&s_sched.irq_spsc, s_sched.irq_tasks, MU_SCHED_MAX_IRQ_TASKS);
@@ -143,34 +143,25 @@ mu_sched_err_t mu_sched_step(void) {
   return MU_SCHED_ERR_NONE;
 }
 
-mu_clock_fn mu_sched_get_clock_source(void) {
-  return s_sched.clock_fn;
-}
+mu_clock_fn mu_sched_get_clock_source(void) { return s_sched.clock_fn; }
 
 void mu_sched_set_clock_source(mu_clock_fn clock_fn) {
   s_sched.clock_fn = clock_fn;
 }
 
-mu_task_t *mu_sched_get_idle_task(void) {
-  return s_sched.idle_task;
-}
+mu_task_t *mu_sched_get_idle_task(void) { return s_sched.idle_task; }
 
-void mu_sched_set_idle_task(mu_task_t *task) {
-  s_sched.idle_task = task;
-}
+void mu_sched_set_idle_task(mu_task_t *task) { s_sched.idle_task = task; }
 
 bool mu_sched_is_empty(void) {
   // TODO: is there a safe way to take spsc into account?
-  return (s_sched.event_idx == 0) && (mu_event_is_empty(&s_sched.current_event));
+  return (s_sched.event_idx == 0) &&
+         (mu_event_is_empty(&s_sched.current_event));
 }
 
-mu_time_abs_t mu_sched_get_current_time(void) {
-  return s_sched.clock_fn();
-}
+mu_time_abs_t mu_sched_get_current_time(void) { return s_sched.clock_fn(); }
 
-mu_task_t *mu_sched_get_current_task(void) {
-  return s_sched.current_task;
-}
+mu_task_t *mu_sched_get_current_task(void) { return s_sched.current_task; }
 
 mu_event_t *mu_sched_get_current_event(void) {
   if (s_sched.current_task) {
@@ -292,7 +283,7 @@ static mu_sched_err_t sched_aux(mu_task_t *task, mu_time_abs_t at) {
       break;
     }
     mu_event_append_task(event, task);
-  } while(false);
+  } while (false);
 
   return err;
 }
@@ -310,7 +301,7 @@ static mu_event_t *find_or_create_event(mu_time_abs_t at) {
       return candidate_event;
 
     } else if (mu_time_precedes(at, candidate_time)) {
-      i += 1;  // back up by one to claim our insertion point
+      i += 1; // back up by one to claim our insertion point
       break;
 
     } else {
@@ -329,7 +320,7 @@ static mu_event_t *find_or_create_event(mu_time_abs_t at) {
   if (to_move > 0) {
     // use memmove to open a slot at i
     mu_event_t *src = &s_sched.events[i];
-    mu_event_t *dst = &s_sched.events[i+1];
+    mu_event_t *dst = &s_sched.events[i + 1];
     memmove(dst, src, to_move * sizeof(mu_event_t));
   }
 

@@ -110,8 +110,9 @@ typedef void *(*mu_dlist_traverse_fn)(mu_dlist_t *list, void *arg);
  * @brief Given a pointer to a mu_dlist_t slot within a containing structure,
  * return a pointer to the containing structure.
  */
-#define MU_DLIST_CONTAINER(_ptr, _type, _member) \
-  ((_type *)((char *)(1 ? (_ptr) : &((_type *)0)->_member) - offsetof(_type, _member)))
+#define MU_DLIST_CONTAINER(_ptr, _type, _member)                               \
+  ((_type *)((char *)(1 ? (_ptr) : &((_type *)0)->_member) -                   \
+             offsetof(_type, _member)))
 
 // =============================================================================
 // declarations
@@ -185,7 +186,6 @@ bool mu_dlist_is_linked(mu_dlist_t *e);
  */
 mu_dlist_t *mu_dlist_unlink(mu_dlist_t *e);
 
-
 // =============================================================================
 // operations on a list head
 
@@ -196,7 +196,6 @@ mu_dlist_t *mu_dlist_unlink(mu_dlist_t *e);
  * @return the first element of the list or NULL if the list is empty.
  */
 mu_dlist_t *mu_dlist_first(mu_dlist_t *head);
-
 
 /**
  * @brief Return the last element of a list or NULL if the list is empty.
@@ -255,7 +254,7 @@ mu_dlist_t *mu_dlist_push_prev(mu_dlist_t *head, mu_dlist_t *e);
  *
  * @param head A pointer to the list head.
  * @return The element removed from the list head, or NULL if the list is empty.
-  */
+ */
 mu_dlist_t *mu_dlist_pop(mu_dlist_t *head);
 
 /**
@@ -287,7 +286,8 @@ void *mu_dlist_traverse(mu_dlist_t *head, mu_dlist_traverse_fn fn, void *arg);
  * @param arg A user-supplied argument, passed as the second argument to fn.
  * @return The final value returned from fn.
  */
-void *mu_dlist_traverse_prev(mu_dlist_t *head, mu_dlist_traverse_fn fn, void *arg);
+void *
+mu_dlist_traverse_prev(mu_dlist_t *head, mu_dlist_traverse_fn fn, void *arg);
 
 /**
  * @brief In-place list reversal.

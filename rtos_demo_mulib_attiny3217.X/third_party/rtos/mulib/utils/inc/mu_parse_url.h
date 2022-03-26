@@ -3,7 +3,7 @@
  *
  * MIT License
  *
- * Copyright (c) 2022 R. Dunbar Poor
+ * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,8 +31,8 @@
 // *****************************************************************************
 // Includes
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 // =============================================================================
 // C++ compatibility
