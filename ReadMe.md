@@ -16,22 +16,22 @@ the mulib model.
 ## Summary
 
 We chose [an existing FreeRTOS example application](https://microchip-mplab-harmony.github.io/reference_apps/apps/sam_e54_xpro/same54_getting_started_freertos/readme.html)
-as our reference and created a new applicaton that behaved identically using mulib rather than FreeRTOS.
+as a reference and created a new applicaton that behaves identically using mulib rather than FreeRTOS.
 
-Both applications ran on the same hardware -- a 
+Both applications run on the same hardware -- a 
 [SAME54 Xplained Pro Evaluation Kit](https://www.microchip.com/en-us/development-tool/ATSAME54-XPRO) 
 with an 
 [IO1 Xplained Pro Extension Kit](https://www.microchip.com/en-us/development-tool/ATIO1-XPRO) --
-and were developed using the 
+and are developed using the 
 [Microchip MPLAB.X IDE](https://www.microchip.com/en-us/tools-resources/develop/mplab-x-ide)
 and
 [Harmony v3 Embedded Software Development Framework](https://www.microchip.com/en-us/tools-resources/configure/mplab-harmony)
 for code generation.  
-Both applications used
-the same compiler and optimization settings (xc32 with -O1 optimization).  And both applications did the
-same thing: once every second, take a temperature measurement using the IO1 XPRO sensor, store the
-temperature in a 5-byte buffer in EEPROM and print out the results on the serial port.  In addition, when
-the user typed any key on the keyboard, the application would print out the five values stored in EEPROM.
+Both applications use
+the same compiler and optimization settings (xc32 with -O1 optimization).  And each application does the
+same thing: once every second, it takes a temperature measurement using the IO1 XPRO sensor, stores the
+temperature in a 5-byte buffer in EEPROM and prints out the results on the serial port.  In addition, when
+the user types any key on the keyboard, the application prints out the five values stored in EEPROM.
 
 The results:
 
@@ -39,6 +39,9 @@ The results:
 |---|---|---|---|
 | Data (RAM) | 42,316 | 857 | 98.0% |
 | Program (Flash) | 19,979 | 8633 | 56.8% |
+
+What is impressive about the mulib version is that it reduces the code size by over 56%
+and reduces the RAM requirements by 98% compared to its FreeRTOS counterpart.
 
 ## Future Directions
 
