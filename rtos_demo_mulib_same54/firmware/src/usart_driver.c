@@ -28,6 +28,7 @@
 #include "usart_driver.h"
 
 #include "definitions.h"
+#include "mu_access_mgr.h"
 #include "mu_sched.h"
 #include "mu_task.h"
 
@@ -37,8 +38,10 @@
 // *****************************************************************************
 // Private (static) storage
 
-static mu_task_t *s_on_tx_complete; // invoked when transmit completes
-static mu_task_t *s_on_rx_complete; // invoked when a character is received
+static mu_access_mgr_t s_tx_access_mgr; // exclusive access to usart transmitter
+static mu_access_mgr_t s_rx_access_mgr; // exclusive access to usart receiver
+static mu_task_t *s_on_tx_complete;     // invoked when transmit completes
+static mu_task_t *s_on_rx_complete;     // invoked when a character is received
 
 // *****************************************************************************
 // Private (forward) declarations
@@ -50,14 +53,41 @@ static void usart_rx_cb(uintptr_t context);
 // Public code
 
 void usart_driver_init(void) {
+  mu_access_mgr_init(&s_tx_access_mgr);
+  mu_access_mgr_init(&s_rx_access_mgr);
   s_on_tx_complete = NULL;
   s_on_rx_complete = NULL;
   SERCOM2_USART_WriteCallbackRegister(usart_tx_cb, (uintptr_t)0);
   SERCOM2_USART_ReadCallbackRegister(usart_rx_cb, (uintptr_t)0);
 }
 
-usart_driver_err_t
-usart_driver_tx(const uint8_t *buf, size_t n_bytes, mu_task_t *on_tx_complete) {
+void usart_driver_reserve_tx(mu_task_t *task) {
+  mu_access_mgr_request_ownership(&s_tx_access_mgr, task);
+}
+
+void usart_driver_release_tx(mu_task_t *task) {
+  mu_access_mgr_release_ownership(&s_tx_access_mgr, task);
+}
+
+bool usart_driver_owns_tx(mu_task_t *task) {
+  return mu_access_mgr_has_ownership(&s_tx_access_mgr, task);
+}
+
+void usart_driver_reserve_rx(mu_task_t *task) {
+  mu_access_mgr_request_ownership(&s_rx_access_mgr, task);
+}
+
+void usart_driver_release_rx(mu_task_t *task) {
+  mu_access_mgr_release_ownership(&s_rx_access_mgr, task);
+}
+
+bool usart_driver_owns_rx(mu_task_t *task) {
+  return mu_access_mgr_has_ownership(&s_rx_access_mgr, task);
+}
+
+usart_driver_err_t usart_driver_tx(const uint8_t *buf,
+                                   size_t n_bytes,
+                                   mu_task_t *on_tx_complete) {
   usart_driver_err_t ret = USART_DRIVER_ERR_NONE;
   if (SERCOM2_USART_WriteIsBusy()) {
     ret = USART_DRIVER_ERR_BUSY;

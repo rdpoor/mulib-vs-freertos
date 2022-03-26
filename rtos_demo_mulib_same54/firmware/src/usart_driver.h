@@ -63,6 +63,40 @@ typedef enum {
 void usart_driver_init(void);
 
 /**
+ * @brief Gain exclusive access to the usart transmitter.
+ *
+ * When exclusive access is granted, task will be invoked.
+ */
+void usart_driver_reserve_tx(mu_task_t *task);
+
+/**
+ * @brief Relinquish exclusive access of the usart transmitter.
+ */
+void usart_driver_release_tx(mu_task_t *task);
+
+/**
+ * @brief Return true if task has exclusive ownership of the usart transmitter.
+ */
+bool usart_driver_owns_tx(mu_task_t *task);
+
+/**
+ * @brief Gain exclusive access to the usart receiver.
+ *
+ * When exclusive access is granted, task will be invoked.
+ */
+void usart_driver_reserve_rx(mu_task_t *task);
+
+/**
+ * @brief Relinquish exclusive access of the usart receiver.
+ */
+void usart_driver_release_rx(mu_task_t *task);
+
+/**
+ * @brief Return true if task has exclusive ownership of the usart receiver.
+ */
+bool usart_driver_owns_rx(mu_task_t *task);
+
+/**
  * @brief Initiate a transmit operation to send n_chars from buf over the USART,
  * triggering on_completion when the last byte has been transmitted (or error).
  *

@@ -63,6 +63,23 @@ typedef enum {
 void i2c_driver_init(void);
 
 /**
+ * @brief Gain exclusive access to the i2c_driver.
+ *
+ * When exclusive access is granted, task will be invoked.
+ */
+void i2c_driver_reserve(mu_task_t *task);
+
+/**
+ * @brief Relinquish exclusive access to the i2c_driver.
+ */
+void i2c_driver_release(mu_task_t *task);
+
+/**
+ * @brief Return true if the task has exclusive ownership of the i2c driver.
+ */
+bool i2c_driver_is_owner(mu_task_t *task);
+
+/**
  * @brief Request to start an asynchronous read operation.
  *
  * Note: it is an error to call this function if I2C is busy.

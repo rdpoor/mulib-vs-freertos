@@ -112,8 +112,8 @@ static void kbhit_task_fn(void *ctx, void *arg) {
   case KBHIT_TASK_STATE_ACQUIRE_EEPROM: {
     // Arrive here when a character was typed.
     set_state(KBHIT_TASK_STATE_START_EEPROM_WRITE);
-    APP_ReserveI2C(&s_kbhit_task);
-    // APP_ReserveI2C() will invoke kbhit_task when access is granted.
+    i2c_driver_reserve(&s_kbhit_task);
+    // i2c_driver_reserve() will invoke kbhit_task when access is granted.
   } break;
 
   case KBHIT_TASK_STATE_START_EEPROM_WRITE: {
@@ -150,8 +150,8 @@ static void kbhit_task_fn(void *ctx, void *arg) {
     // s_kbhit_task_ctx.buf[].  Acquire exclusive rights to the serial
     // printer before printing...
     set_state(KBHIT_TASK_STATE_START_SERIAL_TX);
-    APP_ReserveSerialTx(&s_kbhit_task);
-    // APP_ReserveSerialTx() will invoke kbhit_task when access is granted.
+    usart_driver_reserve_tx(&s_kbhit_task);
+    // usart_driver_reserve_tx() will invoke kbhit_task when access is granted.
   } break;
 
   case KBHIT_TASK_STATE_START_SERIAL_TX: {
@@ -178,8 +178,8 @@ static void kbhit_task_fn(void *ctx, void *arg) {
   case KBHIT_TASK_STATE_ENDGAME:
   case KBHIT_TASK_STATE_ERROR: {
     // Set up to receive notification of another keystroke.
-    APP_ReleaseSerialTx(&s_kbhit_task);
-    APP_ReleaseI2C(&s_kbhit_task);
+    usart_driver_release_tx(&s_kbhit_task);
+    i2c_driver_release(&s_kbhit_task);
     start_listening();
   } break;
 

@@ -29,6 +29,7 @@
 
 #include "app_config.h"
 #include "definitions.h"
+#include "mu_access_mgr.h"
 #include "mu_sched.h"
 #include "mu_task.h"
 
@@ -42,6 +43,7 @@
 // *****************************************************************************
 // Private (static) storage
 
+static mu_access_mgr_t s_access_mgr; // provide exclusive access to i2c driver
 static mu_task_t *s_on_completion;
 
 // *****************************************************************************
@@ -56,8 +58,21 @@ static void i2c_driver_handle_irq(uintptr_t contextHandle);
 // Public code
 
 void i2c_driver_init(void) {
+  mu_access_mgr_init(&s_access_mgr);
   s_on_completion = NULL;
   SERCOM3_I2C_CallbackRegister(i2c_driver_handle_irq, (uintptr_t)0);
+}
+
+void i2c_driver_reserve(mu_task_t *task) {
+  mu_access_mgr_request_ownership(&s_access_mgr, task);
+}
+
+void i2c_driver_release(mu_task_t *task) {
+  mu_access_mgr_release_ownership(&s_access_mgr, task);
+}
+
+bool i2c_driver_is_owner(mu_task_t *task) {
+  return mu_access_mgr_has_ownership(&s_access_mgr, task);
 }
 
 i2c_driver_err_t i2c_driver_read(uint8_t addr,

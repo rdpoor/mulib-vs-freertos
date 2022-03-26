@@ -43,9 +43,6 @@
 // *****************************************************************************
 // Private (static) storage
 
-static mu_access_mgr_t s_i2c_access;
-static mu_access_mgr_t s_serial_tx_access;
-
 static bool s_is_first_time;
 
 // *****************************************************************************
@@ -62,8 +59,6 @@ void APP_Initialize(void) {
   // Initialize app-specific resources.
   i2c_driver_init();
   usart_driver_init();
-  mu_access_mgr_init(&s_i2c_access);
-  mu_access_mgr_init(&s_serial_tx_access);
 
   // Schedule initial tasks.
   periodic_task_init();
@@ -80,30 +75,6 @@ void APP_Tasks(void) {
   }
   // run the scheduler
   mu_sched_step();
-}
-
-void APP_ReserveI2C(mu_task_t *task) {
-  mu_access_mgr_request_ownership(&s_i2c_access, task);
-}
-
-void APP_ReleaseI2C(mu_task_t *task) {
-  mu_access_mgr_release_ownership(&s_i2c_access, task);
-}
-
-bool APP_OwnsI2C(mu_task_t *task) {
-  return mu_access_mgr_has_ownership(&s_i2c_access, task);
-}
-
-void APP_ReserveSerialTx(mu_task_t *task) {
-  mu_access_mgr_request_ownership(&s_serial_tx_access, task);
-}
-
-void APP_ReleaseSerialTx(mu_task_t *task) {
-  mu_access_mgr_release_ownership(&s_serial_tx_access, task);
-}
-
-bool APP_OwnsSerialTx(mu_task_t *task) {
-  return mu_access_mgr_has_ownership(&s_serial_tx_access, task);
 }
 
 // For reasons I don't understand yet, if the following is omitted, the linker

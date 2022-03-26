@@ -135,8 +135,8 @@ static void periodic_task_fn(void *ctx, void *arg) {
   case PERIODIC_TASK_STATE_ACQUIRE_TEMP_SENSOR: {
     // Arrive here when the periodic task first runs
     set_state(PERIODIC_TASK_STATE_START_TEMP_SENSOR_WRITE);
-    APP_ReserveI2C(&s_periodic_task);
-    // APP_ReserveI2C() will invoke s_periodic_task when access is granted.
+    i2c_driver_reserve(&s_periodic_task);
+    // i2c_driver_reserve() will invoke s_periodic_task when access is granted.
   } break;
 
   case PERIODIC_TASK_STATE_START_TEMP_SENSOR_WRITE: {
@@ -176,10 +176,10 @@ static void periodic_task_fn(void *ctx, void *arg) {
         convert_to_fahrenheit(s_periodic_task_ctx.buf);
     // Release I2C to enable any other task that might be waiting before
     // acquiring exclusive access for the EEPROM.
-    APP_ReleaseI2C(&s_periodic_task);
+    i2c_driver_release(&s_periodic_task);
     set_state(PERIODIC_TASK_STATE_START_EEPROM_WRITE);
-    APP_ReserveI2C(&s_periodic_task);
-    // APP_ReserveI2C() will invoke s_periodic_task when access is granted.
+    i2c_driver_reserve(&s_periodic_task);
+    // i2c_driver_reserve() will invoke s_periodic_task when access is granted.
   } break;
 
   case PERIODIC_TASK_STATE_START_EEPROM_WRITE: {
@@ -208,8 +208,8 @@ static void periodic_task_fn(void *ctx, void *arg) {
     // Arrive here after temperature data has been written to the EEPROM.
     // Acquire exclusive access to the serial transmitter.
     set_state(PERIODIC_TASK_STATE_START_SERIAL_TX);
-    APP_ReserveSerialTx(&s_periodic_task);
-    // APP_ReserveSerialTx() will invoke s_periodic_task when access is granted.
+    usart_driver_reserve_tx(&s_periodic_task);
+    // usart_driver_reserve_tx() will invoke s_periodic_task when access is granted.
   } break;
 
   case PERIODIC_TASK_STATE_START_SERIAL_TX: {
@@ -235,8 +235,8 @@ static void periodic_task_fn(void *ctx, void *arg) {
     // get released and set up for the next call (by the periodic timer).
     LED_Toggle();
     set_state(PERIODIC_TASK_STATE_ACQUIRE_TEMP_SENSOR);
-    APP_ReleaseI2C(&s_periodic_task);
-    APP_ReleaseSerialTx(&s_periodic_task);
+    i2c_driver_release(&s_periodic_task);
+    usart_driver_release_tx(&s_periodic_task);
   } break;
   } // end switch()
 }
