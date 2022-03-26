@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2021 R. D. Poor <rdpoor@gmail.com>
+ * Copyright (c) 2021-2022 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,85 +25,80 @@
 // *****************************************************************************
 // Includes
 
-#include "usart.h"
+#include "i2c_driver.h"
 
+#include "app_config.h"
 #include "definitions.h"
 #include "mu_sched.h"
 #include "mu_task.h"
 
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+
 // *****************************************************************************
 // Private types and definitions
-
-typedef struct {
-  mu_task_t *on_tx_complete; // invoked when transmit completes
-  mu_task_t *on_rx_complete; // invoked when a character is received
-} usart_ctx_t;
 
 // *****************************************************************************
 // Private (static) storage
 
-static usart_ctx_t s_usart_ctx;
+static mu_task_t *s_on_completion;
 
 // *****************************************************************************
 // Private (forward) declarations
 
-static void usart_tx_cb(uintptr_t context);
-static void usart_rx_cb(uintptr_t context);
+/**
+ * @brief Handle interrupt-level callback.
+ */
+static void i2c_driver_handle_irq(uintptr_t contextHandle);
 
 // *****************************************************************************
 // Public code
 
-void usart_init(void) {
-  SERCOM2_USART_WriteCallbackRegister(usart_tx_cb, (uintptr_t)0);
-  SERCOM2_USART_ReadCallbackRegister(usart_rx_cb, (uintptr_t)0);
+void i2c_driver_init(void) {
+  s_on_completion = NULL;
+  SERCOM3_I2C_CallbackRegister(i2c_driver_handle_irq, (uintptr_t)0);
 }
 
-usart_err_t
-usart_tx(const uint8_t *buf, size_t n_bytes, mu_task_t *on_tx_complete) {
-  usart_err_t ret = USART_ERR_NONE;
-
-  s_usart_ctx.on_tx_complete = on_tx_complete;
-  if (!SERCOM2_USART_Write((void *)buf, n_bytes)) {
-    ret = USART_ERR_BAD_PARAM;
+i2c_driver_err_t i2c_driver_read(uint8_t addr,
+                                 uint8_t *buf,
+                                 size_t n_bytes,
+                                 mu_task_t *on_completion) {
+  i2c_driver_err_t ret = I2C_DRIVER_ERR_NONE;
+  if (SERCOM3_I2C_IsBusy()) {
+    ret = I2C_DRIVER_ERR_BUSY;
+  } else {
+    s_on_completion = on_completion;
+    if (!SERCOM3_I2C_Read(addr, buf, n_bytes)) {
+      ret = I2C_DRIVER_ERR_BAD_PARAM;
+    }
   }
   return ret;
 }
 
-usart_err_t usart_rx(uint8_t *rx_buf, mu_task_t *on_rx_complete) {
-  usart_err_t ret = USART_ERR_NONE;
-
-  do {
-    if (SERCOM2_USART_ReadIsBusy()) {
-      ret = USART_ERR_BUSY;
-      break;
+i2c_driver_err_t i2c_driver_write(uint8_t addr,
+                                  const uint8_t *buf,
+                                  size_t n_bytes,
+                                  mu_task_t *on_completion) {
+  i2c_driver_err_t ret = I2C_DRIVER_ERR_NONE;
+  if (SERCOM3_I2C_IsBusy()) {
+    ret = I2C_DRIVER_ERR_BUSY;
+  } else {
+    s_on_completion = on_completion;
+    if (!SERCOM3_I2C_Write(addr, (uint8_t *)buf, n_bytes)) {
+      ret = I2C_DRIVER_ERR_BAD_PARAM;
     }
-    s_usart_ctx.on_rx_complete = on_rx_complete;
-    SERCOM2_USART_ReadAbort();                  // flush any stray input
-
-    if (!SERCOM2_USART_Read(rx_buf, 1)) {
-      ret = USART_ERR_BAD_PARAM;
-      break;
-    }
-
-  } while (0);
+  }
   return ret;
 }
 
 // *****************************************************************************
 // Private (static) code
 
-// Called from interrupt level when printing completes
-static void usart_tx_cb(uintptr_t context) {
-  (void)context;
-  if (s_usart_ctx.on_tx_complete != NULL) {
-    mu_sched_from_isr(s_usart_ctx.on_tx_complete);
-  }
-}
-
-// Called from interrupt level when a character is received.
-static void usart_rx_cb(uintptr_t context) {
-  (void)context;
-  if (s_usart_ctx.on_rx_complete != NULL) {
-    mu_sched_from_isr(s_usart_ctx.on_rx_complete);
+// Called from interrupt level when I2C read or write operation completes.
+static void i2c_driver_handle_irq(uintptr_t contextHandle) {
+  (void)contextHandle;
+  if (s_on_completion != NULL) {
+    mu_sched_from_isr(s_on_completion);
   }
 }

@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2021-2022 R. D. Poor <rdpoor@gmail.com>
+ * Copyright (c) 2021 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,19 +23,19 @@
  */
 
 /**
- * @file i2c_task.h
+ * @file usart.h
  *
- * @brief mulib-aware I2C driver
+ * @brief mulib-aware driver for reading and writing serial data via usart
  */
 
-#ifndef _I2C_TASK_H_
-#define _I2C_TASK_H_
+#ifndef _USART_DRIVER_H_
+#define _USART_DRIVER_H_
 
 // *****************************************************************************
 // Includes
 
 #include "mu_task.h"
-#include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 // *****************************************************************************
@@ -48,58 +48,47 @@ extern "C" {
 // *****************************************************************************
 // Public types and definitions
 
-#define I2C_TASK_TEMPERATURE_SLAVE_ADDR 0x004F
-#define I2C_TASK_TEMPERATURE_REG_ADDR 0x00
-
-#define I2C_TASK_EEPROM_SLAVE_ADDR 0x0057
-#define I2C_TASK_EEPROM_LOG_MEMORY_ADDR 0x00
-#define I2C_TASK_EEPROM_MAX_LOG_VALUES 5
-
 typedef enum {
-  I2C_TASK_ERR_NONE,
-  I2C_TASK_ERR_BUSY,
-  I2C_TASK_ERR_BAD_PARAM,
-} i2c_task_err_t;
+  USART_DRIVER_ERR_NONE,
+  USART_DRIVER_ERR_BUSY,
+  USART_DRIVER_ERR_BAD_PARAM,
+} usart_driver_err_t;
 
 // *****************************************************************************
 // Public declarations
 
 /**
- * @brief One-time initialization of the i2c0, to be called at startup.
+ * @brief Initialize USART0, called once at startup.
  */
-void i2c_task_init(void);
+void usart_driver_init(void);
 
 /**
- * @brief Request to start an asynchronous read operation.
+ * @brief Initiate a transmit operation to send n_chars from buf over the USART,
+ * triggering on_completion when the last byte has been transmitted (or error).
  *
- * Note: it is an error to call this function if I2C0 is busy.
+ * Note: Do not modify buf until the transmit operation has completed.
  *
- * Note: If on_completion is non-NULL, it will be triggered when the read
- * operation completes.
+ * @param buf The data bytes to be transmitted.
+ * @param n_bytes The number of data bytes to be transmitted.
+ * @param on_tx_complete If non-NULL, a task to be invoked after the last byte
+ *        has been transmitted.
+ * @return MU_UART_ERR_BUSY if the uart is busy, MU_UART_ERR_NONE on success.
  */
-i2c_task_err_t i2c_task_read(uint8_t addr,
-                             uint8_t *buf,
-                             size_t n_bytes,
-                             mu_task_t *on_completion);
+usart_driver_err_t
+usart_driver_tx(const uint8_t *buf, size_t n_bytes, mu_task_t *on_tx_complete);
 
 /**
- * @brief Request to start an asynchronous write operation.
+ * @brief Initiate a receive operation to receive one byte from the USART,
+ * triggering on_completion when a byte is received.
  *
- * Note: it is an error to call this function if I2C0 is busy.
- *
- * Note: If on_completion is non-NULL, it will be triggered when the read
- * operation completes.
+ * @param ch Pointer to the uint8_t to receive the character.
+ * @param on_rx_complete task to be invoked when a byte is received (or NULL).
+ * @return MU_UART_ERR_BUSY if the uart is busy, MU_UART_ERR_NONE on success.
  */
-i2c_task_err_t i2c_task_write(uint8_t addr,
-                              uint8_t *buf,
-                              size_t n_bytes,
-                              mu_task_t *on_completion);
-
-// *****************************************************************************
-// End of file
+usart_driver_err_t usart_driver_rx(uint8_t *ch, mu_task_t *on_rx_complete);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _I2C_H_ */
+#endif /* #ifndef _USART_DRIVER_H_ */

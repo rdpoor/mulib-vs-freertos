@@ -30,12 +30,12 @@
 #include "app.h"
 #include "app_config.h"
 #include "definitions.h"
-#include "i2c_task.h"
+#include "i2c_driver.h"
 #include "mu_periodic.h"
 #include "mu_rtc.h"
 #include "mu_sched.h"
 #include "mu_task.h"
-#include "usart.h"
+#include "usart_driver.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -142,13 +142,13 @@ static void periodic_task_fn(void *ctx, void *arg) {
   case PERIODIC_TASK_STATE_START_TEMP_SENSOR_WRITE: {
     // Arrive here when the periodic task has exclusive access to the I2C0 bus.
     // Initiate a write on the I2C bus set up the read register address.
-    s_periodic_task_ctx.buf[0] = I2C_TASK_TEMPERATURE_REG_ADDR;
+    s_periodic_task_ctx.buf[0] = APP_TASK_TEMPERATURE_I2C_REG_ADDR;
     // write temperature register address to device
-    i2c_task_err_t err = i2c_task_write(I2C_TASK_TEMPERATURE_SLAVE_ADDR,
+    i2c_driver_err_t err = i2c_driver_write(APP_TASK_TEMPERATURE_I2C_SLAVE_ADDR,
                                           s_periodic_task_ctx.buf,
                                           1,
                                           &s_periodic_task);
-    if (err != I2C_TASK_ERR_NONE) {
+    if (err != I2C_DRIVER_ERR_NONE) {
       set_state(PERIODIC_TASK_STATE_ERROR);
     } else {
       set_state(PERIODIC_TASK_STATE_START_TEMP_SENSOR_READ);
@@ -158,11 +158,11 @@ static void periodic_task_fn(void *ctx, void *arg) {
 
   case PERIODIC_TASK_STATE_START_TEMP_SENSOR_READ: {
     // Initiate a read on the i2C bus to get the raw temperature from device
-    i2c_task_err_t err = i2c_task_read(I2C_TASK_TEMPERATURE_SLAVE_ADDR,
+    i2c_driver_err_t err = i2c_driver_read(APP_TASK_TEMPERATURE_I2C_SLAVE_ADDR,
                                          s_periodic_task_ctx.buf,
                                          2,
                                          &s_periodic_task);
-    if (err != I2C_TASK_ERR_NONE) {
+    if (err != I2C_DRIVER_ERR_NONE) {
       set_state(PERIODIC_TASK_STATE_ERROR);
     } else {
       set_state(PERIODIC_TASK_STATE_ACQUIRE_EEPROM);
@@ -192,11 +192,11 @@ static void periodic_task_fn(void *ctx, void *arg) {
     s_periodic_task_ctx.buf[0] =
         PERIODIC_TASK_EEPROM_LOG_MEMORY_ADDR + s_periodic_task_ctx.write_idx++;
     s_periodic_task_ctx.buf[1] = s_periodic_task_ctx.fahrenheit;
-    i2c_task_err_t err = i2c_task_write(I2C_TASK_EEPROM_SLAVE_ADDR,
+    i2c_driver_err_t err = i2c_driver_write(APP_TASK_EEPROM_I2C_SLAVE_ADDR,
                                           s_periodic_task_ctx.buf,
                                           2,
                                           &s_periodic_task);
-    if (err != I2C_TASK_ERR_NONE) {
+    if (err != I2C_DRIVER_ERR_NONE) {
       set_state(PERIODIC_TASK_STATE_ERROR);
     } else {
       set_state(PERIODIC_TASK_STATE_ACQUIRE_SERIAL_TX);
@@ -219,9 +219,9 @@ static void periodic_task_fn(void *ctx, void *arg) {
              sizeof(buf),
              "\nTemperature = %d F",
              s_periodic_task_ctx.fahrenheit);
-    usart_err_t err = usart_tx(
+    usart_driver_err_t err = usart_driver_tx(
         (const uint8_t *)buf, strlen((const char *)buf), &s_periodic_task);
-    if (err != USART_ERR_NONE) {
+    if (err != USART_DRIVER_ERR_NONE) {
       set_state(PERIODIC_TASK_STATE_ERROR);
     } else {
       set_state(PERIODIC_TASK_STATE_ENDGAME);

@@ -48,6 +48,11 @@ extern "C" {
 // *****************************************************************************
 // Public types and definitions
 
+#define APP_TASK_TEMPERATURE_I2C_SLAVE_ADDR 0x004F
+#define APP_TASK_TEMPERATURE_I2C_REG_ADDR 0x00
+
+#define APP_TASK_EEPROM_I2C_SLAVE_ADDR 0x0057
+#define APP_TASK_EEPROM_LOG_MEMORY_ADDR 0x00
 #define APP_TASK_EEPROM_MAX_LOG_VALUES 5
 
 // un-comment to enable printing of state transitions.  Useful for debugging,

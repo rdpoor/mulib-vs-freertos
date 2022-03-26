@@ -27,7 +27,7 @@
 
 #include "app.h"
 
-#include "i2c_task.h"
+#include "i2c_driver.h"
 #include "kbhit_task.h"
 #include "mu_access_mgr.h"
 #include "mu_rtc.h"
@@ -35,7 +35,7 @@
 #include "mu_task.h"
 #include "mu_time.h"
 #include "periodic_task.h"
-#include "usart.h"
+#include "usart_driver.h"
 
 // *****************************************************************************
 // Private types and definitions
@@ -60,8 +60,8 @@ void APP_Initialize(void) {
   mu_time_init();
 
   // Initialize app-specific resources.
-  i2c_task_init();
-  usart_init();
+  i2c_driver_init();
+  usart_driver_init();
   mu_access_mgr_init(&s_i2c_access);
   mu_access_mgr_init(&s_serial_tx_access);
 

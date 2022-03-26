@@ -250,8 +250,8 @@
       <itemPath>../src/app_config.h</itemPath>
       <itemPath>../src/kbhit_task.h</itemPath>
       <itemPath>../src/periodic_task.h</itemPath>
-      <itemPath>../src/usart.h</itemPath>
-      <itemPath>../src/i2c_task.h</itemPath>
+      <itemPath>../src/usart_driver.h</itemPath>
+      <itemPath>../src/i2c_driver.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -393,8 +393,8 @@
       <itemPath>../src/kbhit_task.c</itemPath>
       <itemPath>../src/periodic_task.c</itemPath>
       <itemPath>../src/app.c</itemPath>
-      <itemPath>../src/usart.c</itemPath>
-      <itemPath>../src/i2c_task.c</itemPath>
+      <itemPath>../src/usart_driver.c</itemPath>
+      <itemPath>../src/i2c_driver.c</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
@@ -637,6 +637,8 @@
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.ranges" value="0-fffff"/>
         <property key="poweroptions.powerenable" value="false"/>
+        <property key="programmerToGoFilePath"
+                  value="C:/Users/r/Projects/rtos-demo/rtos_demo_mulib_same54/firmware/rtos_demo_mulib_same54.X/debug/sam_e54_xpro/rtos_demo_mulib_same54_ptg"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"
