@@ -30,6 +30,7 @@
 #include "app.h"
 #include "app_config.h"
 #include "i2c0_task.h"
+#include "mcc_generated_files/mcc.h"
 #include "mu_periodic.h"
 #include "mu_rtc.h"
 #include "mu_sched.h"
@@ -232,6 +233,7 @@ static void periodic_task_fn(void *ctx, void *arg) {
   case PERIODIC_TASK_STATE_ERROR: {
     // Arrive here normally or on error.  Make sure that any reserved resources
     // get released and set up for the next call (by the periodic timer).
+    LED_Toggle();
     set_state(PERIODIC_TASK_STATE_ACQUIRE_TEMP_SENSOR);
     APP_ReleaseI2C(&s_periodic_task);
     APP_ReleaseSerialTx(&s_periodic_task);
