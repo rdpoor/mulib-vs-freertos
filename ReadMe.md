@@ -1,80 +1,62 @@
-# Mulib vs FreeRTOS
+# Comparing mulib and FreeRTOS
 
 ## Overview
 
-This project replicates an existing FreeRTOS project using the mulib framework.
-The goal is to compare resulting metrics of the two versions (code size etc),
-and to gain practical experience in translating from the FreeRTOS paradigm to
+**mulib** is a highly performant, compact and reliable framework for building 
+complex applications in resource-constrained embedded systems.
+
+**FreeRTOS** is a market-leading real-time operating system (RTOS) for 
+microcontrollers and small microprocessors.
+
+This project replicates an existing FreeRTOS example project using the mulib framework
+in order to compare resulting metrics of the two versions (code size etc),
+and to gain practical experience in translating the FreeRTOS idioms to
 the mulib model.
 
-A secondary goal is to play by the rules of MPLAB and Harmony Configuration: we
-don't make any changes to the code that MHC generates.  However, a future
-version could feature tighter integration of mulib with the driver files.
+## Summary
 
-## Creating the App
+We chose [an existing FreeRTOS example application](https://microchip-mplab-harmony.github.io/reference_apps/apps/sam_e54_xpro/same54_getting_started_freertos/readme.html)
+as our reference and created a new applicaton that behaved identically using mulib rather than FreeRTOS.
 
-### Starting with the FreeRTOS version of the project...
+Both applications ran on the same hardware -- a 
+[SAME54 Xplained Pro Evaluation Kit](https://www.microchip.com/en-us/development-tool/ATSAME54-XPRO) 
+with an 
+[IO1 Xplained Pro Extension Kit](https://www.microchip.com/en-us/development-tool/ATIO1-XPRO) --
+and were developed using the 
+[Microchip MPLAB.X IDE](https://www.microchip.com/en-us/tools-resources/develop/mplab-x-ide)
+and
+[Harmony v3 Embedded Software Development Framework](https://www.microchip.com/en-us/tools-resources/configure/mplab-harmony)
+for code generation.  
+Both applications used
+the same compiler and optimization settings (xc32 with -O1 optimization).  And both applications did the
+same thing: once every second, take a temperature measurement using the IO1 XPRO sensor, store the
+temperature in a 5-byte buffer in EEPROM and print out the results on the serial port.  In addition, when
+the user typed any key on the keyboard, the application would print out the five values stored in EEPROM.
 
-1. Make a copy the `getting_started_drivers_FreeRTOS_sam_e54_xpro` project
-2. Optional: delete `hex/` `images/` directories and `readme.md`
-3. In MPLAB, rename to `getting_started_drivers_mulib_sam_e54_xpro`
-4. In MPLAB Harmony Configurator (MHC):
-   * delete FreeRTOS component
-   * delete I2C Driver component
-   * delete USART Driver component
-5. In MHC CORE module:
-   * Generate Harmony Application Files => Application Configuration
-   * Set # of applications to 1 and name it `app`
-   * Uncheck "Enable OSAL"
-6. In MHC, click "Generate Code"
-7. Delete the following:
- * mulib/firmware/src/config/sam_e54_xpro/freertos_hooks.c
- * mulib/firmware/src/config/sam_e54_xpro/FreeRTOSConfig.h
- * mulib/firmware/src/config/sam_e54_xpro/osal/
- * mulib/firmware/src/config/sam_e54_xpro/driver/
+The results:
 
-At this point, the following files are specific to the FreeRTOS project, but are
-unused:
+|   | FreeRTOS | mulib | size reduction |
+|---|---|---|---|
+| Data (RAM) | 42,316 | 873 | 97.9% |
+| Program (Flash) | 19979 | 8667| 56.6% |
 
-* app_eeprom_thread.c
-* app_eeprom_thread.h
-* app_sensor_thread.c
-* app_sensor_thread.h
-* app_user_input_thread.c
-* app_user_input_thread.h
+## Future Directions
 
-### Mix in the mulib code
+You'll notice that this page doesn't say much about how mulib works or its API.  That's intentional:
+this was a warm-up project, and full mullib documentation (with examples) will follow.  
 
-On the disk, copy the contents of the mulib distribution to
-`firmware/src/third_party/rtos/mulib/`, and create a directory named
-`firmware/src/third_party/rtos/mu_platform/'.  The `mu_platform` directory
-will hold the platform specific mulib files, which at present are:
-* `mu_platform/inc/mu_config.h`
-* `mu_platform/inc/mu_rtc.h`
-* `mu_platform/inc/mu_time.h`
-* `mu_platform/src/mu_rtc.c`
-* `mu_platform/src/mu_time.c`
-Fill in these files (see the project files) and add them to the MPLAB project.
+In the meantime, although Program size and Data size are important metrics in many applications, 
+there are other metrics to consider when comparing frameworks, including:
+* the number of lines of user code required
+* MISRA compliance
+* deterministic behavior
+* ease of porting to a new platform
+* unit test coverage
 
-### Create the mu_rtc.c source code
+Which attributes do you consider important and would like to see evaluated in a future project?
+You can leave a comment by [generating an issue](https://github.com/rdpoor/mulib-vs-freertos/issues).
 
-Launch MHC and add the RTC component with the following settings:
-* Gnerate Frequenct Correction API [no]
-* RTC Operation Mode: 32-bit counter with single 32-bit compare
-* Enable Interrupts? [no]  (but we may in a future power aware version)
-* RTC Prescaler: DIV1
+Welcome!
 
-We also want to use the external xtal as the RTC source running at 32KHz:
-
-In the MHC => Tools => Clock Configuration:
-* Enable 32 KHz Crystal Oscillator
-* Enable 32 KHz output
-* In Advanced Settings: "Run Oscillator in Standby Sleep Mode" [yes]
-* Under RtC Clock Selection, choose XOSC32K
-
-## Tasks
-
-### `printer_task`
-
-The first task to write is printer_task, primarily because it will be useful to
-print things on the serial output.
+---
+-- R. D. Poor, March 2022
