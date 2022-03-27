@@ -23,13 +23,13 @@
  */
 
 /**
- * @file i2c0.h
+ * @file i2c_driver.h
  *
  * @brief mulib-aware I2C driver
  */
 
-#ifndef _I2C0_H_
-#define _I2C0_H_
+#ifndef _I2C_DRIVER_H_
+#define _I2C_DRIVER_H_
 
 // *****************************************************************************
 // Includes
@@ -48,18 +48,11 @@ extern "C" {
 // *****************************************************************************
 // Public types and definitions
 
-#define I2C0_TASK_TEMPERATURE_SLAVE_ADDR 0x004F
-#define I2C0_TASK_TEMPERATURE_REG_ADDR 0x00
-
-#define I2C0_TASK_EEPROM_SLAVE_ADDR 0x0057
-#define I2C0_TASK_EEPROM_LOG_MEMORY_ADDR 0x00
-#define I2C0_TASK_EEPROM_MAX_LOG_VALUES 5
-
 typedef enum {
-  I2C0_TASK_ERR_NONE,
-  I2C0_TASK_ERR_BUSY,
-  I2C0_TASK_ERR_BAD_PARAM,
-} i2c0_task_err_t;
+  I2C_DRIVER_ERR_NONE,
+  I2C_DRIVER_ERR_BUSY,
+  I2C_DRIVER_ERR_BAD_PARAM,
+} i2c_driver_err_t;
 
 // *****************************************************************************
 // Public declarations
@@ -67,17 +60,34 @@ typedef enum {
 /**
  * @brief One-time initialization of the i2c0, to be called at startup.
  */
-void i2c0_task_init(void);
+void i2c_driver_init(void);
+
+/**
+ * @brief Gain exclusive access to the i2c_driver.
+ *
+ * When exclusive access is granted, task will be invoked.
+ */
+void i2c_driver_reserve(mu_task_t *task);
+
+/**
+ * @brief Relinquish exclusive access to the i2c_driver.
+ */
+void i2c_driver_release(mu_task_t *task);
+
+/**
+ * @brief Return true if the task has exclusive ownership of the i2c driver.
+ */
+bool i2c_driver_is_owner(mu_task_t *task);
 
 /**
  * @brief Request to start an asynchronous read operation.
  *
- * Note: it is an error to call this function if I2C0 is busy.
+ * Note: it is an error to call this function if I2C is busy.
  *
  * Note: If on_completion is non-NULL, it will be triggered when the read
  * operation completes.
  */
-i2c0_task_err_t i2c0_task_read(uint8_t addr,
+i2c_driver_err_t i2c_driver_read(uint8_t addr,
                                uint8_t *buf,
                                size_t n_bytes,
                                mu_task_t *on_completion);
@@ -85,13 +95,13 @@ i2c0_task_err_t i2c0_task_read(uint8_t addr,
 /**
  * @brief Request to start an asynchronous write operation.
  *
- * Note: it is an error to call this function if I2C0 is busy.
+ * Note: it is an error to call this function if I2C is busy.
  *
  * Note: If on_completion is non-NULL, it will be triggered when the read
  * operation completes.
  */
-i2c0_task_err_t i2c0_task_write(uint8_t addr,
-                                uint8_t *buf,
+i2c_driver_err_t i2c_driver_write(uint8_t addr,
+                                  const uint8_t *buf,
                                 size_t n_bytes,
                                 mu_task_t *on_completion);
 
@@ -102,4 +112,4 @@ i2c0_task_err_t i2c0_task_write(uint8_t addr,
 }
 #endif
 
-#endif /* #ifndef _I2C0_H_ */
+#endif /* #ifndef _I2C_DRIVER_H_ */

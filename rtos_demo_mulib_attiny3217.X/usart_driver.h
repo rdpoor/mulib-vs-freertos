@@ -23,13 +23,13 @@
  */
 
 /**
- * @file usart0.h
+ * @file usart_driver.h
  *
- * @brief mulib-aware driver for reading and writing serial data via usart0
+ * @brief mulib-aware driver for reading and writing serial data via usart
  */
 
-#ifndef _USART0_H_
-#define _USART0_H_
+#ifndef _USART_DRIVER_H_
+#define _USART_DRIVER_H_
 
 // *****************************************************************************
 // Includes
@@ -49,10 +49,10 @@ extern "C" {
 // Public types and definitions
 
 typedef enum {
-  USART0_ERR_NONE,
-  USART0_ERR_BUSY,
-  USART0_ERR_BAD_PARAM,
-} usart0_err_t;
+  USART_DRIVER_ERR_NONE,
+  USART_DRIVER_ERR_BUSY,
+  USART_DRIVER_ERR_BAD_PARAM,
+} usart_driver_err_t;
 
 // *****************************************************************************
 // Public declarations
@@ -60,7 +60,41 @@ typedef enum {
 /**
  * @brief Initialize USART0, called once at startup.
  */
-void usart0_init(void);
+void usart_driver_init(void);
+
+/**
+ * @brief Gain exclusive access to the usart transmitter.
+ *
+ * When exclusive access is granted, task will be invoked.
+ */
+void usart_driver_reserve_tx(mu_task_t *task);
+
+/**
+ * @brief Relinquish exclusive access of the usart transmitter.
+ */
+void usart_driver_release_tx(mu_task_t *task);
+
+/**
+ * @brief Return true if task has exclusive ownership of the usart transmitter.
+ */
+bool usart_driver_owns_tx(mu_task_t *task);
+
+/**
+ * @brief Gain exclusive access to the usart receiver.
+ *
+ * When exclusive access is granted, task will be invoked.
+ */
+void usart_driver_reserve_rx(mu_task_t *task);
+
+/**
+ * @brief Relinquish exclusive access of the usart receiver.
+ */
+void usart_driver_release_rx(mu_task_t *task);
+
+/**
+ * @brief Return true if task has exclusive ownership of the usart receiver.
+ */
+bool usart_driver_owns_rx(mu_task_t *task);
 
 /**
  * @brief Initiate a transmit operation to send n_chars from buf over the USART,
@@ -70,26 +104,25 @@ void usart0_init(void);
  *
  * @param buf The data bytes to be transmitted.
  * @param n_bytes The number of data bytes to be transmitted.
- * @param on_completion If non-NULL, a task to be invoked after the last byte
+ * @param on_tx_complete If non-NULL, a task to be invoked after the last byte
  *        has been transmitted.
  * @return MU_UART_ERR_BUSY if the uart is busy, MU_UART_ERR_NONE on success.
  */
-usart0_err_t
-usart0_tx(const uint8_t *buf, size_t n_bytes, mu_task_t *on_completion);
+usart_driver_err_t
+usart_driver_tx(const uint8_t *buf, size_t n_bytes, mu_task_t *on_tx_complete);
 
 /**
  * @brief Initiate a receive operation to receive one byte from the USART,
  * triggering on_completion when a byte is received.
  *
- * @param ch Pointer to the uint8_t to receive the character.  Pass NULL if you
- *        only want to detect a keystroke.
- * @param on_completion If non-NULL, task to be invoked when a byte is received.
+ * @param ch Pointer to the uint8_t to receive the character.
+ * @param on_rx_complete task to be invoked when a byte is received (or NULL).
  * @return MU_UART_ERR_BUSY if the uart is busy, MU_UART_ERR_NONE on success.
  */
-usart0_err_t usart0_rx(uint8_t *ch, mu_task_t *on_reception);
+usart_driver_err_t usart_driver_rx(uint8_t *ch, mu_task_t *on_rx_complete);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _USART0_H_ */
+#endif /* #ifndef _USART_DRIVER_H_ */

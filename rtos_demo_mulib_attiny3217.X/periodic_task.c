@@ -29,13 +29,13 @@
 
 #include "app.h"
 #include "app_config.h"
-#include "i2c0_task.h"
 #include "mcc_generated_files/mcc.h"
+#include "i2c_driver.h"
 #include "mu_periodic.h"
 #include "mu_rtc.h"
 #include "mu_sched.h"
 #include "mu_task.h"
-#include "usart0.h"
+#include "usart_driver.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -135,20 +135,19 @@ static void periodic_task_fn(void *ctx, void *arg) {
   case PERIODIC_TASK_STATE_ACQUIRE_TEMP_SENSOR: {
     // Arrive here when the periodic task first runs
     set_state(PERIODIC_TASK_STATE_START_TEMP_SENSOR_WRITE);
-    APP_ReserveI2C(&s_periodic_task);
-    // APP_ReserveI2C() will invoke s_periodic_task when access is granted.
+    i2c_driver_reserve(&s_periodic_task);
+    // i2c_driver_reserve() will invoke s_periodic_task when access is granted.
   } break;
 
   case PERIODIC_TASK_STATE_START_TEMP_SENSOR_WRITE: {
     // Arrive here when the periodic task has exclusive access to the I2C0 bus.
     // Initiate a write on the I2C bus set up the read register address.
-    s_periodic_task_ctx.buf[0] = I2C0_TASK_TEMPERATURE_REG_ADDR;
     // write temperature register address to device
     i2c0_task_err_t err = i2c0_task_write(I2C0_TASK_TEMPERATURE_SLAVE_ADDR,
                                           s_periodic_task_ctx.buf,
                                           1,
                                           &s_periodic_task);
-    if (err != I2C0_TASK_ERR_NONE) {
+    if (err != I2C_DRIVER_ERR_NONE) {
       set_state(PERIODIC_TASK_STATE_ERROR);
     } else {
       set_state(PERIODIC_TASK_STATE_START_TEMP_SENSOR_READ);
@@ -158,11 +157,11 @@ static void periodic_task_fn(void *ctx, void *arg) {
 
   case PERIODIC_TASK_STATE_START_TEMP_SENSOR_READ: {
     // Initiate a read on the i2C bus to get the raw temperature from device
-    i2c0_task_err_t err = i2c0_task_read(I2C0_TASK_TEMPERATURE_SLAVE_ADDR,
+    i2c_driver_err_t err = i2c_driver_read(APP_TASK_TEMPERATURE_I2C_SLAVE_ADDR,
                                          s_periodic_task_ctx.buf,
                                          2,
                                          &s_periodic_task);
-    if (err != I2C0_TASK_ERR_NONE) {
+    if (err != I2C_DRIVER_ERR_NONE) {
       set_state(PERIODIC_TASK_STATE_ERROR);
     } else {
       set_state(PERIODIC_TASK_STATE_ACQUIRE_EEPROM);
@@ -176,10 +175,10 @@ static void periodic_task_fn(void *ctx, void *arg) {
         convert_to_fahrenheit(s_periodic_task_ctx.buf);
     // Release I2C to enable any other task that might be waiting before
     // acquiring exclusive access for the EEPROM.
-    APP_ReleaseI2C(&s_periodic_task);
+    i2c_driver_release(&s_periodic_task);
     set_state(PERIODIC_TASK_STATE_START_EEPROM_WRITE);
-    APP_ReserveI2C(&s_periodic_task);
-    // APP_ReserveI2C() will invoke s_periodic_task when access is granted.
+    i2c_driver_reserve(&s_periodic_task);
+    // i2c_driver_reserve() will invoke s_periodic_task when access is granted.
   } break;
 
   case PERIODIC_TASK_STATE_START_EEPROM_WRITE: {
@@ -192,11 +191,11 @@ static void periodic_task_fn(void *ctx, void *arg) {
     s_periodic_task_ctx.buf[0] =
         PERIODIC_TASK_EEPROM_LOG_MEMORY_ADDR + s_periodic_task_ctx.write_idx++;
     s_periodic_task_ctx.buf[1] = s_periodic_task_ctx.fahrenheit;
-    i2c0_task_err_t err = i2c0_task_write(I2C0_TASK_EEPROM_SLAVE_ADDR,
+    i2c_driver_err_t err = i2c_driver_write(APP_TASK_EEPROM_I2C_SLAVE_ADDR,
                                           s_periodic_task_ctx.buf,
                                           2,
                                           &s_periodic_task);
-    if (err != I2C0_TASK_ERR_NONE) {
+    if (err != I2C_DRIVER_ERR_NONE) {
       set_state(PERIODIC_TASK_STATE_ERROR);
     } else {
       set_state(PERIODIC_TASK_STATE_ACQUIRE_SERIAL_TX);
@@ -208,8 +207,8 @@ static void periodic_task_fn(void *ctx, void *arg) {
     // Arrive here after temperature data has been written to the EEPROM.
     // Acquire exclusive access to the serial transmitter.
     set_state(PERIODIC_TASK_STATE_START_SERIAL_TX);
-    APP_ReserveSerialTx(&s_periodic_task);
-    // APP_ReserveSerialTx() will invoke s_periodic_task when access is granted.
+    usart_driver_reserve_tx(&s_periodic_task);
+    // usart_driver_reserve_tx() will invoke s_periodic_task when access is granted.
   } break;
 
   case PERIODIC_TASK_STATE_START_SERIAL_TX: {
@@ -219,14 +218,14 @@ static void periodic_task_fn(void *ctx, void *arg) {
              sizeof(buf),
              "\nTemperature = %d F",
              s_periodic_task_ctx.fahrenheit);
-    usart0_err_t err = usart0_tx(
+    usart_driver_err_t err = usart_driver_tx(
         (const uint8_t *)buf, strlen((const char *)buf), &s_periodic_task);
-    if (err != USART0_ERR_NONE) {
+    if (err != USART_DRIVER_ERR_NONE) {
       set_state(PERIODIC_TASK_STATE_ERROR);
     } else {
       set_state(PERIODIC_TASK_STATE_ENDGAME);
     }
-    // usart0_tx() will invoke s_periodic_task on completion.
+    // usart_driver_tx() will invoke s_periodic_task on completion.
   } break;
 
   case PERIODIC_TASK_STATE_ENDGAME:
@@ -235,8 +234,8 @@ static void periodic_task_fn(void *ctx, void *arg) {
     // get released and set up for the next call (by the periodic timer).
     LED_Toggle();
     set_state(PERIODIC_TASK_STATE_ACQUIRE_TEMP_SENSOR);
-    APP_ReleaseI2C(&s_periodic_task);
-    APP_ReleaseSerialTx(&s_periodic_task);
+    i2c_driver_release(&s_periodic_task);
+    usart_driver_release_tx(&s_periodic_task);
   } break;
   } // end switch()
 }

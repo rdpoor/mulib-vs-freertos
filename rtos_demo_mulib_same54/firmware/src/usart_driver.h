@@ -23,7 +23,7 @@
  */
 
 /**
- * @file usart.h
+ * @file usart_driver.h
  *
  * @brief mulib-aware driver for reading and writing serial data via usart
  */

@@ -48,6 +48,11 @@ extern "C" {
 // *****************************************************************************
 // Public types and definitions
 
+#define APP_TASK_TEMPERATURE_I2C_SLAVE_ADDR 0x004F
+#define APP_TASK_TEMPERATURE_I2C_REG_ADDR 0x00
+
+#define APP_TASK_EEPROM_I2C_SLAVE_ADDR 0x0057
+#define APP_TASK_EEPROM_LOG_MEMORY_ADDR 0x00
 #define APP_TASK_EEPROM_MAX_LOG_VALUES 5
 
 // un-comment to enable printing of state transitions.  Useful for debugging,
@@ -70,40 +75,6 @@ void APP_Initialize(void);
  * @note Called repeatedly from main()
  */
 void APP_Tasks(void);
-
-/**
- * @brief Request exclusive ownership of the I2C bus.
- *
- * @note The given task will be invoked when exclusive access is granted.
- */
-void APP_ReserveI2C(mu_task_t *task);
-
-/**
- * @brief Relinquish exclusive ownership of the I2C bus.
- */
-void APP_ReleaseI2C(mu_task_t *task);
-
-/**
- * @brief Return true if the given task has exclusive ownership of the I2C bus.
- */
-bool APP_OwnsI2C(mu_task_t *task);
-
-/**
- * @brief Request exclusive ownership of the USART transmitter.
- *
- * @note The given task will be invoked when exclusive access is granted.
- */
-void APP_ReserveSerialTx(mu_task_t *task);
-
-/**
- * @brief Relinquish exclusive ownership of the USART transmitter.
- */
-void APP_ReleaseSerialTx(mu_task_t *task);
-
-/**
- * @brief Return true if the given task has ownership of the USART transmitter.
- */
-bool APP_OwnsSerialTx(mu_task_t *task);
 
 // *****************************************************************************
 // End of file

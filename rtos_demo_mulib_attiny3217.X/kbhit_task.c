@@ -29,10 +29,10 @@
 
 #include "app.h"
 #include "app_config.h"
-#include "i2c0_task.h"
+#include "i2c_driver.h"
 #include "mu_rtc.h"
 #include "mu_task.h"
-#include "usart0.h"
+#include "usart_driver.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -55,8 +55,8 @@
 typedef enum { KBHIT_STATES(EXPAND_TASK_STATES) } kbhit_task_state_t;
 
 typedef struct {
-  kbhit_task_state_t state;                     // task state
-  uint8_t buf[I2C0_TASK_EEPROM_MAX_LOG_VALUES]; // read from eeprom
+  kbhit_task_state_t state;                    // task state
+  uint8_t buf[APP_TASK_EEPROM_MAX_LOG_VALUES]; // read from eeprom
 } kbhit_task_ctx_t;
 
 // *****************************************************************************
@@ -112,17 +112,17 @@ static void kbhit_task_fn(void *ctx, void *arg) {
   case KBHIT_TASK_STATE_ACQUIRE_EEPROM: {
     // Arrive here when a character was typed.
     set_state(KBHIT_TASK_STATE_START_EEPROM_WRITE);
-    APP_ReserveI2C(&s_kbhit_task);
-    // APP_ReserveI2C() will invoke kbhit_task when access is granted.
+    i2c_driver_reserve(&s_kbhit_task);
+    // i2c_driver_reserve() will invoke kbhit_task when access is granted.
   } break;
 
   case KBHIT_TASK_STATE_START_EEPROM_WRITE: {
     // Arrive here when kbhit_task has exclusive access to I2C0 bus
     // To read bytes from the EEPROM, first set the read address.
-    s_kbhit_task_ctx.buf[0] = I2C0_TASK_EEPROM_LOG_MEMORY_ADDR;
-    i2c0_task_err_t err = i2c0_task_write(
-        I2C0_TASK_EEPROM_SLAVE_ADDR, s_kbhit_task_ctx.buf, 1, &s_kbhit_task);
-    if (err != I2C0_TASK_ERR_NONE) {
+    s_kbhit_task_ctx.buf[0] = APP_TASK_EEPROM_LOG_MEMORY_ADDR;
+    i2c_driver_err_t err = i2c_driver_write(
+        APP_TASK_EEPROM_I2C_SLAVE_ADDR, s_kbhit_task_ctx.buf, 1, &s_kbhit_task);
+    if (err != I2C_DRIVER_ERR_NONE) {
       set_state(KBHIT_TASK_STATE_ERROR);
     } else {
       set_state(KBHIT_TASK_STATE_START_EEPROM_READ);
@@ -133,11 +133,11 @@ static void kbhit_task_fn(void *ctx, void *arg) {
   case KBHIT_TASK_STATE_START_EEPROM_READ: {
     // Arrive here when the read address is set in the EEPROM.  Initiate a
     // read operation.
-    i2c0_task_err_t err = i2c0_task_read(I2C0_TASK_EEPROM_SLAVE_ADDR,
+    i2c_driver_err_t err = i2c_driver_read(APP_TASK_EEPROM_I2C_SLAVE_ADDR,
                                          s_kbhit_task_ctx.buf,
-                                         I2C0_TASK_EEPROM_MAX_LOG_VALUES,
+                                           APP_TASK_EEPROM_MAX_LOG_VALUES,
                                          &s_kbhit_task);
-    if (err != I2C0_TASK_ERR_NONE) {
+    if (err != I2C_DRIVER_ERR_NONE) {
       set_state(KBHIT_TASK_STATE_ERROR);
     } else {
       set_state(KBHIT_TASK_STATE_ACQUIRE_SERIAL_TX);
@@ -150,8 +150,8 @@ static void kbhit_task_fn(void *ctx, void *arg) {
     // s_kbhit_task_ctx.buf[].  Acquire exclusive rights to the serial
     // printer before printing...
     set_state(KBHIT_TASK_STATE_START_SERIAL_TX);
-    APP_ReserveSerialTx(&s_kbhit_task);
-    // APP_ReserveSerialTx() will invoke kbhit_task when access is granted.
+    usart_driver_reserve_tx(&s_kbhit_task);
+    // usart_driver_reserve_tx() will invoke kbhit_task when access is granted.
   } break;
 
   case KBHIT_TASK_STATE_START_SERIAL_TX: {
@@ -165,21 +165,21 @@ static void kbhit_task_fn(void *ctx, void *arg) {
              s_kbhit_task_ctx.buf[2],
              s_kbhit_task_ctx.buf[3],
              s_kbhit_task_ctx.buf[4]);
-    usart0_err_t err = usart0_tx(
+    usart_driver_err_t err = usart_driver_tx(
         (const uint8_t *)buf, strlen((const char *)buf), &s_kbhit_task);
-    if (err != USART0_ERR_NONE) {
+    if (err != USART_DRIVER_ERR_NONE) {
       set_state(KBHIT_TASK_STATE_ERROR);
     } else {
       set_state(KBHIT_TASK_STATE_ENDGAME);
     }
-    // usart0_tx() will invoke kbhit_task on completion.
+    // usart_tx() will invoke kbhit_task on completion.
   } break;
 
   case KBHIT_TASK_STATE_ENDGAME:
   case KBHIT_TASK_STATE_ERROR: {
     // Set up to receive notification of another keystroke.
-    APP_ReleaseSerialTx(&s_kbhit_task);
-    APP_ReleaseI2C(&s_kbhit_task);
+    usart_driver_release_tx(&s_kbhit_task);
+    i2c_driver_release(&s_kbhit_task);
     start_listening();
   } break;
 
@@ -204,8 +204,9 @@ static const char *state_name(kbhit_task_state_t state) {
 #endif
 
 static void start_listening(void) {
+  static uint8_t ch;
   // Arrive here when ready to listen for a keystroke
   set_state(KBHIT_TASK_STATE_ACQUIRE_EEPROM);
-  usart0_rx(NULL, &s_kbhit_task);
-  // usart0_rx() will invoke kbhit_task when a char is received.
+  usart_driver_rx(&ch, &s_kbhit_task);
+  // usart_driver_rx() will invoke kbhit_task when a char is received.
 }

@@ -53,7 +53,7 @@ extern "C" {
 /**
  * @brief Initalize the kbhit_task.
  *
- * All subsequent actions are handled by the scheduler and usart0 interrupts.
+ * All subsequent actions are handled by the scheduler and usart interrupts.
  */
 void kbhit_task_init(void);
 

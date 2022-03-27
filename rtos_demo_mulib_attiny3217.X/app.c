@@ -27,7 +27,7 @@
 
 #include "app.h"
 
-#include "i2c0_task.h"
+#include "i2c_driver.h"
 #include "kbhit_task.h"
 #include "mu_access_mgr.h"
 #include "mu_rtc.h"
@@ -35,16 +35,13 @@
 #include "mu_task.h"
 #include "mu_time.h"
 #include "periodic_task.h"
-#include "usart0.h"
+#include "usart_driver.h"
 
 // *****************************************************************************
 // Private types and definitions
 
 // *****************************************************************************
 // Private (static) storage
-
-static mu_access_mgr_t s_i2c_access;
-static mu_access_mgr_t s_serial_tx_access;
 
 static bool s_is_first_time;
 
@@ -60,10 +57,8 @@ void APP_Initialize(void) {
   mu_time_init();
 
   // Initialize app-specific resources.
-  i2c0_task_init();
-  usart0_init();
-  mu_access_mgr_init(&s_i2c_access);
-  mu_access_mgr_init(&s_serial_tx_access);
+  i2c_driver_init();
+  usart_driver_init();
 
   // Schedule initial tasks.
   periodic_task_init();
@@ -82,36 +77,12 @@ void APP_Tasks(void) {
   mu_sched_step();
 }
 
-void APP_ReserveI2C(mu_task_t *task) {
-  mu_access_mgr_request_ownership(&s_i2c_access, task);
-}
-
-void APP_ReleaseI2C(mu_task_t *task) {
-  mu_access_mgr_release_ownership(&s_i2c_access, task);
-}
-
-bool APP_OwnsI2C(mu_task_t *task) {
-  return mu_access_mgr_has_ownership(&s_i2c_access, task);
-}
-
-void APP_ReserveSerialTx(mu_task_t *task) {
-  mu_access_mgr_request_ownership(&s_serial_tx_access, task);
-}
-
-void APP_ReleaseSerialTx(mu_task_t *task) {
-  mu_access_mgr_release_ownership(&s_serial_tx_access, task);
-}
-
-bool APP_OwnsSerialTx(mu_task_t *task) {
-  return mu_access_mgr_has_ownership(&s_serial_tx_access, task);
-}
-
 // For reasons I don't understand yet, if the following is omitted, the linker
 // includes a LARGE body of code related to printing floating point values.
 // By defining _printf_float() here, none of that code is included.  (And as far
 // as I can tell, this app never prints floating point values, so this appears
 // to be safe.)
-// void _printf_float(void) { asm("nop"); }
+void _printf_float(void) { asm("nop"); }
 
 // *****************************************************************************
 // Private (static) code

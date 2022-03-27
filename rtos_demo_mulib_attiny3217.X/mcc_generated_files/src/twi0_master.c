@@ -8,25 +8,25 @@
     Driver Version    :   1.0.0
 */
 /*
-    (c) 2018 Microchip Technology Inc. and its subsidiaries. 
-    
-    Subject to your compliance with these terms, you may use Microchip software and any 
-    derivatives exclusively with Microchip products. It is your responsibility to comply with third party 
-    license terms applicable to your use of third party software (including open source software) that 
+    (c) 2018 Microchip Technology Inc. and its subsidiaries.
+
+    Subject to your compliance with these terms, you may use Microchip software and any
+    derivatives exclusively with Microchip products. It is your responsibility to comply with third party
+    license terms applicable to your use of third party software (including open source software) that
     may accompany Microchip software.
-    
-    THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER 
-    EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY 
-    IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS 
+
+    THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER
+    EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY
+    IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS
     FOR A PARTICULAR PURPOSE.
-    
-    IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, 
-    INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND 
-    WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP 
-    HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO 
-    THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL 
-    CLAIMS IN ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT 
-    OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS 
+
+    IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE,
+    INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND
+    WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP
+    HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO
+    THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+    CLAIMS IN ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT
+    OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS
     SOFTWARE.
 */
 
@@ -185,30 +185,30 @@ void I2C0_SetTimeoutCallback(twi0_callback_t cb, void *funPtr)
 
 uint8_t I2C0_Initialize()
 {
-    //SDASETUP 4CYC; SDAHOLD OFF; FMPEN disabled; 
+    //SDASETUP 4CYC; SDAHOLD OFF; FMPEN disabled;
     TWI0.CTRLA = 0x00;
-    
+
     //Debug Run
     TWI0.DBGCTRL = 0x00;
-    
+
     //Master Baud Rate Control
     TWI0.MBAUD = (uint8_t)TWI0_BAUD(100000, 0);
-    
-    //RIEN enabled; WIEN enabled; QCEN disabled; TIMEOUT DISABLED; SMEN disabled; ENABLE enabled; 
+
+    //RIEN enabled; WIEN enabled; QCEN disabled; TIMEOUT DISABLED; SMEN disabled; ENABLE enabled;
     TWI0.MCTRLA = 0xC1;
-    
-    //RIF disabled; WIF disabled; CLKHOLD disabled; ARBLOST disabled; BUSERR disabled; BUSSTATE UNKNOWN; 
+
+    //RIF disabled; WIF disabled; CLKHOLD disabled; ARBLOST disabled; BUSERR disabled; BUSSTATE UNKNOWN;
     TWI0.MSTATUS = 0x00;
-    
+
     //Master Address
     TWI0.MADDR = 0x00;
-    
-    //FLUSH disabled; ACKACT ACK; MCMD NOACT; 
+
+    //FLUSH disabled; ACKACT ACK; MCMD NOACT;
     TWI0.MCTRLB = 0x00;
-    
+
     //Master Data
     TWI0.MDATA = 0x00;
-    
+
     return 0;
 }
 
@@ -224,7 +224,7 @@ twi0_error_t I2C0_Open(twi0_address_t address)
         I2C0_status.state            = I2C0_RESET;
         I2C0_status.timeout_value    = 500; // MCC should determine a reasonable starting value here.
         I2C0_status.bufferFree       = 1;
-        
+
         // set all the call backs to a default of sending stop
         I2C0_status.callbackTable[I2C0_DATA_COMPLETE]     = I2C0_RETURN_STOP;
         I2C0_status.callbackPayload[I2C0_DATA_COMPLETE]   = NULL;
@@ -515,7 +515,7 @@ static twi0_fsm_states_t I2C0_DO_BUS_ERROR(void)
     I2C0_MasterResetBus();
     I2C0_status.busy  = false;
     I2C0_status.error = I2C0_FAIL;
-    return I2C0_RESET; 
+    return I2C0_RESET;
 }
 
 ISR(TWI0_TWIM_vect)
@@ -633,7 +633,7 @@ void I2C0_MasterClearBusCollision(void)
 
 void I2C0_MasterWaitForEvent(void)
 {
-   while (!(TWI0.MSTATUS & TWI_RIF_bm) && !(TWI0.MSTATUS & TWI_WIF_bm)) 
+   while (!(TWI0.MSTATUS & TWI_RIF_bm) && !(TWI0.MSTATUS & TWI_WIF_bm))
    {
    };
 }

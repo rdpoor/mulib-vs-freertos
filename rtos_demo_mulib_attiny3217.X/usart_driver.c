@@ -25,32 +25,27 @@
 // *****************************************************************************
 // Includes
 
-#include "usart0.h"
+#include "usart_driver.h"
 
 #include "mcc_generated_files/mcc.h"
 
+#include "mu_access_mgr.h"
 #include "mu_sched.h"
 #include "mu_task.h"
 
 // *****************************************************************************
 // Private types and definitions
 
-/* Normal Mode, Baud register value */
-#define USART0_BAUD_RATE(BAUD_RATE)                                            \
-  (((float)10000000 * 64 / (16 * (float)BAUD_RATE)) + 0.5)
-
-typedef struct {
-  const uint8_t *tx_buf;    // first char to be transmitted
-  const uint8_t *tx_end;    // last char (+1) to be transmitted
-  mu_task_t *on_completion; // invoked when transmit completes
-  uint8_t *rx_buf;          // pointer to 1-character buffer for received byte
-  mu_task_t *on_reception;  // invoked when a character is received
-} usart_ctx_t;
-
 // *****************************************************************************
 // Private (static) storage
 
-static usart_ctx_t s_usart_ctx;
+static mu_access_mgr_t s_tx_access_mgr; // exclusive access to usart transmitter
+static mu_access_mgr_t s_rx_access_mgr; // exclusive access to usart receiver
+static mu_task_t *s_on_tx_complete;     // invoked when transmit completes
+static mu_task_t *s_on_rx_complete;     // invoked when a character is received
+static const uint8_t *s_tx_buf;         // first char to be transmitted
+static const uint8_t *s_tx_end;         // last char (+1) to be transmitted
+static uint8_t *s_rx_buf; // pointer to 1-character buffer for received byte
 
 // *****************************************************************************
 // Private (forward) declarations
@@ -105,47 +100,78 @@ static void disable_rxc_interrupts(void);
 // *****************************************************************************
 // Public code
 
-void usart0_init(void) {
-  // already configured via MCC
+void usart_driver_init(void) {
+  mu_access_mgr_init(&s_tx_access_mgr);
+  mu_access_mgr_init(&s_rx_access_mgr);
+  s_on_tx_complete = NULL;
+  s_on_rx_complete = NULL;
 }
 
-usart0_err_t
-usart0_tx(const uint8_t *buf, size_t n_bytes, mu_task_t *on_completion) {
-  usart0_err_t ret = USART0_ERR_NONE;
+void usart_driver_reserve_tx(mu_task_t *task) {
+  mu_access_mgr_request_ownership(&s_tx_access_mgr, task);
+}
+
+void usart_driver_release_tx(mu_task_t *task) {
+  mu_access_mgr_release_ownership(&s_tx_access_mgr, task);
+}
+
+bool usart_driver_owns_tx(mu_task_t *task) {
+  return mu_access_mgr_has_ownership(&s_tx_access_mgr, task);
+}
+
+void usart_driver_reserve_rx(mu_task_t *task) {
+  mu_access_mgr_request_ownership(&s_rx_access_mgr, task);
+}
+
+void usart_driver_release_rx(mu_task_t *task) {
+  mu_access_mgr_release_ownership(&s_rx_access_mgr, task);
+}
+
+bool usart_driver_owns_rx(mu_task_t *task) {
+  return mu_access_mgr_has_ownership(&s_rx_access_mgr, task);
+}
+
+usart_driver_err_t usart_driver_tx(const uint8_t *buf,
+                                   size_t n_bytes,
+                                   mu_task_t *on_tx_complete) {
+  usart_driver_err_t ret = USART_DRIVER_ERR_NONE;
 
   if (tx_is_busy()) {
     // Driver is currently processing another request.
-    ret = USART0_ERR_BUSY;
+    ret = USART_DRIVER_ERR_BUSY;
 
   } else if (buf == NULL) {
-    ret = USART0_ERR_BAD_PARAM;
+    ret = USART_DRIVER_ERR_BAD_PARAM;
 
   } else if (n_bytes == 0) {
     // Zero length string?  Invoke callback immediately...
-    s_usart_ctx.tx_buf = NULL;
-    mu_sched_now(on_completion);
+    s_tx_buf = NULL;               // indicate that usart tx is not busy.
+    mu_sched_now(on_tx_complete);
 
   } else {
     // Set up state and send first byte: DRE interrupt handler will do the rest.
-    s_usart_ctx.tx_buf = buf;
-    s_usart_ctx.tx_end = &buf[n_bytes];
-    s_usart_ctx.on_completion = on_completion;
-    write_tx_byte(*s_usart_ctx.tx_buf++);
+    s_tx_buf = buf;
+    s_tx_end = &buf[n_bytes];
+    s_on_tx_complete = on_tx_complete;
+    write_tx_byte(*s_tx_buf++);
     enable_dre_interrupts();
   }
   return ret;
 }
 
-usart0_err_t usart0_rx(uint8_t *rx_buf, mu_task_t *on_reception) {
-  usart0_err_t ret = USART0_ERR_NONE;
+usart_driver_err_t usart_driver_rx(uint8_t *rx_buf, mu_task_t *on_rx_complete) {
+  usart_driver_err_t ret = USART_DRIVER_ERR_NONE;
 
   if (rx_is_busy()) {
     // Driver is currently processing another request.
-    ret = USART0_ERR_BUSY;
+    ret = USART_DRIVER_ERR_BUSY;
+
+  } else if (rx_buf == NULL) {
+    ret = USART_DRIVER_ERR_BAD_PARAM;
 
   } else {
-    s_usart_ctx.rx_buf = rx_buf;
-    s_usart_ctx.on_reception = on_reception;
+    s_rx_buf = rx_buf;
+    s_on_rx_complete = on_rx_complete;
     enable_rxc_interrupts();
   }
   return ret;
@@ -167,19 +193,20 @@ ISR(USART0_RXC_vect) {
 // ==========
 // transmit
 
-static bool tx_is_busy(void) { return s_usart_ctx.on_completion != NULL; }
+// NOTE: we use s_tx_buf != NULL to indicate that the usart tx is in use...
+static bool tx_is_busy(void) { return s_tx_buf != NULL; }
 
 static void isr_dre_cb(void) {
   // arrive here at interrupt level when the tx buffer can receive a byte
-  if (s_usart_ctx.tx_buf == s_usart_ctx.tx_end) {
+  if (s_tx_buf == s_tx_end) {
     // There are no more bytes to transmit -- disable Data Register Empty
     // interrupts and invoke the on_callback task.
     disable_dre_interrupts();
-    mu_sched_from_isr(s_usart_ctx.on_completion);
-    s_usart_ctx.on_completion = NULL; // no longer busy
+    s_tx_buf = NULL;               // indicates that usart tx is no longer busy
+    mu_sched_from_isr(s_on_tx_complete);
   } else {
     // Write another byte to the USART TX data buffer
-    write_tx_byte(*s_usart_ctx.tx_buf++);
+    write_tx_byte(*s_tx_buf++);
   }
 }
 
@@ -192,7 +219,8 @@ static void disable_dre_interrupts(void) { USART0.CTRLA &= ~USART_DREIE_bm; }
 // ==========
 // receive
 
-static bool rx_is_busy(void) { return s_usart_ctx.on_reception != NULL; }
+// NOTE: we use s_rx_buf != NULL to indicate that the usart rx is in use...
+static bool rx_is_busy(void) { return s_rx_buf != NULL; }
 
 static void isr_rxc_cb(void) {
   // Arrive here at interrupt level with a received byte in RXDATAL
@@ -200,11 +228,9 @@ static void isr_rxc_cb(void) {
   data = USART0.RXDATAH; // Read (and ignore) DATAH in case it was set.
   data = USART0.RXDATAL; // Read (and keep) DATAL
   disable_rxc_interrupts();
-  if (s_usart_ctx.rx_buf != NULL) {
-    *s_usart_ctx.rx_buf = data; // store received char in user's buffer
-  }
-  mu_sched_from_isr(s_usart_ctx.on_reception);
-  s_usart_ctx.on_reception = NULL; // no longer busy.
+  *s_rx_buf = data; // store received char in user's buffer
+  s_rx_buf = NULL;  // indicate that usart tx is no longer busy.
+  mu_sched_from_isr(s_on_rx_complete);
 }
 
 static void enable_rxc_interrupts(void) { USART0.CTRLA |= USART_RXCIE_bm; }
