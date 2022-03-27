@@ -142,8 +142,9 @@ static void periodic_task_fn(void *ctx, void *arg) {
   case PERIODIC_TASK_STATE_START_TEMP_SENSOR_WRITE: {
     // Arrive here when the periodic task has exclusive access to the I2C0 bus.
     // Initiate a write on the I2C bus set up the read register address.
+    s_periodic_task_ctx.buf[0] = APP_TASK_TEMPERATURE_I2C_REG_ADDR;
     // write temperature register address to device
-    i2c0_task_err_t err = i2c0_task_write(I2C0_TASK_TEMPERATURE_SLAVE_ADDR,
+    i2c_driver_err_t err = i2c_driver_write(APP_TASK_TEMPERATURE_I2C_SLAVE_ADDR,
                                           s_periodic_task_ctx.buf,
                                           1,
                                           &s_periodic_task);

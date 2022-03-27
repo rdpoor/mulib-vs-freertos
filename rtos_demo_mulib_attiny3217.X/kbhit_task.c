@@ -159,7 +159,7 @@ static void kbhit_task_fn(void *ctx, void *arg) {
     static uint8_t buf[40];
     snprintf((char *)buf,
              sizeof(buf),
-             "\nEEPROM:%02d|%02d|%02d|%02d|%02d|",
+             "\nEEPROM:%02u|%02u|%02u|%02u|%02u|",
              s_kbhit_task_ctx.buf[0],
              s_kbhit_task_ctx.buf[1],
              s_kbhit_task_ctx.buf[2],

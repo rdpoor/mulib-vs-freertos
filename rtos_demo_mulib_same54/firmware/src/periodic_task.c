@@ -226,7 +226,7 @@ static void periodic_task_fn(void *ctx, void *arg) {
     } else {
       set_state(PERIODIC_TASK_STATE_ENDGAME);
     }
-    // usart0_tx() will invoke s_periodic_task on completion.
+    // usart_driver_tx() will invoke s_periodic_task on completion.
   } break;
 
   case PERIODIC_TASK_STATE_ENDGAME:

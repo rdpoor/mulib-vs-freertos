@@ -68,7 +68,6 @@ static twi0_operations_t i2c0_task_handle_irq(void *arg);
 void i2c_driver_init(void) {
   mu_access_mgr_init(&s_access_mgr);
   s_on_completion = NULL;
-  I2C0_SetDataCompleteCallback(i2c0_task_handle_irq, NULL);
 }
 
 void i2c_driver_reserve(mu_task_t *task) {
@@ -97,7 +96,7 @@ i2c_driver_err_t i2c_driver_write(uint8_t addr,
                                   const uint8_t *buf,
                                   size_t n_bytes,
                                   mu_task_t *on_completion) {
-  setup(addr, buf, n_bytes, on_completion);
+  setup(addr, (uint8_t *)buf, n_bytes, on_completion);
   I2C0_MasterWrite();
   // the on_completion task will be invoked when the operation completes.
   return I2C_DRIVER_ERR_NONE;
@@ -113,6 +112,7 @@ static void setup(uint8_t addr,
   s_on_completion = on_completion;
   I2C0_Close(); // doesn't hurt if it's already closed.
   I2C0_Open(addr);
+  I2C0_SetDataCompleteCallback(i2c0_task_handle_irq, NULL);
   I2C0_SetBuffer(buf, n_bytes);
 }
 
@@ -120,6 +120,6 @@ static void setup(uint8_t addr,
 // Invoke the task when the interrupt returns
 static twi0_operations_t i2c0_task_handle_irq(void *arg) {
   (void)arg;
-  mu_sched_from_isr(&s_on_completion);
+  mu_sched_from_isr(s_on_completion);
   return I2C0_STOP;
 }
