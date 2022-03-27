@@ -52,14 +52,16 @@ The user-generated  sources remained identical; only the i2c_driver.c and usart_
 files needed to be tailored to the new processor (plus the ATtiny3217-specific files for
 in the mulib distribution).
 
-|   | mulib ATtiny3217 | notes |
+|   | mulib ATtiny3217 w/xc8 | mulib ATtiny3217 w/avr-gcc |
 |---|---|---|
-| Data (RAM) | 449 | |
-| Program (Flash) | 17445 | note 1 |
+| Data (RAM) | 449 | 456 |
+| Program (Flash) | 17445 | 8014 |
 
-note 1: I would expect the program memory size to be much smaller.  Examining the .map file,
-it appears that this build is pulling in lots of code related to printf() and floating point
-libraries.  Some research is needed to see if that code can be eliminated or reduced.
+Note: The ATtiny3217 program size compiled under xc8 seemed excessively large. Examining the .map file,
+it appears that libc.a pulls in lots of code related to printf() and floating point
+libraries.  However, compiling under avr-gcc resulted in less than half the code size.
+
+A future version could eliminate calling snprintf() altogether if required.
 
 ## Future Directions
 
