@@ -35,13 +35,31 @@ the user types any key on the keyboard, the application prints out the five valu
 
 The results:
 
-|   | FreeRTOS | mulib | size reduction |
+|   | FreeRTOS SAME54 | mulib SAME54 | size reduction |
 |---|---|---|---|
 | Data (RAM) | 42,316 | 857 | 98.0% |
 | Program (Flash) | 19,979 | 8633 | 56.8% |
 
 What is impressive about the mulib version is that it reduces the code size by over 56%
 and reduces the RAM requirements by 98% compared to its FreeRTOS counterpart.
+
+Because of the reduced footprint afforded by mulib, it becomes possible to port the 
+same application to much smaller processors.  As a proof of concept, we ported the 
+example application to an 
+[ATtiny3217 Explained Pro](https://www.microchip.com/en-us/development-tool/ATTINY3217-XPRO), 
+which is an 8-bit AVR architecture.
+The user-generated  sources remained identical; only the i2c_driver.c and usart_driver.c 
+files needed to be tailored to the new processor (plus the ATtiny3217-specific files for
+in the mulib distribution).
+
+|   | mulib ATtiny3217 | notes |
+|---|---|---|
+| Data (RAM) | 449 | |
+| Program (Flash) | 17445 | note 1 |
+
+note 1: I would expect the program memory size to be much smaller.  Examining the .map file,
+it appears that this build is pulling in lots of code related to printf() and floating point
+libraries.  Some research is needed to see if that code can be eliminated or reduced.
 
 ## Future Directions
 
