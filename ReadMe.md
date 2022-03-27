@@ -9,11 +9,22 @@ complex applications in resource-constrained embedded systems.
 microcontrollers and small microprocessors.
 
 This project replicates an existing FreeRTOS example project using the mulib framework
-in order to compare resulting metrics of the two versions (code size etc),
-and to gain practical experience in translating the FreeRTOS idioms to
-the mulib model.
+in order to compare the two versions and to gain practical experience in translating 
+the FreeRTOS idioms to the mulib model.
 
 ## Summary
+
+This table summarizes the difference in code size between the FreeRTOS and mulib versions:
+
+|   | FreeRTOS SAME54 | mulib SAME54 | size reduction |
+|---|---|---|---|
+| Data (RAM) | 42,316 | 857 | 98.0% |
+| Program (Flash) | 19,979 | 8633 | 56.8% |
+
+You can see that the mulib version reduces the code size by over 56%
+and reduces the RAM requirements by 98% when compared to its FreeRTOS counterpart.
+
+## Details
 
 We chose [an existing FreeRTOS example application](https://microchip-mplab-harmony.github.io/reference_apps/apps/sam_e54_xpro/same54_getting_started_freertos/readme.html)
 as a reference and created a new applicaton that behaves identically using mulib rather than FreeRTOS.
@@ -33,15 +44,15 @@ same thing: once every second, it takes a temperature measurement using the IO1 
 temperature in a 5-byte buffer in EEPROM and prints out the results on the serial port.  In addition, when
 the user types any key on the keyboard, the application prints out the five values stored in EEPROM.
 
-The results:
+## Why this is a representative example
 
-|   | FreeRTOS SAME54 | mulib SAME54 | size reduction |
-|---|---|---|---|
-| Data (RAM) | 42,316 | 857 | 98.0% |
-| Program (Flash) | 19,979 | 8633 | 56.8% |
+We chose this example application because it does a few things that are required of many embedded 
+applications:
+* **It has periodic events**.  Once a second, it reads the temperature sensor, writes it to EEPROM and prints the results on the serial output.  mulib provides a simple object (`mu_periodic`) for performing repetitive tasks.
+* **It has asynchronous events**.  When the user prints any key on the keyboard, it reads the last five values from the EEPROM and prints them on the serial output.  mulib offers a simple mechanism for transitioning control from interrupt level to foreground (`mu_sched_from_isr()`).
+* **It requires exclusive access to system resources**.  Both the periodic task and the asynchronous task need access to the serial port and to the I2C bus.  The mulib `mu_access_mgr` object provides simple and versatile exclusive access to resources that cannot be shared.
 
-What is impressive about the mulib version is that it reduces the code size by over 56%
-and reduces the RAM requirements by 98% compared to its FreeRTOS counterpart.
+## But wait, there's more...
 
 Because of the reduced footprint afforded by mulib, it becomes possible to port the 
 same application to much smaller processors.  As a proof of concept, we ported the 
