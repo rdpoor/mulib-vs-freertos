@@ -79,7 +79,7 @@
 // =============================================================================
 // Local (forward) declarations
 
-// tokens is a denseely packed string of tokens, where each token is token_len
+// tokens is a densely packed string of tokens, where each token is token_len
 // characters long.  If s equals the Nth token, set dst to N (by reference)
 // and return s incremented by token_len.  else return NULL
 static const char *parse_tokens(const char *s, TM_FIELD_SMALL *dst, const char *tokens, int token_len);
