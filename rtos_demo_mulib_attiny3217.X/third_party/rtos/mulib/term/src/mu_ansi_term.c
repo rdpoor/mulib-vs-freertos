@@ -30,11 +30,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <sys/ioctl.h>
-#include <unistd.h>
 #include <fcntl.h>
+#include <sys/ioctl.h>
 #include <termios.h>
-
+#include <unistd.h>
 
 // =============================================================================
 // Local types and definitions
@@ -44,7 +43,8 @@
 /**
  * Uncomment if your platform has <signal.h>
  */
-#define HAS_SIGNAL (1) // THIS SHOULD GO go into a platform-specific .h instead...
+#define HAS_SIGNAL                                                             \
+  (1) // THIS SHOULD GO go into a platform-specific .h instead...
 
 #ifdef HAS_SIGNAL
 #include <signal.h>
@@ -53,17 +53,16 @@
 // =============================================================================
 // Local storage
 
-
 static mu_ansi_term_color_t s_fg_color;
 static mu_ansi_term_color_t s_bg_color;
 
 #undef ANSI_TERM_COLOR
 #define ANSI_TERM_COLOR(MU_ANSI_TERM__name, _fg, _bg) _fg,
-static const uint8_t s_fg_colormap[] = { DEFINE_ANSI_TERM_COLORS };
+static const uint8_t s_fg_colormap[] = {DEFINE_ANSI_TERM_COLORS};
 
 #undef ANSI_TERM_COLOR
 #define ANSI_TERM_COLOR(MU_ANSI_TERM__name, _fg, _bg) _bg,
-static const uint8_t s_bg_colormap[] = { DEFINE_ANSI_TERM_COLORS };
+static const uint8_t s_bg_colormap[] = {DEFINE_ANSI_TERM_COLORS};
 
 static int term_cols = DEFAULT_TERM_NCOLS;
 static int term_rows = DEFAULT_TERM_NROWS;
@@ -77,45 +76,54 @@ static uint8_t map_fg_color(mu_ansi_term_color_t color);
 static uint8_t map_bg_color(mu_ansi_term_color_t color);
 static void read_ttysize();
 
-
 // =============================================================================
 // Public code
 
 void mu_ansi_term_init(void) {
   read_ttysize(); // POSIX lets use query the width and height of the terminal
-  #ifdef HAS_SIGNAL
-    signal(SIGWINCH, read_ttysize); // POSIX lets us detect changes to the width and height of the terminal
-  #endif
-  //printf("mu_has_ansi_term: %s\n", has_ansi_term() ? "true" : "false");
-  mu_ansi_term_set_colors(MU_ANSI_TERM_DEFAULT_COLOR, MU_ANSI_TERM_DEFAULT_COLOR);
+#ifdef HAS_SIGNAL
+  signal(SIGWINCH, read_ttysize); // POSIX lets us detect changes to the width
+                                  // and height of the terminal
+#endif
+  // printf("mu_has_ansi_term: %s\n", has_ansi_term() ? "true" : "false");
+  mu_ansi_term_set_colors(MU_ANSI_TERM_DEFAULT_COLOR,
+                          MU_ANSI_TERM_DEFAULT_COLOR);
 }
 
 void mu_ansi_term_terminal_bell() {
-  if(!has_ansi_term()) return;
+  if (!has_ansi_term())
+    return;
   printf("\a"); // ansi terminal bell / flash
 }
 
 void mu_ansi_term_reset() {
-  if(!has_ansi_term()) return;
-  printf( "%s%s", MU_ANSI_TERM_ESC, MU_ANSI_TERM_RESET); // undo any color settings
+  if (!has_ansi_term())
+    return;
+  printf(
+      "%s%s", MU_ANSI_TERM_ESC, MU_ANSI_TERM_RESET); // undo any color settings
 }
 
 void mu_ansi_term_restore_colors_and_cursor() {
-  if(!has_ansi_term()) return;
+  if (!has_ansi_term())
+    return;
   mu_ansi_term_reset();
-  mu_ansi_term_set_cursor_visible(true);  
+  mu_ansi_term_set_cursor_visible(true);
 }
 
 void mu_ansi_term_set_cursor_visible(bool isVisible) {
-  if(!has_ansi_term()) return;
-  printf( "%s%s", MU_ANSI_TERM_ESC, (isVisible ? MU_ANSI_SHOW_CURSOR : MU_ANSI_HIDE_CURSOR)); 
+  if (!has_ansi_term())
+    return;
+  printf("%s%s",
+         MU_ANSI_TERM_ESC,
+         (isVisible ? MU_ANSI_SHOW_CURSOR : MU_ANSI_HIDE_CURSOR));
 }
 
 /**
  * @brief Move cursor to 0, 0
  */
 void mu_ansi_term_home(void) {
-  if(!has_ansi_term()) return;
+  if (!has_ansi_term())
+    return;
   puts(MU_ANSI_TERM_ESC "H");
 }
 
@@ -123,14 +131,16 @@ void mu_ansi_term_home(void) {
  * @brief Erase screen and scrollback
  */
 void mu_ansi_term_clear_buffer(void) {
-  if(!has_ansi_term()) return;
+  if (!has_ansi_term())
+    return;
   puts(MU_ANSI_TERM_ESC "3J");
 }
 /**
  * @brief Erase screen
  */
 void mu_ansi_term_clear_screen(void) {
-  if(!has_ansi_term()) return;
+  if (!has_ansi_term())
+    return;
   puts(MU_ANSI_TERM_ESC "2J");
 }
 
@@ -138,7 +148,8 @@ void mu_ansi_term_clear_screen(void) {
  * @brief Erase screen from current cursor position
  */
 void mu_ansi_term_clear_to_end_of_screen(void) {
-  if(!has_ansi_term()) return;
+  if (!has_ansi_term())
+    return;
   puts(MU_ANSI_TERM_ESC "J");
 }
 
@@ -146,7 +157,8 @@ void mu_ansi_term_clear_to_end_of_screen(void) {
  * @brief Erase current line
  */
 void mu_ansi_term_clear_line(void) {
-  if(!has_ansi_term()) return;
+  if (!has_ansi_term())
+    return;
   puts(MU_ANSI_TERM_ESC "2K");
 }
 
@@ -154,7 +166,8 @@ void mu_ansi_term_clear_line(void) {
  * @brief Erase line from current cursor position
  */
 void mu_ansi_term_clear_to_end_of_line(void) {
-  if(!has_ansi_term()) return;
+  if (!has_ansi_term())
+    return;
   puts(MU_ANSI_TERM_ESC "K");
 }
 
@@ -167,19 +180,20 @@ void mu_ansi_term_clear_to_end_of_line(void) {
 // TODO:  This is broken
 
 void mu_ansi_term_set_cursor_position(uint8_t row, uint8_t col) {
-  if(!has_ansi_term()) return;
+  if (!has_ansi_term())
+    return;
   // optimize.
   if (row == 0) {
     if (col == 0) {
       puts(MU_ANSI_TERM_ESC "H");
     } else {
-      printf(MU_ANSI_TERM_ESC ";%dH", col+1);
+      printf(MU_ANSI_TERM_ESC ";%dH", col + 1);
     }
   } else {
     if (col == 0) {
-      printf(MU_ANSI_TERM_ESC "%dH", row+1);
+      printf(MU_ANSI_TERM_ESC "%dH", row + 1);
     } else {
-      printf(MU_ANSI_TERM_ESC "%d;%dH", row+1, col+1);
+      printf(MU_ANSI_TERM_ESC "%d;%dH", row + 1, col + 1);
     }
   }
 }
@@ -187,12 +201,14 @@ void mu_ansi_term_set_cursor_position(uint8_t row, uint8_t col) {
 // TODO:  This is broken
 
 bool mu_ansi_term_get_cursor_position(uint8_t *row, uint8_t *col) {
-  if(!has_ansi_term()) return false;
- char ch;
+  if (!has_ansi_term())
+    return false;
+  char ch;
   uint8_t temp_row;
   uint8_t temp_col;
 
-  puts(MU_ANSI_TERM_ESC "6n");   // device status reports.  responds with ESC[<row>;<col>R
+  puts(MU_ANSI_TERM_ESC
+       "6n"); // device status reports.  responds with ESC[<row>;<col>R
   ch = getchar();
   if (ch != '\e') {
     ungetc(ch, 0);
@@ -219,23 +235,13 @@ bool mu_ansi_term_get_cursor_position(uint8_t *row, uint8_t *col) {
   return true;
 }
 
+int mu_ansi_term_get_ncols() { return term_cols; }
 
-int mu_ansi_term_get_ncols() {
-  return term_cols;
-}
+int mu_ansi_term_get_nrows() { return term_rows; }
 
-int mu_ansi_term_get_nrows() {
-  return term_rows;
-}
+void mu_ansi_term_set_ncols(int n) { term_cols = n; }
 
-void mu_ansi_term_set_ncols(int n) {
-  term_cols = n;
-}
-
-void mu_ansi_term_set_nrows(int n) {
-  term_rows = n;
-}
-
+void mu_ansi_term_set_nrows(int n) { term_rows = n; }
 
 /**
  * @brief Set foreground and background color
@@ -243,49 +249,49 @@ void mu_ansi_term_set_nrows(int n) {
 void mu_ansi_term_set_colors(mu_ansi_term_color_t fg, mu_ansi_term_color_t bg) {
   s_fg_color = fg;
   s_bg_color = bg;
-  if(!has_ansi_term()) return;
+  if (!has_ansi_term())
+    return;
   printf(MU_ANSI_TERM_ESC "%d;%dm", map_fg_color(fg), map_bg_color(bg));
 }
 
 /**
  * @brief Get foreground and background color
  */
-void mu_ansi_term_get_colors(mu_ansi_term_color_t *fg, mu_ansi_term_color_t *bg) {
+void mu_ansi_term_get_colors(mu_ansi_term_color_t *fg,
+                             mu_ansi_term_color_t *bg) {
   *fg = s_fg_color;
   *bg = s_bg_color;
 }
-
-
 
 // =============================================================================
 // Local (static) code
 
 static bool has_ansi_term() {
-  #ifdef HAS_ANSI_TERM
-    return true; 
-  #elif
-    return false;
-  #endif
+#ifdef HAS_ANSI_TERM
+  return true;
+#elif
+  return false;
+#endif
 }
 
 static void read_ttysize() {
-  #ifdef TIOCGSIZE
-      struct ttysize ts;
-      ioctl(STDIN_FILENO, TIOCGSIZE, &ts);
-      mu_ansi_term_set_ncols(ts.ts_cols);
-      mu_ansi_term_set_nrows(ts.ts_lines);
-  #elif defined(TIOCGWINSZ)
-      struct winsize ts;
-      ioctl(STDIN_FILENO, TIOCGWINSZ, &ts);
-      mu_ansi_term_set_ncols(ts.ws_col);
-      mu_ansi_term_set_nrows(ts.ws_row);
-  #endif /* TIOCGSIZE */
+#ifdef TIOCGSIZE
+  struct ttysize ts;
+  ioctl(STDIN_FILENO, TIOCGSIZE, &ts);
+  mu_ansi_term_set_ncols(ts.ts_cols);
+  mu_ansi_term_set_nrows(ts.ts_lines);
+#elif defined(TIOCGWINSZ)
+  struct winsize ts;
+  ioctl(STDIN_FILENO, TIOCGWINSZ, &ts);
+  mu_ansi_term_set_ncols(ts.ws_col);
+  mu_ansi_term_set_nrows(ts.ws_row);
+#endif /* TIOCGSIZE */
 }
 
 static char getint(uint8_t *val) {
   char ch;
   *val = 0;
-  while(1) {
+  while (1) {
     ch = getchar();
     if ((ch >= '0' && (ch <= '9'))) {
       *val = (*val * 10) + ch - '0';
@@ -293,7 +299,7 @@ static char getint(uint8_t *val) {
       break;
     }
   }
-  return ch;  // return char that terminated the run of digits
+  return ch; // return char that terminated the run of digits
 }
 
 static uint8_t map_fg_color(mu_ansi_term_color_t color) {
@@ -303,7 +309,3 @@ static uint8_t map_fg_color(mu_ansi_term_color_t color) {
 static uint8_t map_bg_color(mu_ansi_term_color_t color) {
   return s_bg_colormap[color];
 }
-
-
-
-

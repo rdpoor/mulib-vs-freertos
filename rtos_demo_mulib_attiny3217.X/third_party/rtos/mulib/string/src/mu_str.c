@@ -262,7 +262,8 @@ mu_str_t *mu_str_trim_left(mu_str_t *str, bool (*predicate)(char ch)) {
 }
 
 mu_str_t *mu_str_trim_right(mu_str_t *str, bool (*predicate)(char ch)) {
-  while ((str->s < str->e) && predicate(mu_strbuf_rdata(str->buf)[str->e-1])) {
+  while ((str->s < str->e) &&
+         predicate(mu_strbuf_rdata(str->buf)[str->e - 1])) {
     str->e -= 1;
   }
   return str;

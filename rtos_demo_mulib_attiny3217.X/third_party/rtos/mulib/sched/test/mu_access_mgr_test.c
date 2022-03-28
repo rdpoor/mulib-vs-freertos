@@ -28,9 +28,9 @@
 // *****************************************************************************
 // Includes
 
-#include "mu_test_utils.h"
 #include "mu_access_mgr.h"
 #include "mu_task.h"
+#include "mu_test_utils.h"
 
 // *****************************************************************************
 // Local (private) types and definitions
@@ -78,17 +78,21 @@ void mu_access_mgr_test() {
   //                                                  mu_task_t *task);
   // ordinary use...
   reset();
-  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task1) == MU_ACCESS_MGR_ERR_NONE);
+  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task1) ==
+         MU_ACCESS_MGR_ERR_NONE);
   ASSERT(s_ctx1.call_count == 1);
   ASSERT(mu_access_mgr_has_ownership(&s_mgr, &s_task1) == true);
-  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task2) == MU_ACCESS_MGR_ERR_NONE);
+  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task2) ==
+         MU_ACCESS_MGR_ERR_NONE);
   ASSERT(s_ctx2.call_count == 0);
   ASSERT(mu_access_mgr_has_ownership(&s_mgr, &s_task2) == false);
-  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task3) == MU_ACCESS_MGR_ERR_NONE);
+  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task3) ==
+         MU_ACCESS_MGR_ERR_NONE);
   ASSERT(s_ctx3.call_count == 0);
   ASSERT(mu_access_mgr_has_ownership(&s_mgr, &s_task3) == false);
   // Next task in line is invoked when owning task releases ownership
-  ASSERT(mu_access_mgr_release_ownership(&s_mgr, &s_task1) == MU_ACCESS_MGR_ERR_NONE);
+  ASSERT(mu_access_mgr_release_ownership(&s_mgr, &s_task1) ==
+         MU_ACCESS_MGR_ERR_NONE);
   ASSERT(s_ctx1.call_count == 1);
   ASSERT(mu_access_mgr_has_ownership(&s_mgr, &s_task1) == false);
   ASSERT(s_ctx2.call_count == 1);
@@ -96,7 +100,8 @@ void mu_access_mgr_test() {
   ASSERT(s_ctx3.call_count == 0);
   ASSERT(mu_access_mgr_has_ownership(&s_mgr, &s_task3) == false);
   // Next task in line is invoked when owning task releases ownership
-  ASSERT(mu_access_mgr_release_ownership(&s_mgr, &s_task2) == MU_ACCESS_MGR_ERR_NONE);
+  ASSERT(mu_access_mgr_release_ownership(&s_mgr, &s_task2) ==
+         MU_ACCESS_MGR_ERR_NONE);
   ASSERT(s_ctx1.call_count == 1);
   ASSERT(mu_access_mgr_has_ownership(&s_mgr, &s_task1) == false);
   ASSERT(s_ctx2.call_count == 1);
@@ -104,7 +109,8 @@ void mu_access_mgr_test() {
   ASSERT(s_ctx3.call_count == 1);
   ASSERT(mu_access_mgr_has_ownership(&s_mgr, &s_task3) == true);
   // There are no further tasks waiting for ownership
-  ASSERT(mu_access_mgr_release_ownership(&s_mgr, &s_task3) == MU_ACCESS_MGR_ERR_NONE);
+  ASSERT(mu_access_mgr_release_ownership(&s_mgr, &s_task3) ==
+         MU_ACCESS_MGR_ERR_NONE);
   ASSERT(s_ctx1.call_count == 1);
   ASSERT(mu_access_mgr_has_ownership(&s_mgr, &s_task1) == false);
   ASSERT(s_ctx2.call_count == 1);
@@ -117,9 +123,12 @@ void mu_access_mgr_test() {
   //
   // ordinary use...
   reset();
-  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task1) == MU_ACCESS_MGR_ERR_NONE);
-  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task2) == MU_ACCESS_MGR_ERR_NONE);
-  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task3) == MU_ACCESS_MGR_ERR_NONE);
+  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task1) ==
+         MU_ACCESS_MGR_ERR_NONE);
+  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task2) ==
+         MU_ACCESS_MGR_ERR_NONE);
+  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task3) ==
+         MU_ACCESS_MGR_ERR_NONE);
 
   mu_access_mgr_reset(&s_mgr);
 
@@ -137,11 +146,15 @@ void mu_access_mgr_test() {
   // releasing ownership before being granted ownership
 
   reset();
-  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task1) == MU_ACCESS_MGR_ERR_NONE);
-  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task2) == MU_ACCESS_MGR_ERR_NONE);
-  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task3) == MU_ACCESS_MGR_ERR_NONE);
+  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task1) ==
+         MU_ACCESS_MGR_ERR_NONE);
+  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task2) ==
+         MU_ACCESS_MGR_ERR_NONE);
+  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task3) ==
+         MU_ACCESS_MGR_ERR_NONE);
   // releasing second in line...
-  ASSERT(mu_access_mgr_release_ownership(&s_mgr, &s_task2) == MU_ACCESS_MGR_ERR_NONE);
+  ASSERT(mu_access_mgr_release_ownership(&s_mgr, &s_task2) ==
+         MU_ACCESS_MGR_ERR_NONE);
   ASSERT(s_ctx1.call_count == 1);
   ASSERT(mu_access_mgr_has_ownership(&s_mgr, &s_task1) == true);
   ASSERT(s_ctx2.call_count == 0);
@@ -149,7 +162,8 @@ void mu_access_mgr_test() {
   ASSERT(s_ctx3.call_count == 0);
   ASSERT(mu_access_mgr_has_ownership(&s_mgr, &s_task3) == false);
   // Now when task1 releases ownership, task3 is called...
-  ASSERT(mu_access_mgr_release_ownership(&s_mgr, &s_task1) == MU_ACCESS_MGR_ERR_NONE);
+  ASSERT(mu_access_mgr_release_ownership(&s_mgr, &s_task1) ==
+         MU_ACCESS_MGR_ERR_NONE);
   ASSERT(s_ctx1.call_count == 1);
   ASSERT(mu_access_mgr_has_ownership(&s_mgr, &s_task1) == false);
   ASSERT(s_ctx2.call_count == 0);
@@ -157,7 +171,8 @@ void mu_access_mgr_test() {
   ASSERT(s_ctx3.call_count == 1);
   ASSERT(mu_access_mgr_has_ownership(&s_mgr, &s_task3) == true);
   // Now when task3 releases ownership, no further action...
-  ASSERT(mu_access_mgr_release_ownership(&s_mgr, &s_task3) == MU_ACCESS_MGR_ERR_NONE);
+  ASSERT(mu_access_mgr_release_ownership(&s_mgr, &s_task3) ==
+         MU_ACCESS_MGR_ERR_NONE);
   ASSERT(s_ctx1.call_count == 1);
   ASSERT(mu_access_mgr_has_ownership(&s_mgr, &s_task1) == false);
   ASSERT(s_ctx2.call_count == 0);
@@ -166,11 +181,15 @@ void mu_access_mgr_test() {
   ASSERT(mu_access_mgr_has_ownership(&s_mgr, &s_task3) == false);
 
   reset();
-  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task1) == MU_ACCESS_MGR_ERR_NONE);
-  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task2) == MU_ACCESS_MGR_ERR_NONE);
-  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task3) == MU_ACCESS_MGR_ERR_NONE);
+  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task1) ==
+         MU_ACCESS_MGR_ERR_NONE);
+  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task2) ==
+         MU_ACCESS_MGR_ERR_NONE);
+  ASSERT(mu_access_mgr_request_ownership(&s_mgr, &s_task3) ==
+         MU_ACCESS_MGR_ERR_NONE);
   // releasing last in line...
-  ASSERT(mu_access_mgr_release_ownership(&s_mgr, &s_task3) == MU_ACCESS_MGR_ERR_NONE);
+  ASSERT(mu_access_mgr_release_ownership(&s_mgr, &s_task3) ==
+         MU_ACCESS_MGR_ERR_NONE);
   ASSERT(s_ctx1.call_count == 1);
   ASSERT(mu_access_mgr_has_ownership(&s_mgr, &s_task1) == true);
   ASSERT(s_ctx2.call_count == 0);
@@ -178,7 +197,8 @@ void mu_access_mgr_test() {
   ASSERT(s_ctx3.call_count == 0);
   ASSERT(mu_access_mgr_has_ownership(&s_mgr, &s_task3) == false);
   // Now when task1 releases ownership, task2 is called...
-  ASSERT(mu_access_mgr_release_ownership(&s_mgr, &s_task1) == MU_ACCESS_MGR_ERR_NONE);
+  ASSERT(mu_access_mgr_release_ownership(&s_mgr, &s_task1) ==
+         MU_ACCESS_MGR_ERR_NONE);
   ASSERT(s_ctx1.call_count == 1);
   ASSERT(mu_access_mgr_has_ownership(&s_mgr, &s_task1) == false);
   ASSERT(s_ctx2.call_count == 1);
@@ -186,7 +206,8 @@ void mu_access_mgr_test() {
   ASSERT(s_ctx3.call_count == 0);
   ASSERT(mu_access_mgr_has_ownership(&s_mgr, &s_task3) == false);
   // Now when task2 releases ownership, no further action...
-  ASSERT(mu_access_mgr_release_ownership(&s_mgr, &s_task2) == MU_ACCESS_MGR_ERR_NONE);
+  ASSERT(mu_access_mgr_release_ownership(&s_mgr, &s_task2) ==
+         MU_ACCESS_MGR_ERR_NONE);
   ASSERT(s_ctx1.call_count == 1);
   ASSERT(mu_access_mgr_has_ownership(&s_mgr, &s_task1) == false);
   ASSERT(s_ctx2.call_count == 1);

@@ -27,8 +27,8 @@
 
 #include "mu_test_utils.h"
 #include "mu_vect.h"
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 // =============================================================================
@@ -54,11 +54,11 @@ static void *ids_match(void *e, void *arg);
 
 static test_element_t s_elements[VECT_CAPACITY];
 
-static test_element_t s_element1 = {.id = 'a', .val=9};
-static test_element_t s_element2 = {.id = 'b', .val=8};
-static test_element_t s_element3 = {.id = 'c', .val=7};
-static test_element_t s_element4 = {.id = 'd', .val=6};
-static test_element_t s_element5 = {.id = 'e', .val=5};
+static test_element_t s_element1 = {.id = 'a', .val = 9};
+static test_element_t s_element2 = {.id = 'b', .val = 8};
+static test_element_t s_element3 = {.id = 'c', .val = 7};
+static test_element_t s_element4 = {.id = 'd', .val = 6};
+static test_element_t s_element5 = {.id = 'e', .val = 5};
 
 // =============================================================================
 // public code
@@ -70,7 +70,8 @@ void mu_vect_test() {
 
   // mu_vect_t *mu_vect_init(mu_vect_t *vect, mu_vect_element_t *elements,
   // size_t capacity);
-  ASSERT(mu_vect_init(v, s_elements, VECT_CAPACITY, sizeof(test_element_t)) == v);
+  ASSERT(mu_vect_init(v, s_elements, VECT_CAPACITY, sizeof(test_element_t)) ==
+         v);
   ASSERT(mu_vect_elements(v) == s_elements);
   ASSERT(mu_vect_capacity(v) == VECT_CAPACITY);
   ASSERT(mu_vect_element_size(v) == sizeof(test_element_t));
@@ -109,7 +110,6 @@ void mu_vect_test() {
   ASSERT(mu_vect_peek(v, &element) == MU_VECT_ERR_NONE);
   ASSERT(elements_are_equal(&element, &s_element4));
 
-
   ASSERT(mu_vect_push(v, &s_element5) == MU_VECT_ERR_FULL);
   ASSERT(mu_vect_count(v) == 4);
   ASSERT(mu_vect_peek(v, &element) == MU_VECT_ERR_NONE);
@@ -134,19 +134,15 @@ void mu_vect_test() {
   ASSERT(mu_vect_is_empty(v) == true);
   ASSERT(mu_vect_is_full(v) == false);
 
-
   ASSERT(mu_vect_pop(v, &element) == MU_VECT_ERR_EMPTY);
   ASSERT(mu_vect_count(v) == 0);
 
-
   // this seg faults for andy
-  //return;
+  // return;
 
   mu_vect_push(v, &s_element1);
   ASSERT(mu_vect_reset(v) == v);
   ASSERT(mu_vect_count(v) == 0);
-
-
 
   // mu_vect_err_t mu_vect_insert_at(mu_vect_t *vect, mu_vect_element_t
   // element, size_t index); insert into empty store
@@ -213,7 +209,6 @@ void mu_vect_test() {
   ASSERT(mu_vect_count(v) == 0);
   ASSERT(elements_are_equal(&element, &s_element3));
 
-
   // mu_vect_err_t mu_vect_insert_sorted(mu_vect_t *vect,
   // void *element, mu_compare_fn cmp);
   mu_vect_reset(v);
@@ -240,7 +235,6 @@ void mu_vect_test() {
   ASSERT(elements_are_equal(mu_vect_ref(v, 2), &s_element3));
   ASSERT(elements_are_equal(mu_vect_ref(v, 3), &s_element4));
 
-
   ASSERT(mu_vect_insert_sorted(v, &s_element5, sort_up) == MU_VECT_ERR_FULL);
   // [a b c d]
 
@@ -257,14 +251,11 @@ void mu_vect_test() {
   ASSERT(mu_vect_find_index(v, ids_match, &s_element1) == -1);
   ASSERT(mu_vect_contains(v, ids_match, &s_element1) == false);
 
-
-
   mu_vect_push(v, &s_element1);
-  ASSERT(elements_are_equal(mu_vect_traverse(v, ids_match, &s_element1), &s_element1));
+  ASSERT(elements_are_equal(mu_vect_traverse(v, ids_match, &s_element1),
+                            &s_element1));
   ASSERT(mu_vect_find_index(v, ids_match, &s_element1) == 0);
   ASSERT(mu_vect_contains(v, ids_match, &s_element1) == true);
-
-
 }
 
 // =============================================================================

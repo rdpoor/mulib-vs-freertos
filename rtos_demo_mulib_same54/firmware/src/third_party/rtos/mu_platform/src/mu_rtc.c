@@ -44,13 +44,9 @@
 // *****************************************************************************
 // Public code
 
-void mu_rtc_init(void) {
-    RTC_Timer32Start();
-}
+void mu_rtc_init(void) { RTC_Timer32Start(); }
 
-mu_time_abs_t mu_rtc_now(void) {
-    return RTC_Timer32CounterGet();
-}
+mu_time_abs_t mu_rtc_now(void) { return RTC_Timer32CounterGet(); }
 
 // *****************************************************************************
 // Private (static) code

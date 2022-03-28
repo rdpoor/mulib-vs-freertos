@@ -244,8 +244,9 @@ void *mu_dlist_traverse(mu_dlist_t *head, mu_dlist_traverse_fn fn, void *arg) {
   return result;
 }
 
-void *
-mu_dlist_traverse_prev(mu_dlist_t *head, mu_dlist_traverse_fn fn, void *arg) {
+void *mu_dlist_traverse_prev(mu_dlist_t *head,
+                             mu_dlist_traverse_fn fn,
+                             void *arg) {
   void *result = NULL;
   mu_dlist_t *list = mu_dlist_prev(head);
   while (list != head && result == NULL) {

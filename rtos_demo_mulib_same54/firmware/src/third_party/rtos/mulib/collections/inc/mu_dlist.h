@@ -286,8 +286,9 @@ void *mu_dlist_traverse(mu_dlist_t *head, mu_dlist_traverse_fn fn, void *arg);
  * @param arg A user-supplied argument, passed as the second argument to fn.
  * @return The final value returned from fn.
  */
-void *
-mu_dlist_traverse_prev(mu_dlist_t *head, mu_dlist_traverse_fn fn, void *arg);
+void *mu_dlist_traverse_prev(mu_dlist_t *head,
+                             mu_dlist_traverse_fn fn,
+                             void *arg);
 
 /**
  * @brief In-place list reversal.

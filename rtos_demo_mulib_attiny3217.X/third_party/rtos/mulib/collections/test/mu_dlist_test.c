@@ -25,10 +25,10 @@
 // =============================================================================
 // includes
 
-#include "mu_test_utils.h"
 #include "mu_dlist.h"
-#include <stdlib.h>
+#include "mu_test_utils.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 // =============================================================================
 // private types and definitions
@@ -39,7 +39,7 @@
 //
 typedef struct {
   float value;
-  mu_dlist_t list;  // list is not first slot in structure
+  mu_dlist_t list; // list is not first slot in structure
   char id;
 } test_item_t;
 
@@ -264,13 +264,11 @@ void mu_dlist_test() {
   // list = []
   ASSERT(mu_dlist_pop_prev(&s_head) == NULL);
 
+  // void *mu_dlist_traverse(mu_dlist_t *head, mu_dlist_traverse_fn fn, void
+  // *arg); tested implicitly via mu_dlist_find()
 
-
-  // void *mu_dlist_traverse(mu_dlist_t *head, mu_dlist_traverse_fn fn, void *arg);
-  // tested implicitly via mu_dlist_find()
-
-  // void *mu_dlist_traverse_prev(mu_dlist_t *head, mu_dlist_traverse_fn fn, void *arg);
-  // tested implicitly via mu_dlist_find_prev()
+  // void *mu_dlist_traverse_prev(mu_dlist_t *head, mu_dlist_traverse_fn fn,
+  // void *arg); tested implicitly via mu_dlist_find_prev()
 
   // mu_dlist_t *mu_dlist_reverse(mu_dlist_t *head);
   reset();
@@ -279,7 +277,6 @@ void mu_dlist_test() {
   ASSERT(mu_dlist_reverse(&s_head) == &s_head);
   ASSERT(mu_dlist_next(&s_head) == &s_head);
   ASSERT(mu_dlist_prev(&s_head) == &s_head);
-
 
   reset();
   mu_dlist_push(&s_head, &s_element_a);

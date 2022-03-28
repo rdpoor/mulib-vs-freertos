@@ -28,9 +28,9 @@
 // *****************************************************************************
 // Includes
 
-#include "mu_test_utils.h"
-#include "mu_task_list.h"
 #include "mu_task.h"
+#include "mu_task_list.h"
+#include "mu_test_utils.h"
 #include <stdio.h>
 
 // *****************************************************************************
@@ -76,15 +76,19 @@ void mu_task_list_test() {
   mu_task_list_append_task(&s_task_list1, &s_task1);
   mu_task_list_append_task(&s_task_list1, &s_task2);
   ASSERT(mu_task_list_is_empty(&s_task_list1) == false);
-  ASSERT(mu_task_get_task_list(&s_task1) == (struct _mu_task_list *)&s_task_list1);
-  ASSERT(mu_task_get_task_list(&s_task2) == (struct _mu_task_list *)&s_task_list1);
-  mu_task_list_call(&s_task_list1, NULL, true);  // retain task_list
+  ASSERT(mu_task_get_task_list(&s_task1) ==
+         (struct _mu_task_list *)&s_task_list1);
+  ASSERT(mu_task_get_task_list(&s_task2) ==
+         (struct _mu_task_list *)&s_task_list1);
+  mu_task_list_call(&s_task_list1, NULL, true); // retain task_list
   ASSERT(mu_task_list_is_empty(&s_task_list1) == false);
-  ASSERT(mu_task_get_task_list(&s_task1) == (struct _mu_task_list *)&s_task_list1);
-  ASSERT(mu_task_get_task_list(&s_task2) == (struct _mu_task_list *)&s_task_list1);
+  ASSERT(mu_task_get_task_list(&s_task1) ==
+         (struct _mu_task_list *)&s_task_list1);
+  ASSERT(mu_task_get_task_list(&s_task2) ==
+         (struct _mu_task_list *)&s_task_list1);
   ASSERT(s_task1_count == 1);
   ASSERT(s_task2_count == 1);
-  mu_task_list_call(&s_task_list1, NULL, true);  // tasks remain in task_list
+  mu_task_list_call(&s_task_list1, NULL, true); // tasks remain in task_list
   ASSERT(s_task1_count == 2);
   ASSERT(s_task2_count == 2);
 
@@ -93,15 +97,18 @@ void mu_task_list_test() {
   mu_task_list_append_task(&s_task_list1, &s_task1);
   mu_task_list_append_task(&s_task_list1, &s_task2);
   ASSERT(mu_task_list_is_empty(&s_task_list1) == false);
-  ASSERT(mu_task_get_task_list(&s_task1) == (struct _mu_task_list *)&s_task_list1);
-  ASSERT(mu_task_get_task_list(&s_task2) == (struct _mu_task_list *)&s_task_list1);
-  mu_task_list_call(&s_task_list1, NULL, false);  // remove the tasks
+  ASSERT(mu_task_get_task_list(&s_task1) ==
+         (struct _mu_task_list *)&s_task_list1);
+  ASSERT(mu_task_get_task_list(&s_task2) ==
+         (struct _mu_task_list *)&s_task_list1);
+  mu_task_list_call(&s_task_list1, NULL, false); // remove the tasks
   ASSERT(mu_task_list_is_empty(&s_task_list1) == true);
   ASSERT(mu_task_get_task_list(&s_task1) == NULL);
   ASSERT(mu_task_get_task_list(&s_task2) == NULL);
   ASSERT(s_task1_count == 1);
   ASSERT(s_task2_count == 1);
-  mu_task_list_call(&s_task_list1, NULL, false);  // tasks are no longer in the task_list
+  mu_task_list_call(
+      &s_task_list1, NULL, false); // tasks are no longer in the task_list
   ASSERT(s_task1_count == 1);
   ASSERT(s_task2_count == 1);
 
@@ -109,19 +116,23 @@ void mu_task_list_test() {
   reset();
   mu_task_list_prepend_task(&s_task_list1, &s_task2);
   mu_task_list_prepend_task(&s_task_list1, &s_task1);
-  mu_task_list_call(&s_task_list1, NULL, true);  // task1_fn, task2_fn assure proper order
+  mu_task_list_call(
+      &s_task_list1, NULL, true); // task1_fn, task2_fn assure proper order
 
   // mu_task_list_remove_task()
   reset();
   mu_task_list_append_task(&s_task_list1, &s_task1);
   mu_task_list_append_task(&s_task_list1, &s_task2);
-  ASSERT(mu_task_get_task_list(&s_task1) == (struct _mu_task_list *)&s_task_list1);
-  ASSERT(mu_task_get_task_list(&s_task2) == (struct _mu_task_list *)&s_task_list1);
+  ASSERT(mu_task_get_task_list(&s_task1) ==
+         (struct _mu_task_list *)&s_task_list1);
+  ASSERT(mu_task_get_task_list(&s_task2) ==
+         (struct _mu_task_list *)&s_task_list1);
 
   ASSERT(mu_task_list_remove_task(&s_task_list1, &s_task1) == &s_task1);
   ASSERT(mu_task_list_is_empty(&s_task_list1) == false);
   ASSERT(mu_task_get_task_list(&s_task1) == NULL);
-  ASSERT(mu_task_get_task_list(&s_task2) == (struct _mu_task_list *)&s_task_list1);
+  ASSERT(mu_task_get_task_list(&s_task2) ==
+         (struct _mu_task_list *)&s_task_list1);
   ASSERT(mu_task_list_remove_task(&s_task_list1, &s_task2) == &s_task2);
   ASSERT(mu_task_list_is_empty(&s_task_list1) == true);
   ASSERT(mu_task_get_task_list(&s_task1) == NULL);
@@ -131,12 +142,15 @@ void mu_task_list_test() {
   reset();
   mu_task_list_append_task(&s_task_list1, &s_task1);
   mu_task_list_append_task(&s_task_list1, &s_task2);
-  ASSERT(mu_task_get_task_list(&s_task1) == (struct _mu_task_list *)&s_task_list1);
-  ASSERT(mu_task_get_task_list(&s_task2) == (struct _mu_task_list *)&s_task_list1);
+  ASSERT(mu_task_get_task_list(&s_task1) ==
+         (struct _mu_task_list *)&s_task_list1);
+  ASSERT(mu_task_get_task_list(&s_task2) ==
+         (struct _mu_task_list *)&s_task_list1);
 
   ASSERT(mu_task_list_remove_task(&s_task_list1, &s_task2) == &s_task2);
   ASSERT(mu_task_list_is_empty(&s_task_list1) == false);
-  ASSERT(mu_task_get_task_list(&s_task1) == (struct _mu_task_list *)&s_task_list1);
+  ASSERT(mu_task_get_task_list(&s_task1) ==
+         (struct _mu_task_list *)&s_task_list1);
   ASSERT(mu_task_get_task_list(&s_task2) == NULL);
   ASSERT(mu_task_list_remove_task(&s_task_list1, &s_task1) == &s_task1);
   ASSERT(mu_task_list_is_empty(&s_task_list1) == true);
@@ -158,8 +172,10 @@ void mu_task_list_test() {
   mu_task_list_append_task(&s_task_list1, &s_task1);
   mu_task_list_append_task(&s_task_list1, &s_task2);
   ASSERT(mu_task_list_is_empty(&s_task_list1) == false);
-  ASSERT(mu_task_get_task_list(&s_task1) == (struct _mu_task_list *)&s_task_list1);
-  ASSERT(mu_task_get_task_list(&s_task2) == (struct _mu_task_list *)&s_task_list1);
+  ASSERT(mu_task_get_task_list(&s_task1) ==
+         (struct _mu_task_list *)&s_task_list1);
+  ASSERT(mu_task_get_task_list(&s_task2) ==
+         (struct _mu_task_list *)&s_task_list1);
   ASSERT(mu_task_list_reset(&s_task_list1) == &s_task_list1);
   ASSERT(mu_task_list_is_empty(&s_task_list1) == true);
   ASSERT(mu_task_get_task_list(&s_task1) == NULL);
@@ -173,7 +189,6 @@ void mu_task_list_test() {
   ASSERT(mu_task_list_pop_task(&s_task_list1) == &s_task2);
   ASSERT(mu_task_list_pop_task(&s_task_list1) == NULL);
 }
-
 
 // *****************************************************************************
 // Local (private, static) code

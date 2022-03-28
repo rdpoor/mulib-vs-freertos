@@ -22,14 +22,14 @@
  * SOFTWARE.
  */
 
- // =============================================================================
- // includes
+// =============================================================================
+// includes
 
- #include "mu_test_utils.h"
- #include "mu_queue.h"
- #include <string.h>
- #include <stdlib.h>
- #include <stdint.h>
+#include "mu_queue.h"
+#include "mu_test_utils.h"
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 // =============================================================================
 // private types and definitions
@@ -160,14 +160,17 @@ void mu_queue_test() {
   ASSERT(mu_queue_init(q) == q);
   ASSERT(mu_queue_delete(q, MU_LIST_REF(&s_item1, link)) == NULL);
   ASSERT(mu_queue_append(q, MU_LIST_REF(&s_item1, link)) == q);
-  ASSERT(mu_queue_delete(q, MU_LIST_REF(&s_item1, link)) == MU_LIST_REF(&s_item1, link));
+  ASSERT(mu_queue_delete(q, MU_LIST_REF(&s_item1, link)) ==
+         MU_LIST_REF(&s_item1, link));
   ASSERT(mu_queue_length(q) == 0);
 
   ASSERT(mu_queue_init(q) == q);
   ASSERT(mu_queue_append(q, MU_LIST_REF(&s_item1, link)) == q);
   ASSERT(mu_queue_append(q, MU_LIST_REF(&s_item2, link)) == q);
-  ASSERT(mu_queue_delete(q, MU_LIST_REF(&s_item1, link)) == MU_LIST_REF(&s_item1, link));
-  ASSERT(mu_queue_delete(q, MU_LIST_REF(&s_item2, link)) == MU_LIST_REF(&s_item2, link));
+  ASSERT(mu_queue_delete(q, MU_LIST_REF(&s_item1, link)) ==
+         MU_LIST_REF(&s_item1, link));
+  ASSERT(mu_queue_delete(q, MU_LIST_REF(&s_item2, link)) ==
+         MU_LIST_REF(&s_item2, link));
   ASSERT(mu_queue_length(q) == 0);
 }
 

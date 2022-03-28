@@ -28,8 +28,8 @@
 // *****************************************************************************
 // Includes
 
-#include "mu_test_utils.h"
 #include "mu_sched.h"
+#include "mu_test_utils.h"
 
 #include "mu_event.h"
 #include "mu_task.h"
@@ -56,7 +56,6 @@ static mu_time_abs_t get_local_time(void);
 // functions for test tasks
 static void counting_fn(void *ctx, void *arg);
 static void idle_fn(void *ctx, void *arg);
-
 
 // *****************************************************************************
 // Local (private, static) storage
@@ -116,7 +115,7 @@ void mu_sched_test(void) {
   // mu_sched_step() where the time has arrived...
   set_local_time(110);
   ASSERT(mu_sched_step() == MU_SCHED_ERR_NONE);
-  ASSERT(s_counting_ctx1.call_count == 1);      // the task has been called
+  ASSERT(s_counting_ctx1.call_count == 1); // the task has been called
   ASSERT(mu_sched_is_empty() == true);
   ASSERT(mu_sched_peek_next_event() == NULL);
 
@@ -187,7 +186,6 @@ void mu_sched_test(void) {
   ASSERT(s_counting_ctx2.call_count == 1);
   ASSERT(s_counting_ctx3.call_count == 1);
   ASSERT(mu_sched_is_empty() == true);
-
 }
 
 // *****************************************************************************
@@ -213,13 +211,9 @@ static void reset(void) {
   set_local_time(0);
 }
 
-static void set_local_time(mu_time_abs_t t) {
-  s_local_time = t;
-}
+static void set_local_time(mu_time_abs_t t) { s_local_time = t; }
 
-static mu_time_abs_t get_local_time(void) {
-  return s_local_time;
-}
+static mu_time_abs_t get_local_time(void) { return s_local_time; }
 
 static void counting_fn(void *ctx, void *arg) {
   counting_ctx_t *this = (counting_ctx_t *)ctx;
@@ -231,6 +225,5 @@ static void counting_fn(void *ctx, void *arg) {
 static void idle_fn(void *ctx, void *arg) {
   (void)ctx;
   (void)arg;
-  asm("nop");  // place for a breakpoint
-
+  asm("nop"); // place for a breakpoint
 }

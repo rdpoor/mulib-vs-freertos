@@ -53,11 +53,11 @@ void mu_spsc_test() {
   mu_spsc_t *cq = &cqi;
   mu_spsc_item_t item;
 
-  // mu_spsc_err_t mu_spsc_init(mu_spsc_t *cq, mu_spsc_obj_t *pool, unsigned int capacity);
-  // pool size must be a power of two
-  ASSERT(mu_spsc_init(cq, pool, POOL_SIZE-1) == MU_SPSC_ERR_SIZE);
+  // mu_spsc_err_t mu_spsc_init(mu_spsc_t *cq, mu_spsc_obj_t *pool, unsigned int
+  // capacity); pool size must be a power of two
+  ASSERT(mu_spsc_init(cq, pool, POOL_SIZE - 1) == MU_SPSC_ERR_SIZE);
   ASSERT(mu_spsc_init(cq, pool, POOL_SIZE) == MU_SPSC_ERR_NONE);
-  ASSERT(mu_spsc_capacity(cq) == POOL_SIZE-1);
+  ASSERT(mu_spsc_capacity(cq) == POOL_SIZE - 1);
 
   // mu_spsc_err_t mu_spsc_put(mu_spsc_t *cq, mu_spsc_obj_t obj);
   ASSERT(mu_spsc_put(cq, (mu_spsc_item_t)&item0) == MU_SPSC_ERR_NONE);

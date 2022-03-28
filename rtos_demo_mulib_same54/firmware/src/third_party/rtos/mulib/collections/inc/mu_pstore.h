@@ -82,8 +82,9 @@ typedef bool (*mu_pstore_filter_fn)(void *item);
  * @param capacity The number of items in the backing store.
  * @return pstore itself.
  */
-mu_pstore_t *
-mu_pstore_init(mu_pstore_t *pstore, mu_pstore_item_t *items, size_t capacity);
+mu_pstore_t *mu_pstore_init(mu_pstore_t *pstore,
+                            mu_pstore_item_t *items,
+                            size_t capacity);
 
 /**
  * @brief Empty a pstore.
@@ -209,8 +210,9 @@ mu_pstore_err_t mu_pstore_peek(mu_pstore_t *pstore, mu_pstore_item_t *item);
  *         mu_pstore_insert_at(), MU_PSTORE_ERR_INDEX if the given index is
  *         greater than mu_pstore_count(), MU_PSTORE_ERR_NONE otherwise.
  */
-mu_pstore_err_t
-mu_pstore_insert_at(mu_pstore_t *pstore, mu_pstore_item_t item, size_t index);
+mu_pstore_err_t mu_pstore_insert_at(mu_pstore_t *pstore,
+                                    mu_pstore_item_t item,
+                                    size_t index);
 
 /**
  * @brief Delete an item.
@@ -236,8 +238,9 @@ mu_pstore_item_t mu_pstore_delete(mu_pstore_t *pstore, mu_pstore_item_t item);
  *         mu_pstore_delete_at(), MU_PSTORE_ERR_INDEX if the given index is
  *         greater than mu_pstore_count(), MU_PSTORE_ERR_NONE otherwise.
  */
-mu_pstore_err_t
-mu_pstore_delete_at(mu_pstore_t *pstore, mu_pstore_item_t *item, size_t index);
+mu_pstore_err_t mu_pstore_delete_at(mu_pstore_t *pstore,
+                                    mu_pstore_item_t *item,
+                                    size_t index);
 
 /**
  * @brief In-place filtering of a pstore, leaving only those that satisfy the

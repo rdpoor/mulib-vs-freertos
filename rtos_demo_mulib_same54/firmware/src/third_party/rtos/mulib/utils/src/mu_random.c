@@ -22,12 +22,10 @@
  * SOFTWARE.
  */
 
-
 /**
  * Random number generator using a permuted congruential generator (PCG)
  * https://en.wikipedia.org/wiki/Permuted_congruential_generator
  */
-
 
 // =============================================================================
 // Includes
@@ -46,22 +44,20 @@ static uint32_t rotr32(uint32_t x, unsigned r);
 
 // =============================================================================
 // Local storage
-static uint64_t       state      = INITIAL_RANDOM_STATE;
+static uint64_t state = INITIAL_RANDOM_STATE;
 static uint64_t const multiplier = 6364136223846793005u;
-static uint64_t const increment  = 1442695040888963407u;
-
+static uint64_t const increment = 1442695040888963407u;
 
 // =============================================================================
 // Public code
 
 uint32_t mu_random(void) {
   uint64_t x = state;
-  unsigned count = (unsigned)(x >> 59);   // 59 = 64 - 5
+  unsigned count = (unsigned)(x >> 59); // 59 = 64 - 5
   state = x * multiplier + increment;
-  x ^= x >> 18;               // 18 = (64 - (32 - 5))/2
-  return rotr32((uint32_t)(x >> 27), count);  // 27 = 32 - 5
+  x ^= x >> 18;                              // 18 = (64 - (32 - 5))/2
+  return rotr32((uint32_t)(x >> 27), count); // 27 = 32 - 5
 }
-
 
 uint32_t mu_random_range(uint32_t min, uint32_t max) {
   return min + (mu_random() % (max - min));
@@ -72,14 +68,11 @@ void mu_random_seed(uint32_t seed) {
   (void)mu_random();
 }
 
-void mu_random_reset() {
-  state = INITIAL_RANDOM_STATE;
-}
+void mu_random_reset() { state = INITIAL_RANDOM_STATE; }
 
 // =============================================================================
 // Local (static) code
 
-static uint32_t rotr32(uint32_t x, unsigned r)
-{
+static uint32_t rotr32(uint32_t x, unsigned r) {
   return x >> r | x << (-r & 31);
 }

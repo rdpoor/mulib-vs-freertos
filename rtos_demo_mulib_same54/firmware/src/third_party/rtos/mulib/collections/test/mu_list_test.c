@@ -28,8 +28,8 @@
 // *****************************************************************************
 // Includes
 
-#include "mu_test_utils.h"
 #include "mu_event.h"
+#include "mu_test_utils.h"
 
 // *****************************************************************************
 // Local (private) types and definitions
@@ -132,11 +132,11 @@ void mu_list_test() {
 
   reset();
   // push ahd pop
-  mu_list_push(&s_list1, etl(&s_element_a));   // [a]
+  mu_list_push(&s_list1, etl(&s_element_a)); // [a]
   mu_list_traverse(&s_list1, visitor_fn, NULL);
-  mu_list_push(&s_list1, etl(&s_element_b));   // [b, a]
+  mu_list_push(&s_list1, etl(&s_element_b)); // [b, a]
   mu_list_traverse(&s_list1, visitor_fn, NULL);
-  mu_list_push(&s_list1, etl(&s_element_c));   // [c, b, a]
+  mu_list_push(&s_list1, etl(&s_element_c)); // [c, b, a]
   mu_list_traverse(&s_list1, visitor_fn, NULL);
   ASSERT(s_element_a.visited == 3);
   ASSERT(s_element_b.visited == 2);
@@ -152,32 +152,32 @@ void mu_list_test() {
 
   reset();
   // delete
-  mu_list_push(&s_list1, etl(&s_element_a));   // [a]
-  mu_list_push(&s_list1, etl(&s_element_b));   // [b, a]
-  mu_list_push(&s_list1, etl(&s_element_c));   // [c, b, a]
+  mu_list_push(&s_list1, etl(&s_element_a)); // [a]
+  mu_list_push(&s_list1, etl(&s_element_b)); // [b, a]
+  mu_list_push(&s_list1, etl(&s_element_c)); // [c, b, a]
   ASSERT(mu_list_delete(&s_list1, etl(&s_element_a)) == etl(&s_element_a));
   ASSERT(mu_list_delete(&s_list1, etl(&s_element_b)) == etl(&s_element_b));
   ASSERT(mu_list_delete(&s_list1, etl(&s_element_c)) == etl(&s_element_c));
 
-  mu_list_push(&s_list1, etl(&s_element_a));   // [a]
-  mu_list_push(&s_list1, etl(&s_element_b));   // [b, a]
-  mu_list_push(&s_list1, etl(&s_element_c));   // [c, b, a]
+  mu_list_push(&s_list1, etl(&s_element_a)); // [a]
+  mu_list_push(&s_list1, etl(&s_element_b)); // [b, a]
+  mu_list_push(&s_list1, etl(&s_element_c)); // [c, b, a]
   ASSERT(mu_list_delete(&s_list1, etl(&s_element_c)) == etl(&s_element_c));
   ASSERT(mu_list_delete(&s_list1, etl(&s_element_b)) == etl(&s_element_b));
   ASSERT(mu_list_delete(&s_list1, etl(&s_element_a)) == etl(&s_element_a));
 
-  mu_list_push(&s_list1, etl(&s_element_a));   // [a]
-  mu_list_push(&s_list1, etl(&s_element_b));   // [b, a]
-  mu_list_push(&s_list1, etl(&s_element_c));   // [c, b, a]
+  mu_list_push(&s_list1, etl(&s_element_a)); // [a]
+  mu_list_push(&s_list1, etl(&s_element_b)); // [b, a]
+  mu_list_push(&s_list1, etl(&s_element_c)); // [c, b, a]
   ASSERT(mu_list_delete(&s_list1, etl(&s_element_b)) == etl(&s_element_b));
   ASSERT(mu_list_delete(&s_list1, etl(&s_element_c)) == etl(&s_element_c));
   ASSERT(mu_list_delete(&s_list1, etl(&s_element_a)) == etl(&s_element_a));
 
   reset();
   // reverse
-  mu_list_push(&s_list1, etl(&s_element_a));   // [a]
-  mu_list_push(&s_list1, etl(&s_element_b));   // [b, a]
-  mu_list_push(&s_list1, etl(&s_element_c));   // [c, b, a]
+  mu_list_push(&s_list1, etl(&s_element_a)); // [a]
+  mu_list_push(&s_list1, etl(&s_element_b)); // [b, a]
+  mu_list_push(&s_list1, etl(&s_element_c)); // [c, b, a]
   ASSERT(mu_list_rest(etl(&s_element_c)) == etl(&s_element_b));
   ASSERT(mu_list_rest(etl(&s_element_b)) == etl(&s_element_a));
   ASSERT(mu_list_rest(etl(&s_element_a)) == NULL);
@@ -200,14 +200,11 @@ static void reset(void) {
   s_element_c.visited = 0;
 }
 
-static mu_list_t *etl(element_t *element) {
-  return MU_LIST_REF(element, link);
-}
+static mu_list_t *etl(element_t *element) { return MU_LIST_REF(element, link); }
 
 static element_t *efl(mu_list_t *list) {
   return MU_LIST_CONTAINER(list, element_t, link);
 }
-
 
 static void *visitor_fn(mu_list_t *list, void *arg) {
   element_t *list_item = MU_LIST_CONTAINER(list, element_t, link);

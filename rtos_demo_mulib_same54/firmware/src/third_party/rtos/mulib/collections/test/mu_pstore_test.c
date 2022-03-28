@@ -25,8 +25,8 @@
 // =============================================================================
 // includes
 
-#include "mu_test_utils.h"
 #include "mu_pstore.h"
+#include "mu_test_utils.h"
 #include <stddef.h>
 
 // =============================================================================
@@ -61,7 +61,6 @@ void mu_pstore_test() {
   mu_pstore_t pi;
   mu_pstore_t *p = &pi;
   mu_pstore_item_t item;
-
 
   // mu_pstore_t *mu_pstore_init(mu_pstore_t *pstore, mu_pstore_item_t *items,
   // size_t capacity);
@@ -114,14 +113,10 @@ void mu_pstore_test() {
   ASSERT(mu_pstore_peek(p, &item) == MU_PSTORE_ERR_NONE);
   ASSERT(item == &s_item_d);
 
-
-
   ASSERT(mu_pstore_push(p, &s_item_e) == MU_PSTORE_ERR_FULL);
   ASSERT(mu_pstore_count(p) == 4);
   ASSERT(mu_pstore_peek(p, &item) == MU_PSTORE_ERR_NONE);
   ASSERT(item == &s_item_d);
-
-
 
   // mu_pstore_err_t mu_pstore_pop(mu_pstore_t *pstore, mu_pstore_item_t *item);
   ASSERT(mu_pstore_pop(p, &item) == MU_PSTORE_ERR_NONE);
@@ -129,19 +124,15 @@ void mu_pstore_test() {
   ASSERT(mu_pstore_count(p) == 3);
   ASSERT(mu_pstore_contains(p, &s_item_b) == true);
 
-
   ASSERT(mu_pstore_pop(p, &item) == MU_PSTORE_ERR_NONE);
   ASSERT(item == &s_item_c);
   ASSERT(mu_pstore_count(p) == 2);
   ASSERT(mu_pstore_contains(p, &s_item_b) == true);
 
-
   ASSERT(mu_pstore_pop(p, &item) == MU_PSTORE_ERR_NONE);
   ASSERT(item == &s_item_b);
   ASSERT(mu_pstore_count(p) == 1);
   ASSERT(mu_pstore_contains(p, &s_item_b) == false);
-
-
 
   ASSERT(mu_pstore_pop(p, &item) == MU_PSTORE_ERR_NONE);
   ASSERT(item == &s_item_a);
@@ -149,20 +140,17 @@ void mu_pstore_test() {
   ASSERT(mu_pstore_is_empty(p) == true);
   ASSERT(mu_pstore_is_full(p) == false);
 
-
-
   ASSERT(mu_pstore_pop(p, &item) == MU_PSTORE_ERR_EMPTY);
   ASSERT(item == NULL);
   ASSERT(mu_pstore_count(p) == 0);
 
-  //return;
+  // return;
   // this seg faults for andy
 
   // mu_ptsore_t *mu_pstore_reset(mu_pstore_t *pstore);
   mu_pstore_push(p, &s_item_a);
   ASSERT(mu_pstore_reset(p) == p);
   ASSERT(mu_pstore_count(p) == 0);
-
 
   // mu_pstore_err_t mu_pstore_insert_at(mu_pstore_t *pstore, mu_pstore_item_t
   // item, size_t index); insert into empty store
@@ -190,14 +178,10 @@ void mu_pstore_test() {
   ASSERT(mu_pstore_insert_at(p, &s_item_e, 0) == MU_PSTORE_ERR_FULL);
   ASSERT(mu_pstore_count(p) == 4);
 
-
-
   mu_pstore_reset(p);
   // insert with illegal index
   ASSERT(mu_pstore_insert_at(p, &s_item_a, 1) == MU_PSTORE_ERR_INDEX);
   ASSERT(mu_pstore_count(p) == 0);
-
-
 
   // mu_pstore_err_t mu_pstore_delete_at(mu_pstore_t *pstore, mu_pstore_item_t
   // *item, size_t index);
@@ -263,7 +247,8 @@ void mu_pstore_test() {
   ASSERT(mu_pstore_items(p)[2] == &s_item_b);
   ASSERT(mu_pstore_items(p)[3] == &s_item_a);
 
-  // mu_pstore_item_t mu_pstore_delete(mu_pstore_t *pstore, mu_pstore_item_t item)
+  // mu_pstore_item_t mu_pstore_delete(mu_pstore_t *pstore, mu_pstore_item_t
+  // item)
   ASSERT(mu_pstore_delete(p, &s_item_e) == NULL);
   // p = [d c b a]
   ASSERT(mu_pstore_delete(p, &s_item_c) == &s_item_c);
@@ -286,6 +271,4 @@ static int sort_up(void *a, void *b) {
   return sort;
 }
 
-static int sort_dn(void *a, void *b) {
-  return sort_up(b, a);
-}
+static int sort_dn(void *a, void *b) { return sort_up(b, a); }

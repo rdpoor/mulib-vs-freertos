@@ -22,13 +22,13 @@
  * SOFTWARE.
  */
 
- // =============================================================================
- // includes
+// =============================================================================
+// includes
 
-#include "mu_test_utils.h"
 #include "mu_strbuf.h"
-#include <string.h>
+#include "mu_test_utils.h"
 #include <stdint.h>
+#include <string.h>
 
 // =============================================================================
 // private types and definitions
@@ -54,7 +54,8 @@ void mu_strbuf_test() {
   const char cstr_ro[] = "the quick brown fox jumps over the lazy dog.";
   uint8_t cstr_wr[ELEMENT_COUNT];
 
-  ASSERT(mu_strbuf_init_ro(s_ro, (const uint8_t *)cstr_ro, strlen(cstr_ro)) == s_ro);
+  ASSERT(mu_strbuf_init_ro(s_ro, (const uint8_t *)cstr_ro, strlen(cstr_ro)) ==
+         s_ro);
   ASSERT(mu_strbuf_capacity(s_ro) == strlen(cstr_ro));
   ASSERT(mu_strbuf_rdata(s_ro) == (const uint8_t *)cstr_ro);
 

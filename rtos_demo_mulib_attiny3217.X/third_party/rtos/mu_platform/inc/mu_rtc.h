@@ -60,7 +60,6 @@ mu_time_abs_t mu_rtc_now(void);
 // *****************************************************************************
 // Public declarations
 
-
 #ifdef __cplusplus
 }
 #endif

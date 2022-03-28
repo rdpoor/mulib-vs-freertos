@@ -26,9 +26,11 @@
  * @file mu_ansi_term.h
  *
  * Support for the more common ANSI terminal escape sequences.
- * Platform-specific settings in mu_cconfig.h (notably MU_HAS_ANSI_TERM) and platform-specific code in mu_kdb_io.c will determine what functionality is actually available.
- * You can call any of these functions from your application code, but on platforms without ansi_termn support they will be NOPs.
- * 
+ * Platform-specific settings in mu_cconfig.h (notably MU_HAS_ANSI_TERM) and
+ * platform-specific code in mu_kdb_io.c will determine what functionality is
+ * actually available. You can call any of these functions from your application
+ * code, but on platforms without ansi_termn support they will be NOPs.
+ *
  */
 
 #ifndef _MU_ANSI_TERM_H_
@@ -41,14 +43,14 @@ extern "C" {
 // =============================================================================
 // includes
 
+#include <mu_config.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <mu_config.h>
 
 // =============================================================================
 // types and definitions
 
-#define HAS_ANSI_TERM (1) 
+#define HAS_ANSI_TERM (1)
 
 #define DEFINE_ANSI_TERM_COLORS                                                \
   ANSI_TERM_COLOR(MU_ANSI_TERM_BLACK, 30, 40)                                  \
@@ -72,15 +74,13 @@ extern "C" {
 #undef ANSI_TERM_COLOR
 #define ANSI_TERM_COLOR(_name, _foreground, _background) _name,
 typedef enum {
-  DEFINE_ANSI_TERM_COLORS
-  MU_ANSI_COLOR_COUNT
+  DEFINE_ANSI_TERM_COLORS MU_ANSI_COLOR_COUNT
 } mu_ansi_term_color_t;
 
 #define MU_ANSI_TERM_ESC "\33["
 #define MU_ANSI_TERM_RESET "0m"
 #define MU_ANSI_SHOW_CURSOR "?25h"
 #define MU_ANSI_HIDE_CURSOR "?25l"
-
 
 // =============================================================================
 // declarations
@@ -133,7 +133,6 @@ void mu_ansi_term_set_cursor_position(uint8_t row, uint8_t col);
  */
 bool mu_ansi_term_get_cursor_position(uint8_t *row, uint8_t *col);
 
-
 /**
  * @brief Get character width of the output tty (defaults to 80)
  */
@@ -145,21 +144,24 @@ int mu_ansi_term_get_ncols();
 int mu_ansi_term_get_nrows();
 
 /**
- * @brief Store character width of the output tty (presumably based on a system query) -- note this doesn't change the actual tty
- * On POSIX, mu_platform.c uses sys.ioctl to query this value and then stores the value here.   
+ * @brief Store character width of the output tty (presumably based on a system
+ * query) -- note this doesn't change the actual tty On POSIX, mu_platform.c
+ * uses sys.ioctl to query this value and then stores the value here.
  */
 void mu_ansi_term_set_ncols(int n);
 
 /**
- * @brief Store character height of the output tty (presumably based on a system query) -- note this doesn't change the actual tty
- * On POSIX, mu_platform.c uses sys.ioctl to query this value and then stores the value here
+ * @brief Store character height of the output tty (presumably based on a system
+ * query) -- note this doesn't change the actual tty On POSIX, mu_platform.c
+ * uses sys.ioctl to query this value and then stores the value here
  */
 void mu_ansi_term_set_nrows(int n);
 
 /**
  * @brief Get foreground and background color
  */
-void mu_ansi_term_get_colors(mu_ansi_term_color_t *fg, mu_ansi_term_color_t *bg);
+void mu_ansi_term_get_colors(mu_ansi_term_color_t *fg,
+                             mu_ansi_term_color_t *bg);
 
 /**
  * @brief Set foreground and background color
@@ -178,10 +180,8 @@ void mu_ansi_term_set_cursor_visible(bool isVisible);
 
 /**
  * @brief Standard ansi reset and make cursor visible
-*/
+ */
 void mu_ansi_term_restore_colors_and_cursor();
-
-
 
 #ifdef __cplusplus
 }

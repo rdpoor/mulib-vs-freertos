@@ -32,7 +32,6 @@ extern "C" {
 // =============================================================================
 // includes
 
-
 // =============================================================================
 // types and definitions
 
@@ -118,19 +117,17 @@ extern "C" {
  * can be extended into more complex data structures.
  */
 
-#define EXPAND_MU_LOG_LEVELS \
-DEFINE_MU_LOG_LEVEL(MU_LOG_TRACE_LEVEL, "TRACE") \
-DEFINE_MU_LOG_LEVEL(MU_LOG_DEBUG_LEVEL, "DEBUG") \
-DEFINE_MU_LOG_LEVEL(MU_LOG_INFO_LEVEL, "INFO") \
-DEFINE_MU_LOG_LEVEL(MU_LOG_WARN_LEVEL, "WARN") \
-DEFINE_MU_LOG_LEVEL(MU_LOG_ERROR_LEVEL, "ERROR") \
-DEFINE_MU_LOG_LEVEL(MU_LOG_CRITICAL_LEVEL, "CRITICAL")
+#define EXPAND_MU_LOG_LEVELS                                                   \
+  DEFINE_MU_LOG_LEVEL(MU_LOG_TRACE_LEVEL, "TRACE")                             \
+  DEFINE_MU_LOG_LEVEL(MU_LOG_DEBUG_LEVEL, "DEBUG")                             \
+  DEFINE_MU_LOG_LEVEL(MU_LOG_INFO_LEVEL, "INFO")                               \
+  DEFINE_MU_LOG_LEVEL(MU_LOG_WARN_LEVEL, "WARN")                               \
+  DEFINE_MU_LOG_LEVEL(MU_LOG_ERROR_LEVEL, "ERROR")                             \
+  DEFINE_MU_LOG_LEVEL(MU_LOG_CRITICAL_LEVEL, "CRITICAL")
 
 #undef DEFINE_MU_LOG_LEVEL
 #define DEFINE_MU_LOG_LEVEL(level, name) level,
-typedef enum {
-  EXPAND_MU_LOG_LEVELS
-} mu_log_level_t;
+typedef enum { EXPAND_MU_LOG_LEVELS } mu_log_level_t;
 
 // Unless MU_LOG_ENABLED is defined at compile time, all logging is disabled and
 // no logging code is generated.  To enable logging, uncomment the next line or
@@ -138,30 +135,48 @@ typedef enum {
 
 //#define MU_LOG_ENABLED 1
 
-
 #if (MU_LOG_ENABLED)
-  #define MU_LOG_INIT() mu_log_init()
-  #define MU_LOG_SUBSCRIBE(a, b) mu_log_subscribe(a, b)
-  #define MU_LOG_UNSUBSCRIBE(a) mu_log_unsubscribe(a)
-  #define MU_LOG_LEVEL_NAME(a) mu_log_level_name(a)
-  #define MU_LOG_TRACE(...) mu_log_message(MU_LOG_TRACE_LEVEL, __VA_ARGS__)
-  #define MU_LOG_DEBUG(...) mu_log_message(MU_LOG_DEBUG_LEVEL, __VA_ARGS__)
-  #define MU_LOG_INFO(...) mu_log_message(MU_LOG_INFO_LEVEL, __VA_ARGS__)
-  #define MU_LOG_WARN(...) mu_log_message(MU_LOG_WARN_LEVEL, __VA_ARGS__)
-  #define MU_LOG_ERROR(...) mu_log_message(MU_LOG_ERROR_LEVEL, __VA_ARGS__)
-  #define MU_LOG_CRITICAL(...) mu_log_message(MU_LOG_CRITICAL_LEVEL, __VA_ARGS__)
+#define MU_LOG_INIT() mu_log_init()
+#define MU_LOG_SUBSCRIBE(a, b) mu_log_subscribe(a, b)
+#define MU_LOG_UNSUBSCRIBE(a) mu_log_unsubscribe(a)
+#define MU_LOG_LEVEL_NAME(a) mu_log_level_name(a)
+#define MU_LOG_TRACE(...) mu_log_message(MU_LOG_TRACE_LEVEL, __VA_ARGS__)
+#define MU_LOG_DEBUG(...) mu_log_message(MU_LOG_DEBUG_LEVEL, __VA_ARGS__)
+#define MU_LOG_INFO(...) mu_log_message(MU_LOG_INFO_LEVEL, __VA_ARGS__)
+#define MU_LOG_WARN(...) mu_log_message(MU_LOG_WARN_LEVEL, __VA_ARGS__)
+#define MU_LOG_ERROR(...) mu_log_message(MU_LOG_ERROR_LEVEL, __VA_ARGS__)
+#define MU_LOG_CRITICAL(...) mu_log_message(MU_LOG_CRITICAL_LEVEL, __VA_ARGS__)
 #else
-  // uLog vanishes when disabled at compile time...
-  #define MU_LOG_INIT() do {} while(0)
-  #define MU_LOG_SUBSCRIBE(a, b) do {} while(0)
-  #define MU_LOG_UNSUBSCRIBE(a) do {} while(0)
-  #define MU_LOG_LEVEL_NAME(a) do {} while(0)
-  #define MU_LOG_TRACE(f, ...) do {} while(0)
-  #define MU_LOG_DEBUG(f, ...) do {} while(0))
-  #define MU_LOG_INFO(f, ...) do {} while(0)
-  #define MU_LOG_WARN(f, ...) do {} while(0)
-  #define MU_LOG_ERROR(f, ...) do {} while(0)
-  #define MU_LOG_CRITICAL(f, ...) do {} while(0)
+// uLog vanishes when disabled at compile time...
+#define MU_LOG_INIT()                                                          \
+  do {                                                                         \
+  } while (0)
+#define MU_LOG_SUBSCRIBE(a, b)                                                 \
+  do {                                                                         \
+  } while (0)
+#define MU_LOG_UNSUBSCRIBE(a)                                                  \
+  do {                                                                         \
+  } while (0)
+#define MU_LOG_LEVEL_NAME(a)                                                   \
+  do {                                                                         \
+  } while (0)
+#define MU_LOG_TRACE(f, ...)                                                   \
+  do {                                                                         \
+  } while (0)
+#define MU_LOG_DEBUG(f, ...)                                                   \
+  do {} while(0))
+#define MU_LOG_INFO(f, ...)                                                    \
+  do {                                                                         \
+  } while (0)
+#define MU_LOG_WARN(f, ...)                                                    \
+  do {                                                                         \
+  } while (0)
+#define MU_LOG_ERROR(f, ...)                                                   \
+  do {                                                                         \
+  } while (0)
+#define MU_LOG_CRITICAL(f, ...)                                                \
+  do {                                                                         \
+  } while (0)
 #endif
 
 typedef enum {

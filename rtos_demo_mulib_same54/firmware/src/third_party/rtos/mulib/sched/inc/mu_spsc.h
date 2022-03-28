@@ -69,8 +69,9 @@ typedef struct {
  * @brief initialize a cqueue with a backing store.  capacity must be a power
  * of two.
  */
-mu_spsc_err_t
-mu_spsc_init(mu_spsc_t *q, mu_spsc_item_t *store, uint16_t capacity);
+mu_spsc_err_t mu_spsc_init(mu_spsc_t *q,
+                           mu_spsc_item_t *store,
+                           uint16_t capacity);
 
 /**
  * @brief reset the cqueue to empty.  Not interrupt safe!

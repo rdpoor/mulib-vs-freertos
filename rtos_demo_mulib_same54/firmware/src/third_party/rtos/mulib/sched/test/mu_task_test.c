@@ -28,8 +28,8 @@
 // *****************************************************************************
 // Includes
 
-#include "mu_test_utils.h"
 #include "mu_task.h"
+#include "mu_test_utils.h"
 #include <stddef.h>
 
 // *****************************************************************************
@@ -59,7 +59,7 @@ void mu_task_test() {
   // mu_task_init returns task.
   ASSERT(mu_task_init(&s_task, task_fn, &s_ctx) == &s_task);
 
-  mu_task_fn mu_task_get_fn(mu_task_t *task);
+  mu_task_fn mu_task_get_fn(mu_task_t * task);
 
   // mu_task_get_fn returns function
   ASSERT(mu_task_get_fn(&s_task) == task_fn);

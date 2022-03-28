@@ -238,8 +238,9 @@ mu_vect_err_t mu_vect_pop(mu_vect_t *vect, void *e);
  * @return MU_VECT_ERR_FULL if the mu_vect was full prior to the call to
  *         mu_vect_insert_sorted, MU_VECT_ERR_NONE otherwise.
  */
-mu_vect_err_t
-mu_vect_insert_sorted(mu_vect_t *vect, void *e, mu_vect_cmp_fn cmp);
+mu_vect_err_t mu_vect_insert_sorted(mu_vect_t *vect,
+                                    void *e,
+                                    mu_vect_cmp_fn cmp);
 
 /**
  * @brief In-place sorting of a elements in a mu_vect.

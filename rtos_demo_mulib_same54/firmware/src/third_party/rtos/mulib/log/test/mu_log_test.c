@@ -25,8 +25,8 @@
 // =============================================================================
 // includes
 
-#include "mu_test_utils.h"
 #include "mu_log.h"
+#include "mu_test_utils.h"
 #include <string.h>
 
 // =============================================================================
@@ -46,7 +46,6 @@ static void logger6(mu_log_level_t severity, const char *msg);
 static void logger7(mu_log_level_t severity, const char *msg);
 static void logger_a(mu_log_level_t severity, const char *msg);
 static void logger_b(mu_log_level_t severity, const char *msg);
-
 
 // =============================================================================
 // local storage
@@ -76,7 +75,8 @@ void mu_log_test() {
   ASSERT(MU_LOG_SUBSCRIBE(logger4, MU_LOG_WARN_LEVEL) == MU_LOG_ERR_NONE);
   ASSERT(MU_LOG_SUBSCRIBE(logger5, MU_LOG_ERROR_LEVEL) == MU_LOG_ERR_NONE);
   ASSERT(MU_LOG_SUBSCRIBE(logger6, MU_LOG_CRITICAL_LEVEL) == MU_LOG_ERR_NONE);
-  ASSERT(MU_LOG_SUBSCRIBE(logger7, MU_LOG_INFO_LEVEL) == MU_LOG_ERR_SUBSCRIBERS_EXCEEDED);
+  ASSERT(MU_LOG_SUBSCRIBE(logger7, MU_LOG_INFO_LEVEL) ==
+         MU_LOG_ERR_SUBSCRIBERS_EXCEEDED);
 
   ASSERT(s_call_count1 == 0);
   ASSERT(s_call_count2 == 0);
@@ -143,7 +143,7 @@ void mu_log_test() {
   ASSERT(MU_LOG_UNSUBSCRIBE(logger1) == MU_LOG_ERR_NONE);
 
   MU_LOG_CRITICAL("CRITICAL");
-  ASSERT(s_call_count1 == 6);  // logger1 no is longer called.
+  ASSERT(s_call_count1 == 6); // logger1 no is longer called.
   ASSERT(s_call_count2 == 6);
   ASSERT(s_call_count3 == 5);
   ASSERT(s_call_count4 == 4);
@@ -170,8 +170,8 @@ void mu_log_test() {
   ASSERT(strcmp(mu_log_level_name(MU_LOG_ERROR_LEVEL), "ERROR") == 0);
   ASSERT(strcmp(mu_log_level_name(MU_LOG_CRITICAL_LEVEL), "CRITICAL") == 0);
 
-  ASSERT(strcmp(mu_log_level_name(MU_LOG_TRACE_LEVEL-1), "UNKNOWN") == 0);
-  ASSERT(strcmp(mu_log_level_name(MU_LOG_CRITICAL_LEVEL+1), "UNKNOWN") == 0);
+  ASSERT(strcmp(mu_log_level_name(MU_LOG_TRACE_LEVEL - 1), "UNKNOWN") == 0);
+  ASSERT(strcmp(mu_log_level_name(MU_LOG_CRITICAL_LEVEL + 1), "UNKNOWN") == 0);
 }
 
 // =============================================================================
@@ -226,9 +226,7 @@ void logger7(mu_log_level_t severity, const char *msg) {
   s_call_count7 += 1;
 }
 
-void logger_a(mu_log_level_t severity, const char *msg) {
-  s_call_count_a += 1;
-}
+void logger_a(mu_log_level_t severity, const char *msg) { s_call_count_a += 1; }
 
 void logger_b(mu_log_level_t severity, const char *msg) {
   // Assure that logger_a was called before logger_b

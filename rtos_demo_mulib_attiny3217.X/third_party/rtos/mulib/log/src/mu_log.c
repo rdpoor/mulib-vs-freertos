@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 // =============================================================================
 // includes
 
@@ -31,9 +30,9 @@
 
 #ifdef MU_LOG_ENABLED // rest of file...
 
+#include <stdarg.h>
 #include <stddef.h>
 #include <stdio.h>
-#include <stdarg.h>
 
 // =============================================================================
 // private types and definitions
@@ -74,16 +73,16 @@ static char s_message[MU_LOG_MAX_MESSAGE_LENGTH];
 
 #undef DEFINE_MU_LOG_LEVEL
 #define DEFINE_MU_LOG_LEVEL(level, name) name,
-const char * const s_level_names[] = {
-  EXPAND_MU_LOG_LEVELS
-};
-
+const char *const s_level_names[] = {EXPAND_MU_LOG_LEVELS};
 
 // =============================================================================
 // user-visible code
 
 void mu_log_init() {
-  mu_vect_init(&s_subscribers, s_subscribers_store, MU_LOG_MAX_SUBSCRIBERS, sizeof(subscriber_t));
+  mu_vect_init(&s_subscribers,
+               s_subscribers_store,
+               MU_LOG_MAX_SUBSCRIBERS,
+               sizeof(subscriber_t));
 }
 
 // install or update a subscriber
@@ -108,7 +107,7 @@ mu_log_err_t mu_log_unsubscribe(mu_log_function_t fn) {
 }
 
 const char *mu_log_level_name(mu_log_level_t severity) {
-  if (severity >= sizeof(s_level_names)/sizeof(const char *)) {
+  if (severity >= sizeof(s_level_names) / sizeof(const char *)) {
     return "UNKNOWN";
   } else {
     return s_level_names[severity];

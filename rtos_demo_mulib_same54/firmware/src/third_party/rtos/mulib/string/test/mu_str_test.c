@@ -25,12 +25,12 @@
 // =============================================================================
 // includes
 
-#include "mu_test_utils.h"
 #include "mu_str.h"
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include "mu_test_utils.h"
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 // =============================================================================
 // private types and definitions
@@ -66,8 +66,8 @@ void mu_str_test() {
 
   reset();
 
-  for (int i=0; i<strlen(s_cstr_rd); i++) {
-    ASSERT(mu_str_available_rd(s_rd) == strlen(s_cstr_rd)-i);
+  for (int i = 0; i < strlen(s_cstr_rd); i++) {
+    ASSERT(mu_str_available_rd(s_rd) == strlen(s_cstr_rd) - i);
     ASSERT(mu_str_ref_rd(s_rd) == (uint8_t *)&s_cstr_rd[i]);
     ASSERT(mu_str_read_byte(s_rd, &ch) == true);
     ASSERT(ch == s_cstr_rd[i]);
@@ -76,8 +76,8 @@ void mu_str_test() {
   ASSERT(mu_str_available_rd(s_rd) == 0);
   ASSERT(mu_str_read_byte(s_rd, &ch) == false);
 
-  for (int i=0; i<ELEMENT_COUNT; i++) {
-    ASSERT(mu_str_available_wr(s_wr) == ELEMENT_COUNT-i);
+  for (int i = 0; i < ELEMENT_COUNT; i++) {
+    ASSERT(mu_str_available_wr(s_wr) == ELEMENT_COUNT - i);
     ASSERT(mu_str_ref_wr(s_wr) == (uint8_t *)&s_cstr_wr[i]);
     ASSERT(mu_str_write_byte(s_wr, ch) == true);
   }
@@ -123,28 +123,28 @@ void mu_str_test() {
 
   // tests for mu_str_find
   reset();
-  ASSERT(mu_str_find(s_rd,"") == 0); // searching for null str should return 0
-  ASSERT(mu_str_find(s_rd,"Disco") == 0);
-  ASSERT(mu_str_find(s_rd,"!") == 8);
-  ASSERT(mu_str_find(s_rd,"I Zimbra") == -1);
+  ASSERT(mu_str_find(s_rd, "") == 0); // searching for null str should return 0
+  ASSERT(mu_str_find(s_rd, "Disco") == 0);
+  ASSERT(mu_str_find(s_rd, "!") == 8);
+  ASSERT(mu_str_find(s_rd, "I Zimbra") == -1);
 
   // tests for mu_str_strcmp
   reset();
   ASSERT(mu_str_printf(s_wr, "%s", s_cstr_rd) == strlen(s_cstr_rd));
-  ASSERT(mu_str_strcmp(s_rd,s_wr) == 0);
-  ASSERT(mu_str_strcmp(s_wr,s_rd) == 0);
+  ASSERT(mu_str_strcmp(s_rd, s_wr) == 0);
+  ASSERT(mu_str_strcmp(s_wr, s_rd) == 0);
   reset();
   mu_str_printf(s_wr, "%s", "Rules!");
-  ASSERT(mu_str_strcmp(s_rd,s_wr) < 0);
-  ASSERT(mu_str_strcmp(s_wr,s_rd) > 0);
-  ASSERT(mu_str_strncmp(s_rd,s_wr,2) < 0);
-  ASSERT(mu_str_strncmp(s_wr,s_rd,2) > 0);
+  ASSERT(mu_str_strcmp(s_rd, s_wr) < 0);
+  ASSERT(mu_str_strcmp(s_wr, s_rd) > 0);
+  ASSERT(mu_str_strncmp(s_rd, s_wr, 2) < 0);
+  ASSERT(mu_str_strncmp(s_wr, s_rd, 2) > 0);
   reset();
   mu_str_printf(s_wr, "%s", "Dah");
-  ASSERT(mu_str_strcmp(s_rd,s_wr) > 0);
-  ASSERT(mu_str_strncmp(s_rd,s_wr,1) == 0);
+  ASSERT(mu_str_strcmp(s_rd, s_wr) > 0);
+  ASSERT(mu_str_strncmp(s_rd, s_wr, 1) == 0);
   reset();
-  ASSERT(mu_str_strcmp(s_rd,s_wr) == 0);
+  ASSERT(mu_str_strcmp(s_rd, s_wr) == 0);
 }
 
 // =============================================================================

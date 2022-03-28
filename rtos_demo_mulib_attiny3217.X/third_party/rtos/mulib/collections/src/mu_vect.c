@@ -45,8 +45,9 @@ static void *ref(mu_vect_t *vect, size_t index);
  *
  * See http://rosettacode.org/wiki/Binary_search
  */
-static size_t
-find_insertion_index(mu_vect_t *vect, void *e, mu_vect_cmp_fn cmp);
+static size_t find_insertion_index(mu_vect_t *vect,
+                                   void *e,
+                                   mu_vect_cmp_fn cmp);
 
 static void heapify(mu_vect_t *vect, mu_vect_cmp_fn cmp);
 
@@ -156,8 +157,9 @@ mu_vect_err_t mu_vect_pop(mu_vect_t *vect, void *e) {
   return mu_vect_delete_at(vect, mu_vect_count(vect) - 1, e);
 }
 
-mu_vect_err_t
-mu_vect_insert_sorted(mu_vect_t *vect, void *e, mu_vect_cmp_fn cmp) {
+mu_vect_err_t mu_vect_insert_sorted(mu_vect_t *vect,
+                                    void *e,
+                                    mu_vect_cmp_fn cmp) {
   if (mu_vect_is_full(vect)) {
     return MU_VECT_ERR_FULL;
   }
@@ -209,8 +211,9 @@ static void *ref(mu_vect_t *vect, size_t index) {
 // Find "leftmost" insertion point, as described in
 // http://rosettacode.org/wiki/Binary_search
 
-static size_t
-find_insertion_index(mu_vect_t *vect, void *e, mu_vect_cmp_fn cmp) {
+static size_t find_insertion_index(mu_vect_t *vect,
+                                   void *e,
+                                   mu_vect_cmp_fn cmp) {
   int low = 0;
   int high = mu_vect_count(vect) - 1;
   while (low <= high) {

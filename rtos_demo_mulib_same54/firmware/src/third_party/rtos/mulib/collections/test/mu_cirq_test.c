@@ -25,10 +25,10 @@
 // =============================================================================
 // includes
 
-#include "mu_test_utils.h"
 #include "mu_cirq.h"
-#include <string.h>
+#include "mu_test_utils.h"
 #include <stdint.h>
+#include <string.h>
 
 // =============================================================================
 // private types and definitions
@@ -98,11 +98,11 @@ void mu_cirq_test() {
   ASSERT(mu_cirq_capacity(q) == 1);
 
   ASSERT(mu_cirq_reset(q) == q);
-  ASSERT(mu_cirq_read_8(q, s_a2, 4) == 0);   // queue was empty
+  ASSERT(mu_cirq_read_8(q, s_a2, 4) == 0); // queue was empty
   ASSERT(mu_cirq_write_8(q, a1, 4) == 1);  // queue can only hold one
   ASSERT(mu_cirq_is_empty(q) == false);
   ASSERT(mu_cirq_is_full(q) == true);
-  ASSERT(mu_cirq_read_8(q, s_a2, 4) == 1);   // queue held one element
+  ASSERT(mu_cirq_read_8(q, s_a2, 4) == 1); // queue held one element
   ASSERT(mu_cirq_is_empty(q) == true);
   ASSERT(mu_cirq_is_full(q) == false);
   ASSERT(s_a2[0] == 1);
@@ -115,11 +115,11 @@ void mu_cirq_test() {
   ASSERT(mu_cirq_capacity(q) == 3);
 
   ASSERT(mu_cirq_reset(q) == q);
-  ASSERT(mu_cirq_read_8(q, s_a2, 4) == 0);   // queue was empty
+  ASSERT(mu_cirq_read_8(q, s_a2, 4) == 0); // queue was empty
   ASSERT(mu_cirq_write_8(q, a1, 4) == 3);  // queue can only hold three
   ASSERT(mu_cirq_is_empty(q) == false);
   ASSERT(mu_cirq_is_full(q) == true);
-  ASSERT(mu_cirq_read_8(q, s_a2, 4) == 3);   // queue held one element
+  ASSERT(mu_cirq_read_8(q, s_a2, 4) == 3); // queue held one element
   ASSERT(mu_cirq_is_empty(q) == true);
   ASSERT(mu_cirq_is_full(q) == false);
   ASSERT(s_a2[0] == 1);
@@ -127,11 +127,11 @@ void mu_cirq_test() {
   ASSERT(s_a2[2] == 3);
 
   // Assure the pointer wraps properly
-  ASSERT(mu_cirq_read_8(q, s_a2, 4) == 0);   // queue was empty
+  ASSERT(mu_cirq_read_8(q, s_a2, 4) == 0); // queue was empty
   ASSERT(mu_cirq_write_8(q, a1, 4) == 3);  // queue can only hold three
   ASSERT(mu_cirq_is_empty(q) == false);
   ASSERT(mu_cirq_is_full(q) == true);
-  ASSERT(mu_cirq_read_8(q, s_a2, 4) == 3);   // queue held one element
+  ASSERT(mu_cirq_read_8(q, s_a2, 4) == 3); // queue held one element
   ASSERT(mu_cirq_is_empty(q) == true);
   ASSERT(mu_cirq_is_full(q) == false);
   ASSERT(s_a2[0] == 1);
@@ -146,19 +146,19 @@ void mu_cirq_test() {
   ASSERT(mu_cirq_capacity(q) == 7);
 
   ASSERT(mu_cirq_reset(q) == q);
-  ASSERT(mu_cirq_read_8(q, s_a2, 4) == 0);   // queue was empty
+  ASSERT(mu_cirq_read_8(q, s_a2, 4) == 0); // queue was empty
   ASSERT(mu_cirq_write_8(q, a1, 4) == 4);  // now = [1, 2, 3, 4]
   ASSERT(mu_cirq_is_empty(q) == false);
   ASSERT(mu_cirq_is_full(q) == false);
-  ASSERT(mu_cirq_write_8(q, a1, 4) == 3);  // now = [1, 2, 3, 4, 1, 2, 3]
+  ASSERT(mu_cirq_write_8(q, a1, 4) == 3); // now = [1, 2, 3, 4, 1, 2, 3]
   ASSERT(mu_cirq_is_empty(q) == false);
   ASSERT(mu_cirq_is_full(q) == true);
-  ASSERT(mu_cirq_read_8(q, s_a2, 3) == 3);   // now = [4, 1, 2, 3];
+  ASSERT(mu_cirq_read_8(q, s_a2, 3) == 3); // now = [4, 1, 2, 3];
   ASSERT(s_a2[0] == 1);
   ASSERT(s_a2[1] == 2);
   ASSERT(s_a2[2] == 3);
   ASSERT(mu_cirq_write_8(q, a1, 4) == 3);  // now = [4, 1, 2, 3, 1, 2, 3]
-  ASSERT(mu_cirq_read_8(q, s_a2, 4) == 4);   // now = [1, 2, 3]
+  ASSERT(mu_cirq_read_8(q, s_a2, 4) == 4); // now = [1, 2, 3]
   ASSERT(s_a2[0] == 4);
   ASSERT(s_a2[1] == 1);
   ASSERT(s_a2[2] == 2);
@@ -172,22 +172,28 @@ void mu_cirq_test() {
   ASSERT(mu_cirq_capacity(q) == 7);
 
   ASSERT(mu_cirq_reset(q) == q);
-  ASSERT(mu_cirq_read_n(q, s_items2, 4, sizeof(item_t)) == 0);   // queue was empty
-  ASSERT(mu_cirq_write_n(q, items1, 4, sizeof(item_t)) == 4);    // now = [1, 2, 3, 4, x, x, x, x]
+  ASSERT(mu_cirq_read_n(q, s_items2, 4, sizeof(item_t)) ==
+         0); // queue was empty
+  ASSERT(mu_cirq_write_n(q, items1, 4, sizeof(item_t)) ==
+         4); // now = [1, 2, 3, 4, x, x, x, x]
   ASSERT(mu_cirq_is_empty(q) == false);
   ASSERT(mu_cirq_is_full(q) == false);
 
-  ASSERT(mu_cirq_write_n(q, items1, 4, sizeof(item_t)) == 3);    // now = [1, 2, 3, 4, 1, 2, 3, x]
+  ASSERT(mu_cirq_write_n(q, items1, 4, sizeof(item_t)) ==
+         3); // now = [1, 2, 3, 4, 1, 2, 3, x]
   ASSERT(mu_cirq_is_empty(q) == false);
   ASSERT(mu_cirq_is_full(q) == true);
-  ASSERT(mu_cirq_read_n(q, s_items2, 3, sizeof(item_t)) == 3);   // now = [x, x, x, 4, 1, 2, 3, x]
+  ASSERT(mu_cirq_read_n(q, s_items2, 3, sizeof(item_t)) ==
+         3); // now = [x, x, x, 4, 1, 2, 3, x]
   ASSERT(items_are_equal(&s_items2[0], &items1[0]));
   ASSERT(items_are_equal(&s_items2[1], &items1[1]));
   ASSERT(items_are_equal(&s_items2[2], &items1[2]));
 
   reset_statics();
-  ASSERT(mu_cirq_write_n(q, items1, 4, sizeof(item_t)) == 3);    // now = [2, 3, x, 4, 1, 2, 3, 1]
-  ASSERT(mu_cirq_read_n(q, s_items2, 4, sizeof(item_t)) == 4);   // now = [2, 3, x, x, x, x, x, x]
+  ASSERT(mu_cirq_write_n(q, items1, 4, sizeof(item_t)) ==
+         3); // now = [2, 3, x, 4, 1, 2, 3, 1]
+  ASSERT(mu_cirq_read_n(q, s_items2, 4, sizeof(item_t)) ==
+         4); // now = [2, 3, x, x, x, x, x, x]
   ASSERT(items_are_equal(&s_items2[0], &items1[3]));
   ASSERT(items_are_equal(&s_items2[1], &items1[0]));
   ASSERT(items_are_equal(&s_items2[2], &items1[1]));

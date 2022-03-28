@@ -34,7 +34,7 @@
 // =============================================================================
 // private types and definitions
 
-#define BIT_COUNT 10   // One byte and two bits
+#define BIT_COUNT 10 // One byte and two bits
 
 // =============================================================================
 // private declarations
@@ -60,12 +60,11 @@ void mu_bvec_test() {
   ASSERT(mu_bvec_byte_index(10) == 1);
   ASSERT(mu_bvec_byte_mask(10) == 0x04);
 
-
-  for (size_t p=0; p<BIT_COUNT; p++) {
-    //mu_bvec_clear_all(s_bvec, BIT_COUNT);
+  for (size_t p = 0; p < BIT_COUNT; p++) {
+    // mu_bvec_clear_all(s_bvec, BIT_COUNT);
     mu_bvec_clear_all(s_bvec, BIT_COUNT);
     mu_bvec_set(s_bvec, p);
-    for (size_t q=0; q<BIT_COUNT; q++) {
+    for (size_t q = 0; q < BIT_COUNT; q++) {
       if (p == q) {
         ASSERT(mu_bvec_read(s_bvec, q) == true);
       } else {
@@ -98,26 +97,24 @@ void mu_bvec_test() {
   ASSERT(mu_bvec_count_ones(s_bvec, BIT_COUNT) == 0);
   ASSERT(mu_bvec_count_zeros(s_bvec, BIT_COUNT) == BIT_COUNT - 0);
 
-  for (size_t p=0; p<BIT_COUNT; p++) {
+  for (size_t p = 0; p < BIT_COUNT; p++) {
     mu_bvec_clear_all(s_bvec, BIT_COUNT);
     mu_bvec_set(s_bvec, p);
     ASSERT(mu_bvec_find_first_one(s_bvec, BIT_COUNT) == p);
   }
 
-  for (size_t p=0; p<BIT_COUNT; p++) {
+  for (size_t p = 0; p < BIT_COUNT; p++) {
     mu_bvec_set_all(s_bvec, BIT_COUNT);
     mu_bvec_clear(s_bvec, p);
     ASSERT(mu_bvec_find_first_zero(s_bvec, BIT_COUNT) == p);
   }
 
   mu_bvec_clear_all(s_bvec, BIT_COUNT);
-  for (size_t p=0; p<BIT_COUNT; p++) {
+  for (size_t p = 0; p < BIT_COUNT; p++) {
     mu_bvec_set(s_bvec, p);
-    ASSERT(mu_bvec_count_ones(s_bvec, BIT_COUNT) == p+1);
-    ASSERT(mu_bvec_count_zeros(s_bvec, BIT_COUNT) == BIT_COUNT-(p+1));
+    ASSERT(mu_bvec_count_ones(s_bvec, BIT_COUNT) == p + 1);
+    ASSERT(mu_bvec_count_zeros(s_bvec, BIT_COUNT) == BIT_COUNT - (p + 1));
   }
-
-
 }
 
 // =============================================================================

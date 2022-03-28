@@ -117,7 +117,8 @@ void mu_stream_write_32le(mu_stream_t *stream, uint32_t value) {
 // #define MU_STREAM_STANDALONE_TEST
 #ifdef MU_STREAM_STANDALONE_TEST
 
-// gcc -Wall -g -o test_mu_stream mu_stream.c mu_str.c mu_strbuf.c ; ./test_mu_stream
+// gcc -Wall -g -o test_mu_stream mu_stream.c mu_str.c mu_strbuf.c ;
+// ./test_mu_stream
 #include <stdio.h>
 
 #define RCV_BUF_SIZE 24
@@ -172,6 +173,5 @@ int main(void) {
 
   printf("\n...Finished mu_stream unit tests.\n");
 }
-
 
 #endif

@@ -44,12 +44,10 @@
 // Public code
 
 void mu_rtc_init(void) {
-    // no initialization required
+  // no initialization required
 }
 
-mu_time_abs_t mu_rtc_now(void) {
-    return RTC_ReadCounter();
-}
+mu_time_abs_t mu_rtc_now(void) { return RTC_ReadCounter(); }
 
 // *****************************************************************************
 // Private (static) code

@@ -43,8 +43,9 @@
 // =============================================================================
 // public code
 
-mu_spsc_err_t
-mu_spsc_init(mu_spsc_t *q, mu_spsc_item_t *store, uint16_t capacity) {
+mu_spsc_err_t mu_spsc_init(mu_spsc_t *q,
+                           mu_spsc_item_t *store,
+                           uint16_t capacity) {
   if ((capacity == 0) || !IS_POWER_OF_TWO(capacity)) {
     return MU_SPSC_ERR_SIZE;
   }

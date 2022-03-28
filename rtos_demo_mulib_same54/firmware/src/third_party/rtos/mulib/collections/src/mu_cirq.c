@@ -177,8 +177,10 @@ uint8_t mu_cirq_write_n(mu_cirq_t *cirq,
   return written;
 }
 
-uint8_t
-mu_cirq_read_n(mu_cirq_t *cirq, void *dst, size_t count, uint8_t element_size) {
+uint8_t mu_cirq_read_n(mu_cirq_t *cirq,
+                       void *dst,
+                       size_t count,
+                       uint8_t element_size) {
   uint8_t *d2 = (uint8_t *)dst;
   const uint8_t *src = (const uint8_t *)cirq->store;
 

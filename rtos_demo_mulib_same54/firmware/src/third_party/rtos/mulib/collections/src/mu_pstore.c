@@ -39,8 +39,9 @@ static size_t find_insertion_index(mu_pstore_t *pstore,
                                    mu_pstore_item_t item,
                                    mu_pstore_compare_fn cmp);
 static void heapsort(mu_pstore_t *pstore, mu_pstore_compare_fn cmp);
-static void
-heapify(mu_pstore_item_t *items, size_t count, mu_pstore_compare_fn cmp);
+static void heapify(mu_pstore_item_t *items,
+                    size_t count,
+                    mu_pstore_compare_fn cmp);
 static void sift_down(mu_pstore_item_t *items,
                       mu_pstore_compare_fn cmp,
                       int start,
@@ -56,8 +57,9 @@ static void swap(mu_pstore_item_t *items, int a, int b);
 /**
  * \brief initialize the pstore module.
  */
-mu_pstore_t *
-mu_pstore_init(mu_pstore_t *pstore, mu_pstore_item_t *items, size_t capacity) {
+mu_pstore_t *mu_pstore_init(mu_pstore_t *pstore,
+                            mu_pstore_item_t *items,
+                            size_t capacity) {
   pstore->items = items;
   pstore->capacity = capacity;
   return mu_pstore_reset(pstore);
@@ -122,8 +124,9 @@ mu_pstore_err_t mu_pstore_peek(mu_pstore_t *pstore, mu_pstore_item_t *item) {
   return MU_PSTORE_ERR_NONE;
 }
 
-mu_pstore_err_t
-mu_pstore_insert_at(mu_pstore_t *pstore, mu_pstore_item_t item, size_t index) {
+mu_pstore_err_t mu_pstore_insert_at(mu_pstore_t *pstore,
+                                    mu_pstore_item_t item,
+                                    size_t index) {
   int to_move = pstore->count - index;
 
   if (pstore->count == pstore->capacity) {
@@ -145,8 +148,9 @@ mu_pstore_insert_at(mu_pstore_t *pstore, mu_pstore_item_t item, size_t index) {
   return MU_PSTORE_ERR_NONE;
 }
 
-mu_pstore_err_t
-mu_pstore_delete_at(mu_pstore_t *pstore, mu_pstore_item_t *item, size_t index) {
+mu_pstore_err_t mu_pstore_delete_at(mu_pstore_t *pstore,
+                                    mu_pstore_item_t *item,
+                                    size_t index) {
   int to_move = pstore->count - index - 1;
 
   if (pstore->count == 0) {
@@ -247,8 +251,9 @@ static void heapsort(mu_pstore_t *pstore, mu_pstore_compare_fn cmp) {
   }
 }
 
-static void
-heapify(mu_pstore_item_t *items, size_t count, mu_pstore_compare_fn cmp) {
+static void heapify(mu_pstore_item_t *items,
+                    size_t count,
+                    mu_pstore_compare_fn cmp) {
   int start = (count - 2) / 2; // index of last parent node
 
   while (start >= 0) {

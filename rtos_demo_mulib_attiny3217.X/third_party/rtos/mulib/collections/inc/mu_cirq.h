@@ -37,17 +37,17 @@ extern "C" {
 // includes
 
 #include <stdbool.h>
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
 // =============================================================================
 // types and definitions
 
 typedef struct {
-  void *store;         // item store, 2^n elements long (up to 256 max)
-  uint8_t mask;         // 2^n - 1, and also capacity of circular buffer
-  uint8_t putr;        // index where the next item will be stored
-  uint8_t takr;        // index of the next item to be fetched
+  void *store;  // item store, 2^n elements long (up to 256 max)
+  uint8_t mask; // 2^n - 1, and also capacity of circular buffer
+  uint8_t putr; // index where the next item will be stored
+  uint8_t takr; // index of the next item to be fetched
 } mu_cirq_t;
 
 // =============================================================================
@@ -89,9 +89,15 @@ uint8_t mu_cirq_write_32(mu_cirq_t *cirq, const uint32_t *src, size_t count);
 
 uint8_t mu_cirq_read_32(mu_cirq_t *cirq, uint32_t *dst, size_t count);
 
-uint8_t mu_cirq_write_n(mu_cirq_t *cirq, const void *src, size_t count, uint8_t element_size);
+uint8_t mu_cirq_write_n(mu_cirq_t *cirq,
+                        const void *src,
+                        size_t count,
+                        uint8_t element_size);
 
-uint8_t mu_cirq_read_n(mu_cirq_t *cirq, void *dst, size_t count, uint8_t element_size);
+uint8_t mu_cirq_read_n(mu_cirq_t *cirq,
+                       void *dst,
+                       size_t count,
+                       uint8_t element_size);
 
 #ifdef __cplusplus
 }
