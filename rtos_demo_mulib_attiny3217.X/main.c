@@ -24,7 +24,6 @@
 
 #include "app.h"
 #include "mcc_generated_files/mcc.h"
-#include "mu_sched.h"
 
 /*
     Main application
