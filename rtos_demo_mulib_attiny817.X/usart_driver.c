@@ -142,9 +142,6 @@ usart_driver_err_t usart_driver_tx(const uint8_t *buf,
                                    mu_task_t *on_tx_complete) {
   usart_driver_err_t ret = USART_DRIVER_ERR_NONE;
 
-  if (!usart_driver_owns_rx(on_tx_complete)) {
-          asm("nop");
-  }
   if (tx_is_busy()) {
     // Driver is currently processing another request.
     ret = USART_DRIVER_ERR_BUSY;

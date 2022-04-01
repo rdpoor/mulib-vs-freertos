@@ -22,60 +22,60 @@
  * SOFTWARE.
  */
 
+/**
+ * @file utils.h
+ *
+ * @brief Utility functions, mostly in the name of printf() avoidance.
+ */
+
+#ifndef _UTILS_H_
+#define _UTILS_H_
+
 // *****************************************************************************
 // Includes
 
-#include "app.h"
-
-#include "i2c_driver.h"
-#include "kbhit_task.h"
-#include "mu_access_mgr.h"
-#include "mu_rtc.h"
-#include "mu_sched.h"
-#include "mu_task.h"
-#include "mu_time.h"
-#include "periodic_task.h"
-#include "usart_driver.h"
+#include <stdint.h>
 
 // *****************************************************************************
-// Private types and definitions
+// C++ Compatibility
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // *****************************************************************************
-// Private (static) storage
-
-static bool s_is_first_time;
+// Public types and definitions
 
 // *****************************************************************************
-// Private (forward) declarations
+// Public declarations
+
+/**
+ * @brief Append src to the end of dst.  Null terminates dst.
+ *
+ * @note: Does not check for overflow.
+ */
+char *utils_append_string(char *dst, const char *src);
+
+/**
+ * @brief Convert val to a decimal string appended to the end of dst.  Null
+ * terminates dst.
+ *
+ * @note: Does not check for overflow.
+ */
+char *utils_append_int(char *dst, uint32_t val);
+
+/**
+ * @brief Append ch to the end of dst.  Null terminates dst.
+ *
+ * @note: Does not check for overflow.
+ */
+char *utils_append_char(char *dst, char ch);
 
 // *****************************************************************************
-// Public code
+// End of file
 
-void APP_Initialize(void) {
-  mu_rtc_init();
-  mu_sched_init();
-  mu_time_init();
-
-  // Initialize app-specific resources.
-  i2c_driver_init();
-  usart_driver_init();
-
-  // Schedule initial tasks.
-  periodic_task_init();
-  kbhit_task_init();
-  s_is_first_time = true;
+#ifdef __cplusplus
 }
+#endif
 
-void APP_Tasks(void) {
-  if (s_is_first_time) {
-    s_is_first_time = false;
-    // things requiring one-time initialzation after system initialization
-    kbhit_task_start();
-    periodic_task_start();
-  }
-  // run the scheduler
-  mu_sched_step();
-}
-
-// *****************************************************************************
-// Private (static) code
+#endif /* #ifndef _UTILS_H_ */

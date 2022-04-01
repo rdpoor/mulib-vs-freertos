@@ -33,9 +33,10 @@
 #include "mu_rtc.h"
 #include "mu_task.h"
 #include "usart_driver.h"
+#include "utils.h"
 #include <stddef.h>
 #include <stdint.h>
-#include <stdio.h>
+// #include <stdio.h>
 #include <string.h>
 
 // *****************************************************************************
@@ -156,15 +157,20 @@ static void kbhit_task_fn(void *ctx, void *arg) {
 
   case KBHIT_TASK_STATE_START_SERIAL_TX: {
     // Arrive here with exclusive access to the serial tx.
-    static uint8_t buf[40];
-    snprintf((char *)buf,
-             sizeof(buf),
-             "\nEEPROM:%02u|%02u|%02u|%02u|%02u|",
-             s_kbhit_task_ctx.buf[0],
-             s_kbhit_task_ctx.buf[1],
-             s_kbhit_task_ctx.buf[2],
-             s_kbhit_task_ctx.buf[3],
-             s_kbhit_task_ctx.buf[4]);
+    static char buf[30];  // must be static since printing is async
+    buf[0] = '\0';
+    utils_append_string(buf, "\nEEPROM:");            // 8 chars
+    utils_append_int(buf, s_kbhit_task_ctx.buf[0]);   // 8+3 = 11
+    utils_append_char(buf, '|');                      // 11+1 = 12
+    utils_append_int(buf, s_kbhit_task_ctx.buf[1]);   // 12+3 = 15
+    utils_append_char(buf, '|');                      // 15+1 = 16
+    utils_append_int(buf, s_kbhit_task_ctx.buf[2]);
+    utils_append_char(buf, '|');                      // ... = 20
+    utils_append_int(buf, s_kbhit_task_ctx.buf[3]);
+    utils_append_char(buf, '|');                      // ... = 24
+    utils_append_int(buf, s_kbhit_task_ctx.buf[4]);
+    utils_append_char(buf, '|');                      // ... = 28 + \0 = 29 max
+
     usart_driver_err_t err = usart_driver_tx(
         (const uint8_t *)buf, strlen((const char *)buf), &s_kbhit_task);
     if (err != USART_DRIVER_ERR_NONE) {

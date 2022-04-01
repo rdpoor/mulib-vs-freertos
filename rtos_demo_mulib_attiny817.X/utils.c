@@ -25,17 +25,9 @@
 // *****************************************************************************
 // Includes
 
-#include "app.h"
-
-#include "i2c_driver.h"
-#include "kbhit_task.h"
-#include "mu_access_mgr.h"
-#include "mu_rtc.h"
-#include "mu_sched.h"
-#include "mu_task.h"
-#include "mu_time.h"
-#include "periodic_task.h"
-#include "usart_driver.h"
+#include "utils.h"
+#include <stdint.h>
+#include <string.h>
 
 // *****************************************************************************
 // Private types and definitions
@@ -43,38 +35,43 @@
 // *****************************************************************************
 // Private (static) storage
 
-static bool s_is_first_time;
-
 // *****************************************************************************
 // Private (forward) declarations
 
 // *****************************************************************************
 // Public code
 
-void APP_Initialize(void) {
-  mu_rtc_init();
-  mu_sched_init();
-  mu_time_init();
-
-  // Initialize app-specific resources.
-  i2c_driver_init();
-  usart_driver_init();
-
-  // Schedule initial tasks.
-  periodic_task_init();
-  kbhit_task_init();
-  s_is_first_time = true;
+char *utils_append_string(char *dst, const char *src) {
+  char *e = &dst[strlen(dst)];
+  strcpy(e, src);
+  return dst;
 }
 
-void APP_Tasks(void) {
-  if (s_is_first_time) {
-    s_is_first_time = false;
-    // things requiring one-time initialzation after system initialization
-    kbhit_task_start();
-    periodic_task_start();
+char *utils_append_int(char *dst, uint32_t val) {
+  char *b = &dst[strlen(dst)];
+  char *e = b;
+
+  do {
+    *e++ = (val % 10) + '0';
+    val = val / 10;
+  } while (val > 0);
+  // null terminate the string
+  *e = '\0';
+  // str now contains the stringified number, but least significant digit first.
+  // Reverse it...
+  while (--e > b) {
+    char tmp = *b;
+    *b++ = *e;
+    *e-- = tmp;
   }
-  // run the scheduler
-  mu_sched_step();
+  return dst;
+}
+
+char *utils_append_char(char *dst, char ch) {
+  char *e = &dst[strlen(dst)];
+  *e++ = ch;
+  *e = '\0';
+  return dst;
 }
 
 // *****************************************************************************
