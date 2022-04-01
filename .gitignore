@@ -7,3 +7,4 @@
 **/*.X/dist
 **/*.X/build
 **/*.X/.generated_files
+**/*.X/.ca
