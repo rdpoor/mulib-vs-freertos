@@ -37,6 +37,7 @@ The tenets that have guided the design and development of mulib include:
 * **minimal RAM usage**: One benefit of mulib's single threaded design is that there is only one execution stack.  This means that you don't have to decide how much stack to allocate to each task and thus you avoid fragmenting RAM.
 * **efficient interrupt handling**: mulib's `mu_sched` module lets you safely schedule any `mu_task` from interrupt level.  This makes it easy to write interrupt handlers that interact with foreground-level tasks.
 * **pure C, highly portable**: mulib is written in 100% ANSI Standard C with no assembly code.  And for applications that use `mu_task` and `mu_sched`, the only platform-specific requirement is a representation of time (`mu_time`) and a real-time clock (`mu_rtc`).
+* **power-saving architecture**: Because mulib's design supports "callback on demand" rather than polling, it is easy to write power-saving applications with no changes to the user code -- you only need to provide a custom idle task for the scheduler that puts the processor into low-power mode and mulib does the rest.
 * **documentation, testing, examples**: mulib includes comprehensive unit testing, and (increasingly) complete documentation and code examples.
 * **free to use, always**: The entire corpus of mulib is covered under the permissive [MIT Open Source license](https://fossa.com/blog/open-source-licenses-101-mit-license/).  You are free to use mulib in commercial products, modify and distribute mulib or even sublicense mulib.
 
