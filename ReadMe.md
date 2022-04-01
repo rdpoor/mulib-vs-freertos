@@ -2,17 +2,15 @@
 
 ## Overview
 
-**mulib** is a highly performant, compact and reliable framework for building
-complex applications in resource-constrained embedded systems.
+**mulib** is a highly performant, compact and reliable framework for building complex applications in resource-constrained embedded systems.
 
-**FreeRTOS** is a market-leading real-time operating system (RTOS) for
-microcontrollers and small microprocessors.
+**FreeRTOS** is a market-leading real-time operating system (RTOS) for microcontrollers and small microprocessors.
 
-This project replicates an existing FreeRTOS example project using the mulib framework
-in order to compare the two versions and to gain practical experience in translating
-the FreeRTOS idioms to the mulib model.
+This project replicates an existing FreeRTOS example project using the mulib framework in order to compare the two versions and to gain practical experience in translating the FreeRTOS idioms to the mulib model.
 
 ## Summary
+
+One of the design goals of mulib is "a lot of performance in a little space".  This is borne out in this example: mulib uses far less RAM and FLASH than the corresponding application written using FreeRTOS.
 
 This table summarizes the difference in code size between the FreeRTOS and mulib versions:
 
@@ -23,6 +21,25 @@ This table summarizes the difference in code size between the FreeRTOS and mulib
 
 You can see that the mulib version reduces the code size by over 56%
 and reduces the RAM requirements by 98% when compared to its FreeRTOS counterpart.
+
+## A bit more about mulib
+
+mulib is a _framework_, that is, a collection of modules designed specifically for resource-constrained environments.  Though it includes all the things you need to write multi-threaded, real-time applications, it is more than just a real-time operating system (RTOS): mulib includes modules for efficient "zero copy" manipulation of strings, support for single and double linked lists and queues, comprehensive array operations and more.
+
+In short, mulib gives you the tools you need to make it easier for you to write complex, reliable applications for resource-constrained applications.
+
+The tenets that have guided the design and development of mulib include:
+* **designed for embedded systems**: mulib's modules are written to be small and efficient with minimal dependencies on external libraries.
+* **no malloc, ever**: mulib never calls `malloc` or `free`.  When a mulib module requires a data structure, the user provides it.  This gives you the choice of static allocation for deterministic behaviour, or dynamic allocation for convenience.
+* **small, fast and dangerous**: mulib does minimal validation of its arguments.  Instead, it assumes you know what you're doing, which gives you the option of assuming they are correct (for small code footprint and efficiency), or validating them yourself (for safety).
+* **deferred execution**: mulib's multi-tasking system makes heavy use of the `mu_task` module, which encapsulates a function and a context.  A mu_task can be scheduled to run at some future time, or can be passed as an "on_completion" argument to another task.
+* **single threaded**: mulib's multi-tasking system is at its heart a single threaded architecture.  This means that if you call an outside library, you don't need to worry about reentrancy.  If you need to assure exclusive access to a resource, the `mu_access_mgr` module provides that.
+* **minimal RAM usage**: One benefit of mulib's single threaded design is that there is only one execution stack.  This means that you don't have to decide how much stack to allocate to each task and thus you avoid fragmenting RAM.
+* **efficient interrupt handling**: mulib's `mu_sched` module lets you safely schedule any `mu_task` from interrupt level.  This makes it easy to write interrupt handlers that interact with foreground-level tasks.
+* **pure C, highly portable**: mulib is written in 100% ANSI Standard C with no assembly code.  And for applications that use `mu_task` and `mu_sched`, the only platform-specific requirement is a representation of time (`mu_time`) and a real-time clock (`mu_rtc`).
+* **documentation, testing, examples**: mulib includes comprehensive unit testing, and (increasingly) complete documentation and code examples.
+* **free to use, always**: The entire corpus of mulib is covered under the permissive MIT
+.  The `mu_task` and `mu_sched` modules only require a
 
 ## Details
 
