@@ -8,6 +8,8 @@
             <file>file:/C:/Users/r/Projects/rtos-demo/rtos_demo_mulib_attiny817.X/kbhit_task.c</file>
             <file>file:/C:/Users/r/Projects/rtos-demo/rtos_demo_mulib_attiny817.X/third_party/rtos/mu_platform/src/mu_rtc.c</file>
             <file>file:/C:/Users/r/Projects/rtos-demo/rtos_demo_mulib_attiny817.X/third_party/rtos/mulib/sched/src/mu_access_mgr.c</file>
+            <file>file:/C:/Users/r/Projects/rtos-demo/rtos_demo_mulib_attiny817.X/periodic_task.c</file>
+            <file>file:/C:/Users/r/Projects/rtos-demo/rtos_demo_mulib_attiny817.X/third_party/rtos/mulib/sched/src/mu_sched.c</file>
         </group>
     </open-files>
 </project-private>
