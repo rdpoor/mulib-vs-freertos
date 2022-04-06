@@ -3,13 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/r/Projects/rtos-demo/rtos_demo_mulib_attiny817.X/usart_driver.c</file>
-            <file>file:/C:/Users/r/Projects/rtos-demo/rtos_demo_mulib_attiny817.X/main.c</file>
-            <file>file:/C:/Users/r/Projects/rtos-demo/rtos_demo_mulib_attiny817.X/kbhit_task.c</file>
-            <file>file:/C:/Users/r/Projects/rtos-demo/rtos_demo_mulib_attiny817.X/third_party/rtos/mu_platform/src/mu_rtc.c</file>
             <file>file:/C:/Users/r/Projects/rtos-demo/rtos_demo_mulib_attiny817.X/third_party/rtos/mulib/sched/src/mu_access_mgr.c</file>
-            <file>file:/C:/Users/r/Projects/rtos-demo/rtos_demo_mulib_attiny817.X/periodic_task.c</file>
+            <file>file:/C:/Users/r/Projects/rtos-demo/rtos_demo_mulib_attiny817.X/main.c</file>
+            <file>file:/C:/Users/r/Projects/rtos-demo/rtos_demo_mulib_attiny817.X/usart_driver.c</file>
+            <file>file:/C:/Users/r/Projects/rtos-demo/rtos_demo_mulib_attiny817.X/third_party/rtos/mu_platform/src/mu_rtc.c</file>
+            <file>file:/C:/Users/r/Projects/rtos-demo/rtos_demo_mulib_attiny817.X/kbhit_task.c</file>
             <file>file:/C:/Users/r/Projects/rtos-demo/rtos_demo_mulib_attiny817.X/third_party/rtos/mulib/sched/src/mu_sched.c</file>
+            <file>file:/C:/Users/r/Projects/rtos-demo/rtos_demo_mulib_attiny817.X/periodic_task.c</file>
         </group>
     </open-files>
 </project-private>

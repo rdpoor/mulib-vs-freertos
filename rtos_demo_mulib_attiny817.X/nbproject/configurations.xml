@@ -267,115 +267,14 @@
         <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
         <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
       </makeCustomizationType>
-      <AVR-AR>
-        <property key="archiver-flags" value="-r"/>
-      </AVR-AR>
-      <AVR-AS>
-        <property key="announce-version" value="false"/>
-        <property key="include-paths" value=""/>
-        <property key="suppress-warnings" value="false"/>
-      </AVR-AS>
-      <AVR-AS-PRE>
-        <property key="announce-version" value="false"/>
-        <property key="include-paths" value=""/>
-        <property key="preprocessor-macros" value=""/>
-        <property key="preprocessor-macros-undefined" value=""/>
-        <property key="suppress-warnings" value="false"/>
-      </AVR-AS-PRE>
-      <AVR-CPP>
-        <property key="additional-warnings" value="true"/>
-        <property key="call-prologues" value="false"/>
-        <property key="default-bitfield-type" value="true"/>
-        <property key="default-char-type" value="true"/>
-        <property key="extra-include-directories" value=""/>
-        <property key="garbage-collect-data" value="true"/>
-        <property key="garbage-collect-functions" value="true"/>
-        <property key="inhibit-all" value="false"/>
-        <property key="make-warnings-into-errors" value="false"/>
-        <property key="no-interrupts" value="false"/>
-        <property key="no-system-directories" value="false"/>
-        <property key="optimization-level" value="-O1"/>
-        <property key="pack-struct" value="true"/>
-        <property key="preprocess-only" value="false"/>
-        <property key="preprocessor-macros" value=""/>
-        <property key="preprocessor-macros-undefined" value=""/>
-        <property key="save-temps" value="false"/>
-        <property key="short-calls" value="false"/>
-        <property key="short-enums" value="true"/>
-        <property key="strict-ansi" value="false"/>
-        <property key="strict-ansi-errors" value="false"/>
-        <property key="support-ansi" value="false"/>
-        <property key="syntax-only" value="false"/>
-        <property key="undefined-identifier" value="false"/>
-        <property key="verbose" value="false"/>
-      </AVR-CPP>
-      <AVR-GCC>
-        <property key="additional-warnings" value="true"/>
-        <property key="call-prologues" value="false"/>
-        <property key="default-bitfield-type" value="true"/>
-        <property key="default-char-type" value="true"/>
-        <property key="extra-include-directories"
-                  value="third_party\rtos\mu_platform\inc;third_party\rtos\mulib\collections\inc;third_party\rtos\mulib\log\inc;third_party\rtos\mulib\sched\inc;third_party\rtos\mulib\string\inc;third_party\rtos\mulib\utils\inc"/>
-        <property key="extra-warnings" value="false"/>
-        <property key="garbage-collect-data" value="true"/>
-        <property key="garbage-collect-functions" value="true"/>
-        <property key="inhibit-all" value="false"/>
-        <property key="make-warnings-into-errors" value="false"/>
-        <property key="no-interrupts" value="false"/>
-        <property key="no-system-directories" value="false"/>
-        <property key="optimization-level" value="-O2"/>
-        <property key="pack-struct" value="true"/>
-        <property key="preprocessor-macros" value=""/>
-        <property key="preprocessor-macros-undefined" value=""/>
-        <property key="save-temps" value="false"/>
-        <property key="short-calls" value="false"/>
-        <property key="short-enums" value="true"/>
-        <property key="strict-ansi" value="false"/>
-        <property key="strict-ansi-errors" value="false"/>
-        <property key="support-ansi" value="false"/>
-        <property key="syntax-only" value="false"/>
-        <property key="undefined-identifier" value="false"/>
-        <property key="verbose" value="false"/>
-      </AVR-GCC>
-      <AVR-Global>
-        <property key="common-include-directories" value=""/>
-        <property key="eep" value="false"/>
-        <property key="external-ram-check" value="false"/>
-        <property key="hex" value="true"/>
-        <property key="lss" value="false"/>
-        <property key="omit-pack-options" value="false"/>
-        <property key="relax-branches" value="false"/>
-        <property key="srec" value="false"/>
-        <property key="user-pack-device-support" value=""/>
-        <property key="user-pack-include" value=""/>
-        <property key="usersig" value="false"/>
-      </AVR-Global>
-      <AVR-LD>
-        <property key="eeprom-segment" value=""/>
-        <property key="exclude-standard-libraries" value="false"/>
-        <property key="extra-lib-directories" value=""/>
-        <property key="flash-segment" value=""/>
-        <property key="generate-map-file" value="true"/>
-        <property key="initial-stack-address" value=""/>
-        <property key="input-libraries" value="libm"/>
-        <property key="no-default-libs" value="false"/>
-        <property key="no-shared-libraries" value="false"/>
-        <property key="no-startup-files" value="false"/>
-        <property key="omit-symbol-information" value="false"/>
-        <property key="other-options" value=""/>
-        <property key="remove-unused-sections" value="true"/>
-        <property key="rodata-writable" value="false"/>
-        <property key="sram-segment" value=""/>
-        <property key="v-printf" value="false"/>
-      </AVR-LD>
       <EdbgTool>
         <property key="AutoSelectMemRanges" value="auto"/>
         <property key="communication.activationmode" value="nohv"/>
         <property key="communication.interface" value="updi"/>
-        <property key="communication.speed" value="${communication.speed.default}"/>
+        <property key="communication.speed" value="0.500"/>
         <property key="debugoptions.debug-startup" value="Use system settings"/>
         <property key="debugoptions.reset-behaviour" value="Use system settings"/>
-        <property key="debugoptions.useswbreakpoints" value="true"/>
+        <property key="debugoptions.useswbreakpoints" value="false"/>
         <property key="firmware.path"
                   value="Press to browse for a specific firmware version"/>
         <property key="firmware.toolpack"
@@ -497,10 +396,10 @@
         <property key="AutoSelectMemRanges" value="auto"/>
         <property key="communication.activationmode" value="nohv"/>
         <property key="communication.interface" value="updi"/>
-        <property key="communication.speed" value="${communication.speed.default}"/>
+        <property key="communication.speed" value="0.500"/>
         <property key="debugoptions.debug-startup" value="Use system settings"/>
         <property key="debugoptions.reset-behaviour" value="Use system settings"/>
-        <property key="debugoptions.useswbreakpoints" value="true"/>
+        <property key="debugoptions.useswbreakpoints" value="false"/>
         <property key="firmware.path"
                   value="Press to browse for a specific firmware version"/>
         <property key="firmware.toolpack"
@@ -558,23 +457,61 @@
         <property key="user-pack-device-support" value=""/>
         <property key="wpo-lto" value="false"/>
       </XC8-config-global>
+      <nEdbgTool>
+        <property key="AutoSelectMemRanges" value="auto"/>
+        <property key="communication.activationmode" value="nohv"/>
+        <property key="communication.interface" value="updi"/>
+        <property key="communication.speed" value="0.500"/>
+        <property key="debugoptions.debug-startup" value="Use system settings"/>
+        <property key="debugoptions.reset-behaviour" value="Use system settings"/>
+        <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="firmware.path"
+                  value="Press to browse for a specific firmware version"/>
+        <property key="firmware.toolpack"
+                  value="Press to select which tool pack to use"/>
+        <property key="firmware.update.action" value="firmware.update.use.latest"/>
+        <property key="freeze.timers" value="false"/>
+        <property key="memories.aux" value="false"/>
+        <property key="memories.bootflash" value="true"/>
+        <property key="memories.configurationmemory" value="true"/>
+        <property key="memories.configurationmemory2" value="true"/>
+        <property key="memories.dataflash" value="true"/>
+        <property key="memories.eeprom" value="true"/>
+        <property key="memories.exclude.configurationmemory" value="true"/>
+        <property key="memories.flashdata" value="true"/>
+        <property key="memories.id" value="true"/>
+        <property key="memories.instruction.ram.ranges"
+                  value="${memories.instruction.ram.ranges}"/>
+        <property key="memories.programmemory" value="true"/>
+        <property key="memories.programmemory.ranges" value="0-fff"/>
+        <property key="poweroptions.powerenable" value="false"/>
+        <property key="programoptions.eraseb4program" value="true"/>
+        <property key="programoptions.preservedataflash" value="false"/>
+        <property key="programoptions.preservedataflash.ranges"
+                  value="${memories.dataflash.default}"/>
+        <property key="programoptions.preserveeeprom" value="false"/>
+        <property key="programoptions.preserveeeprom.ranges" value="1400-147f"/>
+        <property key="programoptions.preserveprogram.ranges" value=""/>
+        <property key="programoptions.preserveprogramrange" value="false"/>
+        <property key="programoptions.preserveuserid" value="false"/>
+        <property key="programoptions.programuserotp" value="false"/>
+        <property key="toolpack.updateoptions"
+                  value="toolpack.updateoptions.uselatestoolpack"/>
+        <property key="toolpack.updateoptions.packversion"
+                  value="Press to select which tool pack to use"/>
+        <property key="voltagevalue" value=""/>
+      </nEdbgTool>
       <item path="third_party/rtos/mulib/utils/src/mu_rfc_1123.c"
             ex="true"
             overriding="false">
-        <AVR-AR>
-        </AVR-AR>
-        <AVR-AS>
-        </AVR-AS>
-        <AVR-AS-PRE>
-        </AVR-AS-PRE>
-        <AVR-CPP>
-        </AVR-CPP>
-        <AVR-GCC>
-        </AVR-GCC>
-        <AVR-Global>
-        </AVR-Global>
-        <AVR-LD>
-        </AVR-LD>
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-CO>
+        </XC8-CO>
+        <XC8-config-global>
+        </XC8-config-global>
       </item>
     </conf>
   </confs>
