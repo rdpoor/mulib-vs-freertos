@@ -14,10 +14,10 @@ One of the design goals of mulib is "a lot of performance in a little space".  T
 
 This table summarizes the difference in code size between the FreeRTOS and mulib versions:
 
-|   | FreeRTOS SAME54 | mulib SAME54 | size reduction |
+|   | FreeRTOS SAME54 | mulib SAME54 (size reduction) | mulib ATtiny817 (size reduction) |
 |---|---|---|---|
-| Data (RAM) | 42,316 | 857 | 98.0% |
-| Program (Flash) | 19,979 | 8633 | 56.8% |
+| Data (RAM) | 42,316 | 857 (98.0%) | 423 (99%) |
+| Program (Flash) | 19,979 | 8633 (56.8%) | 5956 (70%) |
 
 You can see that the mulib version reduces the code size by over 56%
 and reduces the RAM requirements by 98% when compared to its FreeRTOS counterpart.
